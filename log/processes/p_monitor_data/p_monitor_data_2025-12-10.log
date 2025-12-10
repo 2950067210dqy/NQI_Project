@@ -1,0 +1,48 @@
+2025-12-10 19:51:56 | INFO | p_monitor_data | ProcessMonitor:monitored_target:311 | p_monitor_data 开始执行任务  
+2025-12-10 19:51:56 | INFO | p_monitor_data | ProcessMonitor:monitored_target:312 | p_monitor_data, target_func 是: <function main at 0x00000169194B1580>  
+2025-12-10 19:51:56 | INFO | p_monitor_data | ProcessMonitor:monitored_target:313 | p_monitor_data, target_func 参数个数: 2  
+2025-12-10 19:51:56 | INFO | p_monitor_data | ProcessMonitor:monitored_target:314 | p_monitor_data, args 内容: (<multiprocessing.queues.Queue object at 0x0000016922A8A910>, <multiprocessing.queues.Queue object at 0x0000016922A8BD90>)  
+2025-12-10 19:51:56 | INFO | p_monitor_data | ProcessMonitor:monitored_target:315 | p_monitor_data, args 长度: 2  
+2025-12-10 19:51:56 | INFO | p_monitor_data | main_monitor_data:main:799 | ------------------------------monitor_data_start------------------------------  
+2025-12-10 19:51:56 | INFO | p_monitor_data | main_monitor_data:main:800 | Service.main_monitor_data | main_monitor_data.py|39896|35588  
+2025-12-10 19:51:56 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 19:51:56 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 19:51:56 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 19:51:56 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 19:51:56 | INFO | p_monitor_data | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 19:51:56 | WARNING | p_monitor_data | MyQThread:run:22 | main_monitor_data_read_queue_data_thread thread 44088 has been started！  
+2025-12-10 19:55:21 | CRITICAL | p_monitor_data | main_monitor_data:dosomething:141 | main_monitor_data_read_queue_data_thread,stop_modbus  
+2025-12-10 19:55:21 | ERROR | p_monitor_data | main_monitor_data:stop_modbus:981 | stop_modbus_stop_experiment  
+2025-12-10 19:55:21 | INFO | p_monitor_data | New_Mod_Bus:close:191 | COM5-连接已关闭  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ProcessMonitor:monitored_target:311 | p_monitor_data 开始执行任务  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ProcessMonitor:monitored_target:312 | p_monitor_data, target_func 是: <function main at 0x0000018815241580>  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ProcessMonitor:monitored_target:313 | p_monitor_data, target_func 参数个数: 2  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ProcessMonitor:monitored_target:314 | p_monitor_data, args 内容: (<multiprocessing.queues.Queue object at 0x000001881BADB410>, <multiprocessing.queues.Queue object at 0x000001881CE86810>)  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ProcessMonitor:monitored_target:315 | p_monitor_data, args 长度: 2  
+2025-12-10 20:27:22 | INFO | p_monitor_data | main_monitor_data:main:799 | ------------------------------monitor_data_start------------------------------  
+2025-12-10 20:27:22 | INFO | p_monitor_data | main_monitor_data:main:800 | Service.main_monitor_data | main_monitor_data.py|34740|43556  
+2025-12-10 20:27:22 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_monitor_data | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:27:22 | WARNING | p_monitor_data | MyQThread:run:22 | main_monitor_data_read_queue_data_thread thread 46420 has been started！  
+2025-12-10 20:28:01 | CRITICAL | p_monitor_data | main_monitor_data:dosomething:141 | main_monitor_data_read_queue_data_thread,stop_modbus  
+2025-12-10 20:28:01 | ERROR | p_monitor_data | main_monitor_data:stop_modbus:981 | stop_modbus_stop_experiment  
+2025-12-10 20:28:01 | INFO | p_monitor_data | New_Mod_Bus:close:191 | COM5-连接已关闭  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ProcessMonitor:monitored_target:311 | p_monitor_data 开始执行任务  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ProcessMonitor:monitored_target:312 | p_monitor_data, target_func 是: <function main at 0x0000027574361580>  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ProcessMonitor:monitored_target:313 | p_monitor_data, target_func 参数个数: 2  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ProcessMonitor:monitored_target:314 | p_monitor_data, args 内容: (<multiprocessing.queues.Queue object at 0x000002757D92D7D0>, <multiprocessing.queues.Queue object at 0x000002757D92FAD0>)  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ProcessMonitor:monitored_target:315 | p_monitor_data, args 长度: 2  
+2025-12-10 20:35:24 | INFO | p_monitor_data | main_monitor_data:main:799 | ------------------------------monitor_data_start------------------------------  
+2025-12-10 20:35:24 | INFO | p_monitor_data | main_monitor_data:main:800 | Service.main_monitor_data | main_monitor_data.py|48984|48812  
+2025-12-10 20:35:24 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 20:35:24 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 20:35:24 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 20:35:24 | INFO | p_monitor_data | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:35:24 | INFO | p_monitor_data | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:35:24 | WARNING | p_monitor_data | MyQThread:run:22 | main_monitor_data_read_queue_data_thread thread 48380 has been started！  
+2025-12-10 20:35:33 | CRITICAL | p_monitor_data | main_monitor_data:dosomething:141 | main_monitor_data_read_queue_data_thread,stop_modbus  
+2025-12-10 20:35:33 | ERROR | p_monitor_data | main_monitor_data:stop_modbus:981 | stop_modbus_stop_experiment  
+2025-12-10 20:35:33 | INFO | p_monitor_data | New_Mod_Bus:close:191 | COM5-连接已关闭  

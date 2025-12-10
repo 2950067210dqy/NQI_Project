@@ -1,0 +1,121 @@
+2025-12-10 19:51:56 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 19:51:56 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x0000020A81A2A2A0>  
+2025-12-10 19:51:56 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 19:51:56 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x0000020A81A99E10>,)  
+2025-12-10 19:51:56 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 19:51:56 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|40916|35588  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 19:51:57 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 19:51:57.007  
+2025-12-10 19:51:57 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 44120 has been started！  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000001F1439DE2A0>  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000001F143A4E910>,)  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|43112|43556  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:27:22 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:27:22.727  
+2025-12-10 20:27:22 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 33264 has been started！  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x0000027F4167E2A0>  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x0000027F3FB91990>,)  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|49000|48812  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:100 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:35:25 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:35:25.191  
+2025-12-10 20:35:25 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 46456 has been started！  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000002BA11CBA840>  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000002BA11CC2BD0>,)  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|49816|49468  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:75 | gui配置文件读取成功。  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:84 | 相机配置文件读取成功。  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:93 | 监控配置文件读取成功。  
+2025-12-10 20:38:14 | ERROR | p_infrared_camera | global_load:load_global_setting_without_Qt:102 | UFC_UGC_ZOS_config配置文件读取失败。  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:38:14 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:38:14.571  
+2025-12-10 20:38:14 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 50060 has been started！  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000001DA37D6A840>  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000001DA37D73150>,)  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|49392|50632  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:69 | gui配置文件读取成功。  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:78 | 相机配置文件读取成功。  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:87 | 监控配置文件读取成功。  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:39:36 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:39:36.646  
+2025-12-10 20:39:36 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 50940 has been started！  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x0000017EE51B6840>  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x0000017EE51BF050>,)  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|49916|49908  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:69 | gui配置文件读取成功。  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:78 | 相机配置文件读取成功。  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:87 | 监控配置文件读取成功。  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:44:59 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:44:59.736  
+2025-12-10 20:44:59 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 33664 has been started！  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000001A262FFA840>  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000001A263002D90>,)  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|42640|50284  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:69 | gui配置文件读取成功。  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:78 | 相机配置文件读取成功。  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:87 | 监控配置文件读取成功。  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:45:35 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:45:35.041  
+2025-12-10 20:45:35 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 49396 has been started！  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000002773FEF6840>  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000002773FF02F10>,)  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|48400|48956  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:69 | gui配置文件读取成功。  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:78 | 相机配置文件读取成功。  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:87 | 监控配置文件读取成功。  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:53:09 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:53:09.423  
+2025-12-10 20:53:09 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 45112 has been started！  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:311 | p_infrared_camera 开始执行任务  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:312 | p_infrared_camera, target_func 是: <function main at 0x000002C715B3A840>  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:313 | p_infrared_camera, target_func 参数个数: 1  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:314 | p_infrared_camera, args 内容: (<multiprocessing.queues.Queue object at 0x000002C715B42C50>,)  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ProcessMonitor:monitored_target:315 | p_infrared_camera, args 长度: 1  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | main_infrared_camera:main:815 | ------------------------------infrared_camera_start------------------------------  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | main_infrared_camera:main:816 | Service.main_infrared_camera | main_infrared_camera.py|5092|53588  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:69 | gui配置文件读取成功。  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:78 | 相机配置文件读取成功。  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | global_load:load_global_setting_without_Qt:87 | 监控配置文件读取成功。  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:56:38 | INFO | p_infrared_camera | main_infrared_camera:load_global_setting:715 | 相机连接开始时间：2025-12-10 20:56:38.335  
+2025-12-10 20:56:38 | WARNING | p_infrared_camera | MyQThread:run:85 | main_infrared_camera_read_queue_data_thread thread 8856 has been started！  

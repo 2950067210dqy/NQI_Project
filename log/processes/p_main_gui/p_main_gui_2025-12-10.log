@@ -1,0 +1,193 @@
+2025-12-10 19:51:57 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 19:51:57 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x0000013E8C072E80>  
+2025-12-10 19:51:57 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 19:51:57 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x0000013E8C09A210>, <multiprocessing.queues.Queue object at 0x0000013E89DC9910>)  
+2025-12-10 19:51:57 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 19:51:57 | INFO  | p_main_gui | main_gui:main:186 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 19:51:57 | INFO  | p_main_gui | main_gui:main:187 | Service.main_gui | main_gui.py|33728|35588  
+2025-12-10 19:51:57 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 19:51:57 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 19:51:57 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 19:51:57 | INFO  | p_main_gui | global_load:load_global_setting:48 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 19:51:57 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 19:51:57 | INFO  | p_main_gui | main_gui:start_qt_application:141 | start Qt  
+2025-12-10 19:51:57 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 44136 has been started！  
+2025-12-10 19:51:57 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 19:51:58 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 44496 has been started！  
+2025-12-10 19:51:58 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 44504 has been started！  
+2025-12-10 19:51:58 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 44508 has been started！  
+2025-12-10 19:51:58 | INFO  | p_main_gui | main_gui:start_qt_application:166 | Appliacation start  
+2025-12-10 19:55:21 | ERROR  | p_main_gui | main_gui:quit_qt_application:86 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 19:55:22 | WARNING  | p_main_gui | CrashHandle:handle_signal:86 | Received signal: SIGINT  
+2025-12-10 19:55:22 | CRITICAL  | p_main_gui | main_gui:on_crash:106 | Crash detected: Application received SIGINT...  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x0000017061FA2E80>  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x0000017061FC9890>, <multiprocessing.queues.Queue object at 0x000001706057A810>)  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:27:22 | INFO  | p_main_gui | main_gui:main:186 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:27:22 | INFO  | p_main_gui | main_gui:main:187 | Service.main_gui | main_gui.py|39076|43556  
+2025-12-10 20:27:22 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:27:22 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:27:22 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:27:22 | INFO  | p_main_gui | global_load:load_global_setting:48 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:27:22 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:27:22 | INFO  | p_main_gui | main_gui:start_qt_application:141 | start Qt  
+2025-12-10 20:27:22 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 45488 has been started！  
+2025-12-10 20:27:22 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:27:24 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 35392 has been started！  
+2025-12-10 20:27:24 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 46488 has been started！  
+2025-12-10 20:27:24 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 46832 has been started！  
+2025-12-10 20:27:24 | INFO  | p_main_gui | main_gui:start_qt_application:166 | Appliacation start  
+2025-12-10 20:28:01 | ERROR  | p_main_gui | main_gui:quit_qt_application:86 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x000002E4738C2E80>  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x000002E4738E9B90>, <multiprocessing.queues.Queue object at 0x000002E4738F8050>)  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:35:25 | INFO  | p_main_gui | main_gui:main:186 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:35:25 | INFO  | p_main_gui | main_gui:main:187 | Service.main_gui | main_gui.py|49140|48812  
+2025-12-10 20:35:25 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:35:25 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:35:25 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:35:25 | INFO  | p_main_gui | global_load:load_global_setting:48 | UFC_UGC_ZOS_config配置文件读取成功。  
+2025-12-10 20:35:25 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:35:25 | INFO  | p_main_gui | main_gui:start_qt_application:141 | start Qt  
+2025-12-10 20:35:25 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 43624 has been started！  
+2025-12-10 20:35:25 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:35:26 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 45176 has been started！  
+2025-12-10 20:35:26 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 45904 has been started！  
+2025-12-10 20:35:26 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 46832 has been started！  
+2025-12-10 20:35:26 | INFO  | p_main_gui | main_gui:start_qt_application:166 | Appliacation start  
+2025-12-10 20:35:33 | ERROR  | p_main_gui | main_gui:quit_qt_application:86 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x000001F4DC3F8900>  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x000001F4E51C2E10>, <multiprocessing.queues.Queue object at 0x000001F4E4E87490>)  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:38:14 | INFO  | p_main_gui | main_gui:main:186 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:38:14 | INFO  | p_main_gui | main_gui:main:187 | Service.main_gui | main_gui.py|4920|49468  
+2025-12-10 20:38:14 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:38:14 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:38:14 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:38:14 | ERROR  | p_main_gui | global_load:load_global_setting:50 | UFC_UGC_ZOS_config配置文件读取失败。  
+2025-12-10 20:38:14 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:38:14 | INFO  | p_main_gui | main_gui:start_qt_application:141 | start Qt  
+2025-12-10 20:38:14 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 50052 has been started！  
+2025-12-10 20:38:14 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:38:16 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 50152 has been started！  
+2025-12-10 20:38:16 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 50144 has been started！  
+2025-12-10 20:38:16 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 50156 has been started！  
+2025-12-10 20:38:16 | INFO  | p_main_gui | main_gui:start_qt_application:166 | Appliacation start  
+2025-12-10 20:38:19 | ERROR  | p_main_gui | main_gui:quit_qt_application:86 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x0000018DBEDE8900>  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x0000018DC7B7F5D0>, <multiprocessing.queues.Queue object at 0x0000018DC6134AD0>)  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:39:36 | INFO  | p_main_gui | main_gui:main:186 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:39:36 | INFO  | p_main_gui | main_gui:main:187 | Service.main_gui | main_gui.py|50924|50632  
+2025-12-10 20:39:36 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:39:36 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:39:36 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:39:36 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:39:36 | INFO  | p_main_gui | main_gui:start_qt_application:141 | start Qt  
+2025-12-10 20:39:36 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 30432 has been started！  
+2025-12-10 20:39:36 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:39:41 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 50076 has been started！  
+2025-12-10 20:39:41 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 49200 has been started！  
+2025-12-10 20:39:41 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 49256 has been started！  
+2025-12-10 20:39:41 | INFO  | p_main_gui | main_gui:start_qt_application:166 | Appliacation start  
+2025-12-10 20:39:47 | ERROR  | p_main_gui | main_gui:quit_qt_application:86 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x0000013C0F158900>  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x0000013C17F23350>, <multiprocessing.queues.Queue object at 0x0000013C1660F6D0>)  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:44:59 | INFO  | p_main_gui | main_gui:main:188 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:44:59 | INFO  | p_main_gui | main_gui:main:189 | Service.main_gui | main_gui.py|8820|49908  
+2025-12-10 20:44:59 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:44:59 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:44:59 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:44:59 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:44:59 | INFO  | p_main_gui | main_gui:start_qt_application:142 | start Qt  
+2025-12-10 20:44:59 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 50120 has been started！  
+2025-12-10 20:44:59 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x00000191BC7B8900>  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x00000191C5562E10>, <multiprocessing.queues.Queue object at 0x00000191C5227490>)  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:45:35 | INFO  | p_main_gui | main_gui:main:188 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:45:35 | INFO  | p_main_gui | main_gui:main:189 | Service.main_gui | main_gui.py|30048|50284  
+2025-12-10 20:45:35 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:45:35 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:45:35 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:45:35 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:45:35 | INFO  | p_main_gui | main_gui:start_qt_application:142 | start Qt  
+2025-12-10 20:45:35 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 50608 has been started！  
+2025-12-10 20:45:35 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:45:36 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 8812 has been started！  
+2025-12-10 20:45:36 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 3800 has been started！  
+2025-12-10 20:45:36 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 51164 has been started！  
+2025-12-10 20:45:36 | INFO  | p_main_gui | main_gui:start_qt_application:168 | Appliacation start  
+2025-12-10 20:45:41 | ERROR  | p_main_gui | main_gui:quit_qt_application:87 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:45:43 | WARNING  | p_main_gui | CrashHandle:handle_signal:86 | Received signal: SIGINT  
+2025-12-10 20:45:43 | CRITICAL  | p_main_gui | main_gui:on_crash:107 | Crash detected: Application received SIGINT...  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x000002013EFD8900>  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x0000020147DC0510>, <multiprocessing.queues.Queue object at 0x0000020146428650>)  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:53:09 | INFO  | p_main_gui | main_gui:main:188 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:53:09 | INFO  | p_main_gui | main_gui:main:189 | Service.main_gui | main_gui.py|54348|48956  
+2025-12-10 20:53:09 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:53:09 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:53:09 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:53:09 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:53:09 | INFO  | p_main_gui | main_gui:start_qt_application:142 | start Qt  
+2025-12-10 20:53:09 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 51512 has been started！  
+2025-12-10 20:53:09 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:53:12 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 52140 has been started！  
+2025-12-10 20:53:12 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 52132 has been started！  
+2025-12-10 20:53:12 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 35628 has been started！  
+2025-12-10 20:53:12 | INFO  | p_main_gui | main_gui:start_qt_application:168 | Appliacation start  
+2025-12-10 20:53:16 | ERROR  | p_main_gui | main_gui:quit_qt_application:87 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x0000026230828900>  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x00000262395F2F50>, <multiprocessing.queues.Queue object at 0x0000026237B38290>)  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 20:56:38 | INFO  | p_main_gui | main_gui:main:188 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 20:56:38 | INFO  | p_main_gui | main_gui:main:189 | Service.main_gui | main_gui.py|52008|53588  
+2025-12-10 20:56:38 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 20:56:38 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 20:56:38 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 20:56:38 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 20:56:38 | INFO  | p_main_gui | main_gui:start_qt_application:142 | start Qt  
+2025-12-10 20:56:38 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 54116 has been started！  
+2025-12-10 20:56:38 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 20:56:40 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 32368 has been started！  
+2025-12-10 20:56:40 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 53948 has been started！  
+2025-12-10 20:56:40 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 50152 has been started！  
+2025-12-10 20:56:40 | INFO  | p_main_gui | main_gui:start_qt_application:168 | Appliacation start  
+2025-12-10 20:56:56 | ERROR  | p_main_gui | main_gui:quit_qt_application:87 | ----------------------------------------quit Qt application----------------------------------------  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ProcessMonitor:monitored_target:311 | p_main_gui 开始执行任务  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ProcessMonitor:monitored_target:312 | p_main_gui, target_func 是: <function main at 0x000001C05C844680>  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ProcessMonitor:monitored_target:313 | p_main_gui, target_func 参数个数: 2  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ProcessMonitor:monitored_target:314 | p_main_gui, args 内容: (<multiprocessing.queues.Queue object at 0x000001C05C843A10>, <multiprocessing.queues.Queue object at 0x000001C05C87DA90>)  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ProcessMonitor:monitored_target:315 | p_main_gui, args 长度: 2  
+2025-12-10 21:18:55 | INFO  | p_main_gui | main_gui:main:167 | ----------------------------------------main_gui_start----------------------------------------  
+2025-12-10 21:18:55 | INFO  | p_main_gui | main_gui:main:168 | Service.main_gui | main_gui.py|32456|41856  
+2025-12-10 21:18:55 | INFO  | p_main_gui | global_load:load_global_setting:23 | gui配置文件读取成功。  
+2025-12-10 21:18:55 | INFO  | p_main_gui | global_load:load_global_setting:32 | 相机配置文件读取成功。  
+2025-12-10 21:18:55 | INFO  | p_main_gui | global_load:load_global_setting:41 | 监控配置文件读取成功。  
+2025-12-10 21:18:55 | INFO  | p_main_gui | ThemeManager:_init_themes:66 | ThemeManger:instance._current_theme:  light  
+2025-12-10 21:18:55 | INFO  | p_main_gui | main_gui:start_qt_application:121 | start Qt  
+2025-12-10 21:18:55 | WARNING  | p_main_gui | MyQThread:run:22 | main_gui_read_queue_data_thread thread 50552 has been started！  
+2025-12-10 21:18:56 | INFO  | p_main_gui | CrashHandle:setup_logging:35 | CrashHandler initialized  
+2025-12-10 21:18:57 | WARNING  | p_main_gui | MyQThread:run:22 | MainWindow_index_read_queue_data_thread thread 31680 has been started！  
+2025-12-10 21:18:57 | WARNING  | p_main_gui | MyQThread:run:22 | tab_7_read_queue_data_thread thread 42500 has been started！  
+2025-12-10 21:18:57 | WARNING  | p_main_gui | MyQThread:run:22 | time_thread thread 48020 has been started！  
+2025-12-10 21:18:57 | INFO  | p_main_gui | main_gui:start_qt_application:147 | Appliacation start  
+2025-12-10 21:19:02 | ERROR  | p_main_gui | main_gui:quit_qt_application:66 | ----------------------------------------quit Qt application----------------------------------------  

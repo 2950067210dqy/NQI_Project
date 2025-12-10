@@ -1,0 +1,1278 @@
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 20048) [🟡普通] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_monitor_data (PID: 39896) [🟡普通] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 40308) [🟡普通] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 40916) [🟡普通] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 33728) [🔴关键] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:51:51) === 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 20048  | 状态: RUNNING      | 运行: 0:00:00.542554 | 重启: 0 | 心跳: 0:00:00.542554 前 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 48.5MB | 核心数: 12 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:00.537601 | 重启: 0 | 心跳: 0:00:00.537601 前 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 48.6MB | 核心数: 12 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:00.529708 | 重启: 0 | 心跳: 0:00:00.529708 前 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 44.5MB | 核心数: 12 
+2025-12-10 19:51:51 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:00.524796 | 重启: 0 | 心跳: 0:00:00.524796 前 
+2025-12-10 19:51:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 42.3MB | 核心数: 12 
+2025-12-10 19:51:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:00.519517 | 重启: 0 | 心跳: 0:00:00.519517 前 
+2025-12-10 19:51:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 41.5MB | 核心数: 12 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:51:57) === 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:06.055644 | 重启: 0 | 心跳: 0:00:00.539905 前 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.5% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:05.949114 | 重启: 0 | 心跳: 0:00:00.414688 前 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:05.840564 | 重启: 0 | 心跳: 0:00:00.216701 前 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.9% (原始) / 7.9% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:05.734087 | 重启: 0 | 心跳: 0:00:00.142695 前 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.3% (原始) / 7.8% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:05.626145 | 重启: 0 | 心跳: 0:00:00.065177 前 
+2025-12-10 19:51:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.3% (原始) / 8.0% (标准化) | 内存: 273.6MB | 核心数: 12 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:02) === 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:11.060477 | 重启: 0 | 心跳: 0:00:05.544738 前 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.6% (原始) / 7.2% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:10.954378 | 重启: 0 | 心跳: 0:00:00.418445 前 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 88.1% (原始) / 7.3% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:10.845830 | 重启: 0 | 心跳: 0:00:00.220785 前 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 89.7% (原始) / 7.5% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:10.739352 | 重启: 0 | 心跳: 0:00:00.146771 前 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 88.1% (原始) / 7.3% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:10.632410 | 重启: 0 | 心跳: 0:00:00.070364 前 
+2025-12-10 19:52:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 157.2% (原始) / 13.1% (标准化) | 内存: 335.3MB | 核心数: 12 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:07) === 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:16.066551 | 重启: 0 | 心跳: 0:00:10.550812 前 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:15.960072 | 重启: 0 | 心跳: 0:00:00.423768 前 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:15.851523 | 重启: 0 | 心跳: 0:00:00.225755 前 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:15.745045 | 重启: 0 | 心跳: 0:00:00.152239 前 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:15.637103 | 重启: 0 | 心跳: 0:00:00.074696 前 
+2025-12-10 19:52:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 162.9% (原始) / 13.6% (标准化) | 内存: 335.4MB | 核心数: 12 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:12) === 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:21.071580 | 重启: 0 | 心跳: 0:00:15.555841 前 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:20.965049 | 重启: 0 | 心跳: 0:00:00.428480 前 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:20.856500 | 重启: 0 | 心跳: 0:00:00.230531 前 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:20.750023 | 重启: 0 | 心跳: 0:00:00.156834 前 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:20.643081 | 重启: 0 | 心跳: 0:00:00.080310 前 
+2025-12-10 19:52:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 164.7% (原始) / 13.7% (标准化) | 内存: 335.4MB | 核心数: 12 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:17) === 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:26.076935 | 重启: 0 | 心跳: 0:00:20.561196 前 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:25.970783 | 重启: 0 | 心跳: 0:00:00.433974 前 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:25.862235 | 重启: 0 | 心跳: 0:00:00.235948 前 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:25.755758 | 重启: 0 | 心跳: 0:00:00.162428 前 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:25.648816 | 重启: 0 | 心跳: 0:00:00.085897 前 
+2025-12-10 19:52:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 168.1% (原始) / 14.0% (标准化) | 内存: 335.4MB | 核心数: 12 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:22) === 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 20048  | 状态: FINISHED     | 运行: 0:00:31.082332 | 重启: 0 | 心跳: 0:00:25.566593 前 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:30.975799 | 重启: 0 | 心跳: 0:00:00.438670 前 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:30.867251 | 重启: 0 | 心跳: 0:00:00.240540 前 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:30.760774 | 重启: 0 | 心跳: 0:00:00.166986 前 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 267.1MB | 核心数: 12 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:30.652832 | 重启: 0 | 心跳: 0:00:00.089424 前 
+2025-12-10 19:52:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 179.7% (原始) / 15.0% (标准化) | 内存: 409.6MB | 核心数: 12 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:27) === 
+2025-12-10 19:52:27 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:30.571282) 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:00:36.087021 | 重启: 0 | 心跳: 0:00:30.571282 前 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:35.981489 | 重启: 0 | 心跳: 0:00:00.444194 前 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:35.872940 | 重启: 0 | 心跳: 0:00:00.245858 前 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:35.766464 | 重启: 0 | 心跳: 0:00:00.172207 前 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.5% (原始) / 7.8% (标准化) | 内存: 267.3MB | 核心数: 12 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:35.660522 | 重启: 0 | 心跳: 0:00:00.096637 前 
+2025-12-10 19:52:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 181.6% (原始) / 15.1% (标准化) | 内存: 411.3MB | 核心数: 12 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:32) === 
+2025-12-10 19:52:32 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:35.582814) 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:00:41.098553 | 重启: 0 | 心跳: 0:00:35.582814 前 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.9% (原始) / 8.1% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:40.993017 | 重启: 0 | 心跳: 0:00:00.455492 前 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.3% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:40.885466 | 重启: 0 | 心跳: 0:00:00.258114 前 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:40.778990 | 重启: 0 | 心跳: 0:00:00.184589 前 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 267.3MB | 核心数: 12 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:40.673047 | 重启: 0 | 心跳: 0:00:00.108977 前 
+2025-12-10 19:52:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 164.5% (原始) / 13.7% (标准化) | 内存: 411.3MB | 核心数: 12 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:37) === 
+2025-12-10 19:52:37 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:40.591957) 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:00:46.107696 | 重启: 0 | 心跳: 0:00:40.591957 前 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:46.001164 | 重启: 0 | 心跳: 0:00:00.463133 前 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:45.892616 | 重启: 0 | 心跳: 0:00:00.264192 前 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:45.786138 | 重启: 0 | 心跳: 0:00:00.191628 前 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 267.3MB | 核心数: 12 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:45.679197 | 重启: 0 | 心跳: 0:00:00.114721 前 
+2025-12-10 19:52:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 167.5% (原始) / 14.0% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:42) === 
+2025-12-10 19:52:42 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:45.597668) 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:00:51.113407 | 重启: 0 | 心跳: 0:00:45.597668 前 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:51.007877 | 重启: 0 | 心跳: 0:00:00.469329 前 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:50.898328 | 重启: 0 | 心跳: 0:00:00.269684 前 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:50.791851 | 重启: 0 | 心跳: 0:00:00.197152 前 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 267.3MB | 核心数: 12 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:50.684907 | 重启: 0 | 心跳: 0:00:00.120122 前 
+2025-12-10 19:52:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 168.6% (原始) / 14.0% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:47) === 
+2025-12-10 19:52:47 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:50.603564) 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:00:56.119303 | 重启: 0 | 心跳: 0:00:50.603564 前 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.3% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:00:56.012770 | 重启: 0 | 心跳: 0:00:00.473973 前 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.7% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:00:55.903221 | 重启: 0 | 心跳: 0:00:00.274500 前 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:00:55.796743 | 重启: 0 | 心跳: 0:00:00.201471 前 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 267.3MB | 核心数: 12 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:00:55.689801 | 重启: 0 | 心跳: 0:00:00.124942 前 
+2025-12-10 19:52:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.3% (原始) / 14.2% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:52) === 
+2025-12-10 19:52:52 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:55.607949) 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:01.123688 | 重启: 0 | 心跳: 0:00:55.607949 前 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:01.017185 | 重启: 0 | 心跳: 0:00:00.478179 前 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:00.908636 | 重启: 0 | 心跳: 0:00:00.278925 前 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.2% (原始) / 8.1% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:00.802159 | 重启: 0 | 心跳: 0:00:00.206388 前 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:00.694217 | 重启: 0 | 心跳: 0:00:00.128863 前 
+2025-12-10 19:52:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.3% (原始) / 14.2% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:52:57) === 
+2025-12-10 19:52:57 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:00.613339) 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:06.129078 | 重启: 0 | 心跳: 0:01:00.613339 前 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:06.022546 | 重启: 0 | 心跳: 0:00:00.483370 前 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:05.912997 | 重启: 0 | 心跳: 0:00:00.282897 前 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:05.806519 | 重启: 0 | 心跳: 0:00:00.210170 前 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:05.699577 | 重启: 0 | 心跳: 0:00:00.134092 前 
+2025-12-10 19:52:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 175.0% (原始) / 14.6% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:02) === 
+2025-12-10 19:53:02 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:05.617675) 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:11.133414 | 重启: 0 | 心跳: 0:01:05.617675 前 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:11.026883 | 重启: 0 | 心跳: 0:00:00.486984 前 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.9% (原始) / 8.1% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:10.918335 | 重启: 0 | 心跳: 0:00:00.288009 前 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.9% (原始) / 8.1% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:10.811858 | 重启: 0 | 心跳: 0:00:00.214983 前 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:10.703916 | 重启: 0 | 心跳: 0:00:00.137906 前 
+2025-12-10 19:53:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 158.6% (原始) / 13.2% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:07) === 
+2025-12-10 19:53:07 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:10.622233) 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:16.137972 | 重启: 0 | 心跳: 0:01:10.622233 前 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:16.031462 | 重启: 0 | 心跳: 0:00:00.491481 前 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:15.922915 | 重启: 0 | 心跳: 0:00:00.292236 前 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:15.816444 | 重启: 0 | 心跳: 0:00:00.219213 前 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.5% (原始) / 8.1% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:15.709503 | 重启: 0 | 心跳: 0:00:00.143171 前 
+2025-12-10 19:53:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 157.5% (原始) / 13.1% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:12) === 
+2025-12-10 19:53:12 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:15.627755) 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:21.143494 | 重启: 0 | 心跳: 0:01:15.627755 前 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:21.036963 | 重启: 0 | 心跳: 0:00:00.496604 前 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:20.928414 | 重启: 0 | 心跳: 0:00:00.297168 前 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.2% (原始) / 8.1% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:20.820937 | 重启: 0 | 心跳: 0:00:00.223078 前 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:20.713992 | 重启: 0 | 心跳: 0:00:00.147535 前 
+2025-12-10 19:53:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.6% (原始) / 14.2% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:17) === 
+2025-12-10 19:53:17 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:20.632307) 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:26.148046 | 重启: 0 | 心跳: 0:01:20.632307 前 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:26.042534 | 重启: 0 | 心跳: 0:00:00.502112 前 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.7% (原始) / 7.6% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:25.933984 | 重启: 0 | 心跳: 0:00:00.302347 前 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:25.828507 | 重启: 0 | 心跳: 0:00:00.230319 前 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:25.720565 | 重启: 0 | 心跳: 0:00:00.153776 前 
+2025-12-10 19:53:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 171.4% (原始) / 14.3% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:22) === 
+2025-12-10 19:53:22 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:25.639551) 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:31.155290 | 重启: 0 | 心跳: 0:01:25.639551 前 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:31.049759 | 重启: 0 | 心跳: 0:00:00.509183 前 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:30.941209 | 重启: 0 | 心跳: 0:00:00.309201 前 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:30.834733 | 重启: 0 | 心跳: 0:00:00.236177 前 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:30.727790 | 重启: 0 | 心跳: 0:00:00.160643 前 
+2025-12-10 19:53:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 167.8% (原始) / 14.0% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:27) === 
+2025-12-10 19:53:27 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:30.648634) 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:36.164373 | 重启: 0 | 心跳: 0:01:30.648634 前 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.2% (原始) / 8.1% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:36.058342 | 重启: 0 | 心跳: 0:00:00.517226 前 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:35.949799 | 重启: 0 | 心跳: 0:00:00.317270 前 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.5% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:35.843323 | 重启: 0 | 心跳: 0:00:00.244229 前 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:35.736380 | 重启: 0 | 心跳: 0:00:00.168718 前 
+2025-12-10 19:53:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 175.4% (原始) / 14.6% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:32) === 
+2025-12-10 19:53:32 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:35.655268) 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:41.171007 | 重启: 0 | 心跳: 0:01:35.655268 前 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:41.064475 | 重启: 0 | 心跳: 0:00:00.523055 前 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:40.956927 | 重启: 0 | 心跳: 0:00:00.324298 前 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:40.849450 | 重启: 0 | 心跳: 0:00:00.250265 前 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.2% (原始) / 8.1% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:40.742519 | 重启: 0 | 心跳: 0:00:00.174729 前 
+2025-12-10 19:53:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.6% (原始) / 14.2% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:37) === 
+2025-12-10 19:53:37 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:40.660748) 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:46.176487 | 重启: 0 | 心跳: 0:01:40.660748 前 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:46.069980 | 重启: 0 | 心跳: 0:00:00.528395 前 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:45.961431 | 重启: 0 | 心跳: 0:00:00.328642 前 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:45.854953 | 重启: 0 | 心跳: 0:00:00.255115 前 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:45.748011 | 重启: 0 | 心跳: 0:00:00.180035 前 
+2025-12-10 19:53:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 161.7% (原始) / 13.5% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:42) === 
+2025-12-10 19:53:42 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:45.666215) 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:51.181954 | 重启: 0 | 心跳: 0:01:45.666215 前 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:51.076422 | 重启: 0 | 心跳: 0:00:00.534695 前 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:50.967873 | 重启: 0 | 心跳: 0:00:00.334536 前 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:50.861396 | 重启: 0 | 心跳: 0:00:00.261011 前 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:50.754454 | 重启: 0 | 心跳: 0:00:00.185984 前 
+2025-12-10 19:53:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 160.9% (原始) / 13.4% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:47) === 
+2025-12-10 19:53:47 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:50.672774) 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:01:56.188513 | 重启: 0 | 心跳: 0:01:50.672774 前 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:01:56.082461 | 重启: 0 | 心跳: 0:00:00.540298 前 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:01:55.972912 | 重启: 0 | 心跳: 0:00:00.339421 前 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:01:55.866436 | 重启: 0 | 心跳: 0:00:00.265883 前 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:01:55.759493 | 重启: 0 | 心跳: 0:00:00.190853 前 
+2025-12-10 19:53:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 164.7% (原始) / 13.7% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:52) === 
+2025-12-10 19:53:52 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:01:55.678190) 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:01.193929 | 重启: 0 | 心跳: 0:01:55.678190 前 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:01.087396 | 重启: 0 | 心跳: 0:00:00.544753 前 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:00.978847 | 重启: 0 | 心跳: 0:00:00.344944 前 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:00.872370 | 重启: 0 | 心跳: 0:00:00.271410 前 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.7% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:00.764428 | 重启: 0 | 心跳: 0:00:00.195383 前 
+2025-12-10 19:53:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 161.7% (原始) / 13.5% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:53:57) === 
+2025-12-10 19:53:57 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:00.683461) 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:06.199200 | 重启: 0 | 心跳: 0:02:00.683461 前 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:06.092668 | 重启: 0 | 心跳: 0:00:00.549886 前 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:05.983119 | 重启: 0 | 心跳: 0:00:00.348959 前 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:05.876642 | 重启: 0 | 心跳: 0:00:00.275438 前 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:05.769700 | 重启: 0 | 心跳: 0:00:00.200406 前 
+2025-12-10 19:53:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 159.7% (原始) / 13.3% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:02) === 
+2025-12-10 19:54:02 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:05.688806) 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:11.204545 | 重启: 0 | 心跳: 0:02:05.688806 前 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:11.098005 | 重启: 0 | 心跳: 0:00:00.554672 前 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 98.1% (原始) / 8.2% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:10.989457 | 重启: 0 | 心跳: 0:00:00.354888 前 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:10.881980 | 重启: 0 | 心跳: 0:00:00.280368 前 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:10.775037 | 重启: 0 | 心跳: 0:00:00.205311 前 
+2025-12-10 19:54:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 164.7% (原始) / 13.7% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:07) === 
+2025-12-10 19:54:07 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:10.694124) 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:16.209863 | 重启: 0 | 心跳: 0:02:10.694124 前 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:16.103326 | 重启: 0 | 心跳: 0:00:00.559856 前 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:15.994775 | 重启: 0 | 心跳: 0:00:00.360094 前 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:15.887298 | 重启: 0 | 心跳: 0:00:00.285570 前 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:15.780356 | 重启: 0 | 心跳: 0:00:00.210039 前 
+2025-12-10 19:54:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 163.9% (原始) / 13.7% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:12) === 
+2025-12-10 19:54:12 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:15.698749) 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:21.214488 | 重启: 0 | 心跳: 0:02:15.698749 前 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:21.107956 | 重启: 0 | 心跳: 0:00:00.563817 前 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.2% (原始) / 8.1% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:20.999407 | 重启: 0 | 心跳: 0:00:00.364541 前 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:20.891930 | 重启: 0 | 心跳: 0:00:00.290000 前 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:20.784989 | 重启: 0 | 心跳: 0:00:00.214361 前 
+2025-12-10 19:54:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 165.0% (原始) / 13.8% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:17) === 
+2025-12-10 19:54:17 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:20.703641) 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:26.219380 | 重启: 0 | 心跳: 0:02:20.703641 前 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:26.112924 | 重启: 0 | 心跳: 0:00:00.568338 前 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:26.004375 | 重启: 0 | 心跳: 0:00:00.369404 前 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:25.897898 | 重启: 0 | 心跳: 0:00:00.295299 前 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:25.789956 | 重启: 0 | 心跳: 0:00:00.218769 前 
+2025-12-10 19:54:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 159.1% (原始) / 13.3% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:22) === 
+2025-12-10 19:54:22 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:25.709159) 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:31.224898 | 重启: 0 | 心跳: 0:02:25.709159 前 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.9% (原始) / 8.1% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:31.118367 | 重启: 0 | 心跳: 0:00:00.573580 前 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:31.009819 | 重启: 0 | 心跳: 0:00:00.374450 前 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:30.902342 | 重启: 0 | 心跳: 0:00:00.299416 前 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:30.795398 | 重启: 0 | 心跳: 0:00:00.223878 前 
+2025-12-10 19:54:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 160.7% (原始) / 13.4% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:27) === 
+2025-12-10 19:54:27 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:30.713366) 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:36.229105 | 重启: 0 | 心跳: 0:02:30.713366 前 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:36.122686 | 重启: 0 | 心跳: 0:00:00.577453 前 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:36.014137 | 重启: 0 | 心跳: 0:00:00.378534 前 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:35.907660 | 重启: 0 | 心跳: 0:00:00.304497 前 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:35.799718 | 重启: 0 | 心跳: 0:00:00.227950 前 
+2025-12-10 19:54:27 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 164.4% (原始) / 13.7% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:32) === 
+2025-12-10 19:54:32 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:35.718095) 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:41.233834 | 重启: 0 | 心跳: 0:02:35.718095 前 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:41.127317 | 重启: 0 | 心跳: 0:00:00.581741 前 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:41.018769 | 重启: 0 | 心跳: 0:00:00.382829 前 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:40.912291 | 重启: 0 | 心跳: 0:00:00.308798 前 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:40.804349 | 重启: 0 | 心跳: 0:00:00.232050 前 
+2025-12-10 19:54:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 166.6% (原始) / 13.9% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:37) === 
+2025-12-10 19:54:37 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:40.723041) 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:46.238780 | 重启: 0 | 心跳: 0:02:40.723041 前 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:46.132294 | 重启: 0 | 心跳: 0:00:00.586364 前 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:46.023748 | 重启: 0 | 心跳: 0:00:00.387225 前 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.7% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:45.917269 | 重启: 0 | 心跳: 0:00:00.313696 前 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:45.810328 | 重启: 0 | 心跳: 0:00:00.237666 前 
+2025-12-10 19:54:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 160.1% (原始) / 13.3% (标准化) | 内存: 411.5MB | 核心数: 12 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:42) === 
+2025-12-10 19:54:42 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:45.727899) 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:51.243638 | 重启: 0 | 心跳: 0:02:45.727899 前 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:51.137147 | 重启: 0 | 心跳: 0:00:00.590419 前 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:51.028597 | 重启: 0 | 心跳: 0:00:00.391183 前 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:50.922122 | 重启: 0 | 心跳: 0:00:00.317694 前 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:50.815179 | 重启: 0 | 心跳: 0:00:00.242183 前 
+2025-12-10 19:54:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.9% (原始) / 14.2% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:47) === 
+2025-12-10 19:54:47 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:50.734687) 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:02:56.250426 | 重启: 0 | 心跳: 0:02:50.734687 前 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:02:56.146887 | 重启: 0 | 心跳: 0:00:00.599928 前 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:02:56.038339 | 重启: 0 | 心跳: 0:00:00.400302 前 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:02:55.931862 | 重启: 0 | 心跳: 0:00:00.327266 前 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:02:55.825921 | 重启: 0 | 心跳: 0:00:00.252749 前 
+2025-12-10 19:54:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 172.3% (原始) / 14.4% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:52) === 
+2025-12-10 19:54:52 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:02:55.746779) 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:01.262518 | 重启: 0 | 心跳: 0:02:55.746779 前 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:01.155987 | 重启: 0 | 心跳: 0:00:00.608471 前 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:01.047439 | 重启: 0 | 心跳: 0:00:00.408958 前 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:00.939962 | 重启: 0 | 心跳: 0:00:00.334895 前 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:00.833018 | 重启: 0 | 心跳: 0:00:00.259378 前 
+2025-12-10 19:54:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 179.4% (原始) / 15.0% (标准化) | 内存: 411.6MB | 核心数: 12 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:54:57) === 
+2025-12-10 19:54:57 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:00.752754) 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:06.268493 | 重启: 0 | 心跳: 0:03:00.752754 前 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.9% (原始) / 8.1% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:06.162954 | 重启: 0 | 心跳: 0:00:00.614999 前 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.5% (原始) / 8.1% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:06.054405 | 重启: 0 | 心跳: 0:00:00.415322 前 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:05.949928 | 重启: 0 | 心跳: 0:00:00.344776 前 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.5% (原始) / 8.1% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:05.842986 | 重启: 0 | 心跳: 0:00:00.269259 前 
+2025-12-10 19:54:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 173.9% (原始) / 14.5% (标准化) | 内存: 412.5MB | 核心数: 12 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:55:02) === 
+2025-12-10 19:55:02 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:05.760996) 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:11.276735 | 重启: 0 | 心跳: 0:03:05.760996 前 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.0% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:11.171572 | 重启: 0 | 心跳: 0:00:00.623398 前 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:11.063024 | 重启: 0 | 心跳: 0:00:00.423202 前 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.5% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:10.956547 | 重启: 0 | 心跳: 0:00:00.351321 前 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:10.849604 | 重启: 0 | 心跳: 0:00:00.275309 前 
+2025-12-10 19:55:02 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 180.0% (原始) / 15.0% (标准化) | 内存: 412.5MB | 核心数: 12 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:55:07) === 
+2025-12-10 19:55:07 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:10.768212) 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:16.283951 | 重启: 0 | 心跳: 0:03:10.768212 前 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:16.177419 | 重启: 0 | 心跳: 0:00:00.629137 前 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:16.068869 | 重启: 0 | 心跳: 0:00:00.428940 前 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:15.961392 | 重启: 0 | 心跳: 0:00:00.355838 前 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.3% (原始) / 7.5% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:15.854451 | 重启: 0 | 心跳: 0:00:00.279818 前 
+2025-12-10 19:55:07 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 186.6% (原始) / 15.5% (标准化) | 内存: 414.0MB | 核心数: 12 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:55:12) === 
+2025-12-10 19:55:12 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:15.772355) 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:21.288094 | 重启: 0 | 心跳: 0:03:15.772355 前 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:21.181952 | 重启: 0 | 心跳: 0:00:00.633410 前 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:21.073402 | 重启: 0 | 心跳: 0:00:00.433382 前 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.6% (原始) / 7.6% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:20.965925 | 重启: 0 | 心跳: 0:00:00.359842 前 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:20.858981 | 重启: 0 | 心跳: 0:00:00.283829 前 
+2025-12-10 19:55:12 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 171.0% (原始) / 14.2% (标准化) | 内存: 414.3MB | 核心数: 12 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:55:17) === 
+2025-12-10 19:55:17 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:20.777335) 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:26.293074 | 重启: 0 | 心跳: 0:03:20.777335 前 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:26.188543 | 重启: 0 | 心跳: 0:00:00.639899 前 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:26.081993 | 重启: 0 | 心跳: 0:00:00.441633 前 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:25.975516 | 重启: 0 | 心跳: 0:00:00.369276 前 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:25.870574 | 重启: 0 | 心跳: 0:00:00.295243 前 
+2025-12-10 19:55:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 168.4% (原始) / 14.0% (标准化) | 内存: 414.3MB | 核心数: 12 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (19:55:22) === 
+2025-12-10 19:55:22 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:03:25.788455) 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 20048  | 状态: UNRESPONSIVE | 运行: 0:03:31.304194 | 重启: 0 | 心跳: 0:03:25.788455 前 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 39896  | 状态: RUNNING      | 运行: 0:03:31.198662 | 重启: 0 | 心跳: 0:00:00.649723 前 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.8MB | 核心数: 12 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 40308  | 状态: RUNNING      | 运行: 0:03:31.090114 | 重启: 0 | 心跳: 0:00:00.449265 前 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 40916  | 状态: RUNNING      | 运行: 0:03:30.983637 | 重启: 0 | 心跳: 0:00:00.377239 前 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.3% (原始) / 7.6% (标准化) | 内存: 267.2MB | 核心数: 12 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 33728  | 状态: RUNNING      | 运行: 0:03:30.876696 | 重启: 0 | 心跳: 0:00:00.300724 前 
+2025-12-10 19:55:22 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 181.0% (原始) / 15.1% (标准化) | 内存: 414.1MB | 核心数: 12 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 40376) [🟡普通] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_monitor_data (PID: 34740) [🟡普通] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 43912) [🟡普通] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 43112) [🟡普通] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 39076) [🔴关键] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:17) === 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 40376  | 状态: RUNNING      | 运行: 0:00:00.535979 | 重启: 0 | 心跳: 0:00:00.535979 前 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 52.0MB | 核心数: 12 
+2025-12-10 20:27:17 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:00.530354 | 重启: 0 | 心跳: 0:00:00.530354 前 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 50.0MB | 核心数: 12 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:00.525211 | 重启: 0 | 心跳: 0:00:00.525211 前 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 49.4MB | 核心数: 12 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:00.521005 | 重启: 0 | 心跳: 0:00:00.521005 前 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 48.8MB | 核心数: 12 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:00.514446 | 重启: 0 | 心跳: 0:00:00.514446 前 
+2025-12-10 20:27:18 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 45.9MB | 核心数: 12 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:23) === 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:06.045310 | 重启: 0 | 心跳: 0:00:01.037459 前 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.7% (原始) / 8.1% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:05.939279 | 重启: 0 | 心跳: 0:00:00.907946 前 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.8% (原始) / 8.1% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:05.833564 | 重启: 0 | 心跳: 0:00:00.759397 前 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.7% (原始) / 8.1% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:05.727458 | 重启: 0 | 心跳: 0:00:00.665879 前 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.0% (原始) / 8.0% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:05.620342 | 重启: 0 | 心跳: 0:00:00.599631 前 
+2025-12-10 20:27:23 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.6% (原始) / 8.4% (标准化) | 内存: 293.6MB | 核心数: 12 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:28) === 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:11.049559 | 重启: 0 | 心跳: 0:00:06.041708 前 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:10.943531 | 重启: 0 | 心跳: 0:00:00.910564 前 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:10.837814 | 重启: 0 | 心跳: 0:00:00.762013 前 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 89.4% (原始) / 7.5% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:10.731708 | 重启: 0 | 心跳: 0:00:00.669350 前 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.9% (原始) / 7.6% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:10.624592 | 重启: 0 | 心跳: 0:00:00.602875 前 
+2025-12-10 20:27:28 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 159.4% (原始) / 13.3% (标准化) | 内存: 334.4MB | 核心数: 12 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:33) === 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:16.053952 | 重启: 0 | 心跳: 0:00:11.046101 前 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:15.948922 | 重启: 0 | 心跳: 0:00:00.915852 前 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:15.842207 | 重启: 0 | 心跳: 0:00:00.765793 前 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:15.737101 | 重启: 0 | 心跳: 0:00:00.674268 前 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.6% (原始) / 7.5% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:15.629985 | 重启: 0 | 心跳: 0:00:00.607747 前 
+2025-12-10 20:27:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 167.8% (原始) / 14.0% (标准化) | 内存: 334.5MB | 核心数: 12 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:38) === 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:21.061749 | 重启: 0 | 心跳: 0:00:16.053898 前 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:20.955713 | 重启: 0 | 心跳: 0:00:00.922262 前 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:20.849997 | 重启: 0 | 心跳: 0:00:00.773180 前 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:20.743891 | 重启: 0 | 心跳: 0:00:00.680660 前 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:20.636776 | 重启: 0 | 心跳: 0:00:00.613967 前 
+2025-12-10 20:27:38 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 172.0% (原始) / 14.3% (标准化) | 内存: 334.5MB | 核心数: 12 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:43) === 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:26.066444 | 重启: 0 | 心跳: 0:00:21.058593 前 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:25.960414 | 重启: 0 | 心跳: 0:00:00.926541 前 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:25.854699 | 重启: 0 | 心跳: 0:00:00.777415 前 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:25.748593 | 重启: 0 | 心跳: 0:00:00.684898 前 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:25.641480 | 重启: 0 | 心跳: 0:00:00.618519 前 
+2025-12-10 20:27:43 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 173.8% (原始) / 14.5% (标准化) | 内存: 334.5MB | 核心数: 12 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:48) === 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40376  | 状态: FINISHED     | 运行: 0:00:31.070694 | 重启: 0 | 心跳: 0:00:26.062843 前 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:30.963658 | 重启: 0 | 心跳: 0:00:00.929367 前 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.7MB | 核心数: 12 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:30.858423 | 重启: 0 | 心跳: 0:00:00.780933 前 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:30.753321 | 重启: 0 | 心跳: 0:00:00.689419 前 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.2MB | 核心数: 12 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:30.646207 | 重启: 0 | 心跳: 0:00:00.622768 前 
+2025-12-10 20:27:48 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 169.7% (原始) / 14.1% (标准化) | 内存: 334.5MB | 核心数: 12 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:53) === 
+2025-12-10 20:27:53 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:31.068011) 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 40376  | 状态: UNRESPONSIVE | 运行: 0:00:36.075862 | 重启: 0 | 心跳: 0:00:31.068011 前 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.6MB | 核心数: 12 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:35.969833 | 重启: 0 | 心跳: 0:00:00.935027 前 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 266.9MB | 核心数: 12 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:35.864117 | 重启: 0 | 心跳: 0:00:00.786442 前 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.6% (原始) / 8.0% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:35.758011 | 重启: 0 | 心跳: 0:00:00.693865 前 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:35.650895 | 重启: 0 | 心跳: 0:00:00.627100 前 
+2025-12-10 20:27:53 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 162.3% (原始) / 13.5% (标准化) | 内存: 334.5MB | 核心数: 12 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:27:58) === 
+2025-12-10 20:27:58 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:36.072244) 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 40376  | 状态: UNRESPONSIVE | 运行: 0:00:41.080095 | 重启: 0 | 心跳: 0:00:36.072244 前 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 266.6MB | 核心数: 12 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:40.974064 | 重启: 0 | 心跳: 0:00:00.939062 前 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.9MB | 核心数: 12 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:40.868350 | 重启: 0 | 心跳: 0:00:00.790454 前 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:40.763243 | 重启: 0 | 心跳: 0:00:00.698940 前 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.4% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:40.656127 | 重启: 0 | 心跳: 0:00:00.631923 前 
+2025-12-10 20:27:58 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 166.2% (原始) / 13.8% (标准化) | 内存: 335.8MB | 核心数: 12 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:28:03) === 
+2025-12-10 20:28:03 | WARNING  | MAIN | ProcessMonitor:check_process_status:943 | 进程无响应: p_response_comm (心跳超时: 0:00:41.077439) 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 😵🟡 p_response_comm | PID: 40376  | 状态: UNRESPONSIVE | 运行: 0:00:46.085290 | 重启: 0 | 心跳: 0:00:41.077439 前 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.6MB | 核心数: 12 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 34740  | 状态: RUNNING      | 运行: 0:00:45.980259 | 重启: 0 | 心跳: 0:00:00.944739 前 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.9% (原始) / 7.6% (标准化) | 内存: 266.9MB | 核心数: 12 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 43912  | 状态: RUNNING      | 运行: 0:00:45.873544 | 重启: 0 | 心跳: 0:00:00.795137 前 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 43112  | 状态: RUNNING      | 运行: 0:00:45.768438 | 重启: 0 | 心跳: 0:00:00.703610 前 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 39076  | 状态: RUNNING      | 运行: 0:00:45.661322 | 重启: 0 | 心跳: 0:00:00.636995 前 
+2025-12-10 20:28:03 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 165.6% (原始) / 13.8% (标准化) | 内存: 337.2MB | 核心数: 12 
+2025-12-10 20:28:08 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:28:08) === 
+2025-12-10 20:28:08 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 20:28:08 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 20:28:08 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 20:28:08 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 20:28:08 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 40376) 
+2025-12-10 20:28:10 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_monitor_data (PID: 34740) 
+2025-12-10 20:28:12 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_deep_camera (PID: 43912) 
+2025-12-10 20:28:14 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_infrared_camera (PID: 43112) 
+2025-12-10 20:28:16 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:805 | 所有进程关闭完成 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 47692) [🟡普通] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_monitor_data (PID: 48984) [🟡普通] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 45320) [🟡普通] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 49000) [🟡普通] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 49140) [🔴关键] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:35:20) === 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 47692  | 状态: RUNNING      | 运行: 0:00:00.536236 | 重启: 0 | 心跳: 0:00:00.536236 前 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 53.5MB | 核心数: 12 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 48984  | 状态: RUNNING      | 运行: 0:00:00.533690 | 重启: 0 | 心跳: 0:00:00.533690 前 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 51.2MB | 核心数: 12 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 45320  | 状态: RUNNING      | 运行: 0:00:00.529266 | 重启: 0 | 心跳: 0:00:00.529266 前 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.3% (原始) / 8.4% (标准化) | 内存: 49.1MB | 核心数: 12 
+2025-12-10 20:35:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49000  | 状态: RUNNING      | 运行: 0:00:00.523985 | 重启: 0 | 心跳: 0:00:00.523985 前 
+2025-12-10 20:35:21 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 48.9MB | 核心数: 12 
+2025-12-10 20:35:21 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 49140  | 状态: RUNNING      | 运行: 0:00:00.517969 | 重启: 0 | 心跳: 0:00:00.516968 前 
+2025-12-10 20:35:21 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.3% (原始) / 8.4% (标准化) | 内存: 49.0MB | 核心数: 12 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:35:26) === 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 47692  | 状态: FINISHED     | 运行: 0:00:06.048256 | 重启: 0 | 心跳: 0:00:01.307406 前 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.1% (原始) / 8.1% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 48984  | 状态: RUNNING      | 运行: 0:00:05.942178 | 重启: 0 | 心跳: 0:00:01.184352 前 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 45320  | 状态: RUNNING      | 运行: 0:00:05.836034 | 重启: 0 | 心跳: 0:00:01.059838 前 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.7% (原始) / 8.1% (标准化) | 内存: 266.3MB | 核心数: 12 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49000  | 状态: RUNNING      | 运行: 0:00:05.730164 | 重启: 0 | 心跳: 0:00:00.938693 前 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.6% (原始) / 8.1% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 49140  | 状态: RUNNING      | 运行: 0:00:05.624105 | 重启: 0 | 心跳: 0:00:00.878690 前 
+2025-12-10 20:35:26 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 103.1% (原始) / 8.6% (标准化) | 内存: 292.7MB | 核心数: 12 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:35:31) === 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 47692  | 状态: FINISHED     | 运行: 0:00:11.052597 | 重启: 0 | 心跳: 0:00:06.311747 前 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 48984  | 状态: RUNNING      | 运行: 0:00:10.946523 | 重启: 0 | 心跳: 0:00:01.186850 前 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 45320  | 状态: RUNNING      | 运行: 0:00:10.841379 | 重启: 0 | 心跳: 0:00:01.064078 前 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.3MB | 核心数: 12 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49000  | 状态: RUNNING      | 运行: 0:00:10.735513 | 重启: 0 | 心跳: 0:00:00.943224 前 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 49140  | 状态: RUNNING      | 运行: 0:00:10.628456 | 重启: 0 | 心跳: 0:00:00.882212 前 
+2025-12-10 20:35:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 170.6% (原始) / 14.2% (标准化) | 内存: 334.1MB | 核心数: 12 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:35:36) === 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 47692  | 状态: FINISHED     | 运行: 0:00:16.057350 | 重启: 0 | 心跳: 0:00:11.316500 前 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_monitor_data  | PID: 48984  | 状态: RUNNING      | 运行: 0:00:15.951278 | 重启: 0 | 心跳: 0:00:01.191172 前 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.6% (原始) / 7.6% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 45320  | 状态: RUNNING      | 运行: 0:00:15.846133 | 重启: 0 | 心跳: 0:00:01.068147 前 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 266.3MB | 核心数: 12 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49000  | 状态: RUNNING      | 运行: 0:00:15.739261 | 重启: 0 | 心跳: 0:00:00.946824 前 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 90.3% (原始) / 7.5% (标准化) | 内存: 266.5MB | 核心数: 12 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 49140  | 状态: RUNNING      | 运行: 0:00:15.633203 | 重启: 0 | 心跳: 0:00:00.886307 前 
+2025-12-10 20:35:36 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 158.6% (原始) / 13.2% (标准化) | 内存: 335.6MB | 核心数: 12 
+2025-12-10 20:35:41 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:35:41) === 
+2025-12-10 20:35:41 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 20:35:41 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 20:35:41 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 20:35:41 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 20:35:41 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 47692) 
+2025-12-10 20:35:43 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_monitor_data (PID: 48984) 
+2025-12-10 20:35:45 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_deep_camera (PID: 45320) 
+2025-12-10 20:35:47 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_infrared_camera (PID: 49000) 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 49780) [🟡普通] 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 47984) [🟡普通] 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 49816) [🟡普通] 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 4920) [🔴关键] 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:38:09) === 
+2025-12-10 20:38:09 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 49780  | 状态: RUNNING      | 运行: 0:00:00.429876 | 重启: 0 | 心跳: 0:00:00.429876 前 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.8% (原始) / 8.4% (标准化) | 内存: 41.7MB | 核心数: 12 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47984  | 状态: RUNNING      | 运行: 0:00:00.425139 | 重启: 0 | 心跳: 0:00:00.425139 前 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 41.2MB | 核心数: 12 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49816  | 状态: RUNNING      | 运行: 0:00:00.420648 | 重启: 0 | 心跳: 0:00:00.420648 前 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 84.0% (原始) / 7.0% (标准化) | 内存: 41.2MB | 核心数: 12 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 4920   | 状态: RUNNING      | 运行: 0:00:00.414891 | 重启: 0 | 心跳: 0:00:00.414891 前 
+2025-12-10 20:38:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 39.4MB | 核心数: 12 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:38:15) === 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 49780  | 状态: FINISHED     | 运行: 0:00:05.835829 | 重启: 0 | 心跳: 0:00:01.038763 前 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.3% (原始) / 8.1% (标准化) | 内存: 265.5MB | 核心数: 12 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47984  | 状态: RUNNING      | 运行: 0:00:05.731056 | 重启: 0 | 心跳: 0:00:00.902740 前 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.9% (原始) / 8.2% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49816  | 状态: RUNNING      | 运行: 0:00:05.626236 | 重启: 0 | 心跳: 0:00:00.776677 前 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.8% (原始) / 8.2% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 4920   | 状态: RUNNING      | 运行: 0:00:05.519991 | 重启: 0 | 心跳: 0:00:00.718160 前 
+2025-12-10 20:38:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 101.6% (原始) / 8.5% (标准化) | 内存: 292.4MB | 核心数: 12 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:38:20) === 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 49780  | 状态: FINISHED     | 运行: 0:00:10.839965 | 重启: 0 | 心跳: 0:00:06.042899 前 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 265.5MB | 核心数: 12 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47984  | 状态: RUNNING      | 运行: 0:00:10.735191 | 重启: 0 | 心跳: 0:00:00.905543 前 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49816  | 状态: RUNNING      | 运行: 0:00:10.630370 | 重启: 0 | 心跳: 0:00:00.779488 前 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 4920   | 状态: RUNNING      | 运行: 0:00:10.523125 | 重启: 0 | 心跳: 0:00:00.719461 前 
+2025-12-10 20:38:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 140.0% (原始) / 11.7% (标准化) | 内存: 333.8MB | 核心数: 12 
+2025-12-10 20:38:25 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:38:25) === 
+2025-12-10 20:38:25 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 20:38:25 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 20:38:25 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 20:38:25 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 20:38:25 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 49780) 
+2025-12-10 20:38:27 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_deep_camera (PID: 47984) 
+2025-12-10 20:38:29 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_infrared_camera (PID: 49816) 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 50764) [🟡普通] 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 50680) [🟡普通] 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 49392) [🟡普通] 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 50924) [🔴关键] 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:31) === 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 50764  | 状态: RUNNING      | 运行: 0:00:00.427324 | 重启: 0 | 心跳: 0:00:00.427324 前 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 44.0MB | 核心数: 12 
+2025-12-10 20:39:31 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 50680  | 状态: RUNNING      | 运行: 0:00:00.423727 | 重启: 0 | 心跳: 0:00:00.423727 前 
+2025-12-10 20:39:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 83.1% (原始) / 6.9% (标准化) | 内存: 41.4MB | 核心数: 12 
+2025-12-10 20:39:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49392  | 状态: RUNNING      | 运行: 0:00:00.419151 | 重启: 0 | 心跳: 0:00:00.419151 前 
+2025-12-10 20:39:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 41.3MB | 核心数: 12 
+2025-12-10 20:39:32 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 50924  | 状态: RUNNING      | 运行: 0:00:00.412322 | 重启: 0 | 心跳: 0:00:00.412322 前 
+2025-12-10 20:39:32 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 41.3MB | 核心数: 12 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:37) === 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50764  | 状态: FINISHED     | 运行: 0:00:05.834733 | 重启: 0 | 心跳: 0:00:00.777034 前 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.9% (原始) / 8.0% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 50680  | 状态: RUNNING      | 运行: 0:00:05.730092 | 重启: 0 | 心跳: 0:00:00.667509 前 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.0% (原始) / 8.1% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49392  | 状态: RUNNING      | 运行: 0:00:05.624952 | 重启: 0 | 心跳: 0:00:00.583977 前 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.4% (原始) / 8.0% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 50924  | 状态: RUNNING      | 运行: 0:00:05.517425 | 重启: 0 | 心跳: 0:00:00.471941 前 
+2025-12-10 20:39:37 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 98.4% (原始) / 8.2% (标准化) | 内存: 289.5MB | 核心数: 12 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:42) === 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50764  | 状态: FINISHED     | 运行: 0:00:10.838536 | 重启: 0 | 心跳: 0:00:05.780837 前 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 50680  | 状态: RUNNING      | 运行: 0:00:10.733894 | 重启: 0 | 心跳: 0:00:00.669485 前 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.6% (原始) / 7.6% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49392  | 状态: RUNNING      | 运行: 0:00:10.628755 | 重启: 0 | 心跳: 0:00:00.586954 前 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 50924  | 状态: RUNNING      | 运行: 0:00:10.521228 | 重启: 0 | 心跳: 0:00:00.474398 前 
+2025-12-10 20:39:42 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 105.9% (原始) / 8.8% (标准化) | 内存: 332.0MB | 核心数: 12 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:47) === 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50764  | 状态: FINISHED     | 运行: 0:00:15.844582 | 重启: 0 | 心跳: 0:00:10.786883 前 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.3% (原始) / 7.2% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 50680  | 状态: RUNNING      | 运行: 0:00:15.740936 | 重启: 0 | 心跳: 0:00:00.676362 前 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 88.8% (原始) / 7.4% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49392  | 状态: RUNNING      | 运行: 0:00:15.636797 | 重启: 0 | 心跳: 0:00:00.594785 前 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.3% (原始) / 7.2% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 50924  | 状态: RUNNING      | 运行: 0:00:15.530273 | 重启: 0 | 心跳: 0:00:00.483136 前 
+2025-12-10 20:39:47 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 174.1% (原始) / 14.5% (标准化) | 内存: 331.9MB | 核心数: 12 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:52) === 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50764  | 状态: FINISHED     | 运行: 0:00:20.852472 | 重启: 0 | 心跳: 0:00:15.794773 前 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 50680  | 状态: RUNNING      | 运行: 0:00:20.747829 | 重启: 0 | 心跳: 0:00:00.683179 前 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 89.4% (原始) / 7.5% (标准化) | 内存: 266.1MB | 核心数: 12 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49392  | 状态: RUNNING      | 运行: 0:00:20.642690 | 重启: 0 | 心跳: 0:00:00.600142 前 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 88.4% (原始) / 7.4% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 50924  | 状态: RUNNING      | 运行: 0:00:20.536165 | 重启: 0 | 心跳: 0:00:00.488472 前 
+2025-12-10 20:39:52 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 144.1% (原始) / 12.0% (标准化) | 内存: 331.7MB | 核心数: 12 
+2025-12-10 20:39:57 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:39:57) === 
+2025-12-10 20:39:57 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 20:39:57 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 20:39:57 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 20:39:57 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 20:39:57 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 50764) 
+2025-12-10 20:39:59 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_deep_camera (PID: 50680) 
+2025-12-10 20:40:01 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_infrared_camera (PID: 49392) 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 45692) [🟡普通] 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 47156) [🟡普通] 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 49916) [🟡普通] 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 8820) [🔴关键] 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:44:54) === 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 45692  | 状态: RUNNING      | 运行: 0:00:00.426926 | 重启: 0 | 心跳: 0:00:00.426926 前 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 43.7MB | 核心数: 12 
+2025-12-10 20:44:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:00.423330 | 重启: 0 | 心跳: 0:00:00.423330 前 
+2025-12-10 20:44:55 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 71.7% (原始) / 6.0% (标准化) | 内存: 41.5MB | 核心数: 12 
+2025-12-10 20:44:55 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:00.419991 | 重启: 0 | 心跳: 0:00:00.419991 前 
+2025-12-10 20:44:55 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 41.2MB | 核心数: 12 
+2025-12-10 20:44:55 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:00.414827 | 重启: 0 | 心跳: 0:00:00.414827 前 
+2025-12-10 20:44:55 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 41.1MB | 核心数: 12 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:00) === 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 45692  | 状态: FINISHED     | 运行: 0:00:05.835536 | 重启: 0 | 心跳: 0:00:00.839222 前 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.8% (原始) / 8.1% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:05.730299 | 重启: 0 | 心跳: 0:00:00.752712 前 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.6% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:05.626263 | 重启: 0 | 心跳: 0:00:00.589666 前 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.0% (原始) / 8.0% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:05.521018 | 重启: 0 | 心跳: 0:00:00.506356 前 
+2025-12-10 20:45:00 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 101.6% (原始) / 8.5% (标准化) | 内存: 294.2MB | 核心数: 12 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:05) === 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 45692  | 状态: FINISHED     | 运行: 0:00:10.841182 | 重启: 0 | 心跳: 0:00:05.844868 前 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:10.735944 | 重启: 0 | 心跳: 0:00:00.756957 前 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.9% (原始) / 7.7% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:10.630907 | 重启: 0 | 心跳: 0:00:00.593267 前 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 89.4% (原始) / 7.5% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:10.525663 | 重启: 0 | 心跳: 0:00:00.510134 前 
+2025-12-10 20:45:05 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.9% (原始) / 8.4% (标准化) | 内存: 295.2MB | 核心数: 12 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:10) === 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 45692  | 状态: FINISHED     | 运行: 0:00:15.847201 | 重启: 0 | 心跳: 0:00:10.850887 前 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.5% (原始) / 7.8% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:15.741964 | 重启: 0 | 心跳: 0:00:00.762496 前 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.2% (原始) / 7.8% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:15.636924 | 重启: 0 | 心跳: 0:00:00.598732 前 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:15.530680 | 重启: 0 | 心跳: 0:00:00.514998 前 
+2025-12-10 20:45:10 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 295.4MB | 核心数: 12 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:15) === 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 45692  | 状态: FINISHED     | 运行: 0:00:20.850559 | 重启: 0 | 心跳: 0:00:15.854245 前 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:20.745320 | 重启: 0 | 心跳: 0:00:00.765436 前 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:20.640285 | 重启: 0 | 心跳: 0:00:00.601861 前 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:20.534041 | 重启: 0 | 心跳: 0:00:00.518190 前 
+2025-12-10 20:45:15 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 295.4MB | 核心数: 12 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:20) === 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 45692  | 状态: FINISHED     | 运行: 0:00:25.854866 | 重启: 0 | 心跳: 0:00:20.858552 前 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 97.5% (原始) / 8.1% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 47156  | 状态: RUNNING      | 运行: 0:00:25.749629 | 重启: 0 | 心跳: 0:00:00.769623 前 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 266.0MB | 核心数: 12 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 49916  | 状态: RUNNING      | 运行: 0:00:25.643591 | 重启: 0 | 心跳: 0:00:00.604599 前 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 8820   | 状态: RUNNING      | 运行: 0:00:25.538347 | 重启: 0 | 心跳: 0:00:00.522275 前 
+2025-12-10 20:45:20 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.1% (原始) / 7.8% (标准化) | 内存: 295.4MB | 核心数: 12 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:45:29 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 50848) [🟡普通] 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 20416) [🟡普通] 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 42640) [🟡普通] 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 30048) [🔴关键] 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:30) === 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 50848  | 状态: RUNNING      | 运行: 0:00:00.431775 | 重启: 0 | 心跳: 0:00:00.431775 前 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 47.0MB | 核心数: 12 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 20416  | 状态: RUNNING      | 运行: 0:00:00.426775 | 重启: 0 | 心跳: 0:00:00.426775 前 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 43.4MB | 核心数: 12 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 42640  | 状态: RUNNING      | 运行: 0:00:00.421609 | 重启: 0 | 心跳: 0:00:00.421609 前 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 43.3MB | 核心数: 12 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 30048  | 状态: RUNNING      | 运行: 0:00:00.415407 | 重启: 0 | 心跳: 0:00:00.415407 前 
+2025-12-10 20:45:30 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 42.7MB | 核心数: 12 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:35) === 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50848  | 状态: FINISHED     | 运行: 0:00:05.840194 | 重启: 0 | 心跳: 0:00:01.036715 前 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.8% (原始) / 8.1% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 20416  | 状态: RUNNING      | 运行: 0:00:05.736495 | 重启: 0 | 心跳: 0:00:00.872136 前 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.7% (原始) / 8.1% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 42640  | 状态: RUNNING      | 运行: 0:00:05.631063 | 重启: 0 | 心跳: 0:00:00.769710 前 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.3% (原始) / 8.0% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 30048  | 状态: RUNNING      | 运行: 0:00:05.524079 | 重启: 0 | 心跳: 0:00:00.684412 前 
+2025-12-10 20:45:35 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 102.8% (原始) / 8.6% (标准化) | 内存: 293.5MB | 核心数: 12 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:45:40) === 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 50848  | 状态: FINISHED     | 运行: 0:00:10.846506 | 重启: 0 | 心跳: 0:00:06.043027 前 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 20416  | 状态: RUNNING      | 运行: 0:00:10.741597 | 重启: 0 | 心跳: 0:00:00.875585 前 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 266.4MB | 核心数: 12 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 42640  | 状态: RUNNING      | 运行: 0:00:10.636378 | 重启: 0 | 心跳: 0:00:00.774061 前 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.9MB | 核心数: 12 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 30048  | 状态: RUNNING      | 运行: 0:00:10.529600 | 重启: 0 | 心跳: 0:00:00.688867 前 
+2025-12-10 20:45:40 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 148.3% (原始) / 12.4% (标准化) | 内存: 333.4MB | 核心数: 12 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 40900) [🟡普通] 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 46076) [🟡普通] 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 48400) [🟡普通] 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 54348) [🔴关键] 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:53:04) === 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 40900  | 状态: RUNNING      | 运行: 0:00:00.430081 | 重启: 0 | 心跳: 0:00:00.430081 前 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 44.6MB | 核心数: 12 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 46076  | 状态: RUNNING      | 运行: 0:00:00.424300 | 重启: 0 | 心跳: 0:00:00.424300 前 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 42.2MB | 核心数: 12 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 48400  | 状态: RUNNING      | 运行: 0:00:00.418951 | 重启: 0 | 心跳: 0:00:00.418951 前 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 42.1MB | 核心数: 12 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 54348  | 状态: RUNNING      | 运行: 0:00:00.413862 | 重启: 0 | 心跳: 0:00:00.413862 前 
+2025-12-10 20:53:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 42.1MB | 核心数: 12 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:53:09) === 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40900  | 状态: FINISHED     | 运行: 0:00:05.836250 | 重启: 0 | 心跳: 0:00:00.822888 前 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 46076  | 状态: RUNNING      | 运行: 0:00:05.731306 | 重启: 0 | 心跳: 0:00:00.694271 前 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.7% (原始) / 8.1% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 48400  | 状态: RUNNING      | 运行: 0:00:05.625301 | 重启: 0 | 心跳: 0:00:00.580748 前 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 98.5% (原始) / 8.2% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 54348  | 状态: RUNNING      | 运行: 0:00:05.518654 | 重启: 0 | 心跳: 0:00:00.492649 前 
+2025-12-10 20:53:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 101.2% (原始) / 8.4% (标准化) | 内存: 292.8MB | 核心数: 12 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:53:14) === 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40900  | 状态: FINISHED     | 运行: 0:00:10.840098 | 重启: 0 | 心跳: 0:00:05.826736 前 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 46076  | 状态: RUNNING      | 运行: 0:00:10.734808 | 重启: 0 | 心跳: 0:00:00.696663 前 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 48400  | 状态: RUNNING      | 运行: 0:00:10.628805 | 重启: 0 | 心跳: 0:00:00.582634 前 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 54348  | 状态: RUNNING      | 运行: 0:00:10.522158 | 重启: 0 | 心跳: 0:00:00.494110 前 
+2025-12-10 20:53:14 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 128.8% (原始) / 10.7% (标准化) | 内存: 333.7MB | 核心数: 12 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:53:19) === 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 40900  | 状态: FINISHED     | 运行: 0:00:15.844109 | 重启: 0 | 心跳: 0:00:10.830747 前 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 265.6MB | 核心数: 12 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 46076  | 状态: RUNNING      | 运行: 0:00:15.738746 | 重启: 0 | 心跳: 0:00:00.700235 前 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.1% (原始) / 7.8% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 48400  | 状态: RUNNING      | 运行: 0:00:15.632742 | 重启: 0 | 心跳: 0:00:00.586316 前 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.2% (原始) / 7.6% (标准化) | 内存: 265.8MB | 核心数: 12 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 54348  | 状态: RUNNING      | 运行: 0:00:15.527096 | 重启: 0 | 心跳: 0:00:00.498676 前 
+2025-12-10 20:53:19 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 156.9% (原始) / 13.1% (标准化) | 内存: 335.2MB | 核心数: 12 
+2025-12-10 20:53:24 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:53:24) === 
+2025-12-10 20:53:24 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 20:53:24 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 20:53:24 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 20:53:24 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 20:53:24 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 40900) 
+2025-12-10 20:53:27 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_deep_camera (PID: 46076) 
+2025-12-10 20:53:29 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_infrared_camera (PID: 48400) 
+2025-12-10 20:53:31 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:805 | 所有进程关闭完成 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 6908) [🟡普通] 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_deep_camera (PID: 51208) [🟡普通] 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_infrared_camera (PID: 5092) [🟡普通] 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 52008) [🔴关键] 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:33) === 
+2025-12-10 20:56:33 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 6908   | 状态: RUNNING      | 运行: 0:00:00.429247 | 重启: 0 | 心跳: 0:00:00.429247 前 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 85.2% (原始) / 7.1% (标准化) | 内存: 44.4MB | 核心数: 12 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:00.424285 | 重启: 0 | 心跳: 0:00:00.424285 前 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 84.0% (原始) / 7.0% (标准化) | 内存: 41.8MB | 核心数: 12 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:00.417339 | 重启: 0 | 心跳: 0:00:00.417339 前 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 71.0% (原始) / 5.9% (标准化) | 内存: 41.8MB | 核心数: 12 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:00.411709 | 重启: 0 | 心跳: 0:00:00.411709 前 
+2025-12-10 20:56:34 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 116.4% (原始) / 9.7% (标准化) | 内存: 42.0MB | 核心数: 12 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:39) === 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 6908   | 状态: FINISHED     | 运行: 0:00:05.835037 | 重启: 0 | 心跳: 0:00:01.193975 前 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:05.730541 | 重启: 0 | 心跳: 0:00:01.097467 前 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.9% (原始) / 7.9% (标准化) | 内存: 265.1MB | 核心数: 12 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:05.623405 | 重启: 0 | 心跳: 0:00:00.994939 前 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.7% (原始) / 8.0% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:05.515719 | 重启: 0 | 心跳: 0:00:00.922422 前 
+2025-12-10 20:56:39 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 100.3% (原始) / 8.4% (标准化) | 内存: 294.4MB | 核心数: 12 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:44) === 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 6908   | 状态: FINISHED     | 运行: 0:00:10.838774 | 重启: 0 | 心跳: 0:00:06.197712 前 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 93.8% (原始) / 7.8% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:10.734358 | 重启: 0 | 心跳: 0:00:01.099758 前 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.7% (原始) / 7.9% (标准化) | 内存: 265.1MB | 核心数: 12 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:10.627223 | 重启: 0 | 心跳: 0:00:00.997733 前 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:10.519537 | 重启: 0 | 心跳: 0:00:00.925697 前 
+2025-12-10 20:56:44 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 145.6% (原始) / 12.1% (标准化) | 内存: 336.6MB | 核心数: 12 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:49) === 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 6908   | 状态: FINISHED     | 运行: 0:00:15.842779 | 重启: 0 | 心跳: 0:00:11.201717 前 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.2% (原始) / 8.0% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:15.738286 | 重启: 0 | 心跳: 0:00:01.103474 前 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.8% (原始) / 7.7% (标准化) | 内存: 265.1MB | 核心数: 12 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:15.631150 | 重启: 0 | 心跳: 0:00:01.001448 前 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 94.4% (原始) / 7.9% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:15.525463 | 重启: 0 | 心跳: 0:00:00.931434 前 
+2025-12-10 20:56:49 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 150.0% (原始) / 12.5% (标准化) | 内存: 337.9MB | 核心数: 12 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:54) === 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 6908   | 状态: FINISHED     | 运行: 0:00:20.850111 | 重启: 0 | 心跳: 0:00:16.209049 前 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 96.6% (原始) / 8.0% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:20.747611 | 重启: 0 | 心跳: 0:00:01.112565 前 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.3% (原始) / 7.9% (标准化) | 内存: 265.1MB | 核心数: 12 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:20.640478 | 重启: 0 | 心跳: 0:00:01.010467 前 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 95.0% (原始) / 7.9% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:20.535790 | 重启: 0 | 心跳: 0:00:00.941423 前 
+2025-12-10 20:56:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 145.2% (原始) / 12.1% (标准化) | 内存: 340.1MB | 核心数: 12 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (20:56:59) === 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 6908   | 状态: FINISHED     | 运行: 0:00:25.858972 | 重启: 0 | 心跳: 0:00:21.217910 前 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.2% (原始) / 7.7% (标准化) | 内存: 265.4MB | 核心数: 12 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_deep_camera   | PID: 51208  | 状态: RUNNING      | 运行: 0:00:25.754492 | 重启: 0 | 心跳: 0:00:01.119180 前 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 91.6% (原始) / 7.6% (标准化) | 内存: 265.1MB | 核心数: 12 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_infrared_camera | PID: 5092   | 状态: RUNNING      | 运行: 0:00:25.647355 | 重启: 0 | 心跳: 0:00:01.017142 前 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 92.5% (原始) / 7.7% (标准化) | 内存: 265.7MB | 核心数: 12 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 52008  | 状态: RUNNING      | 运行: 0:00:25.539669 | 重启: 0 | 心跳: 0:00:00.945056 前 
+2025-12-10 20:56:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 144.1% (原始) / 12.0% (标准化) | 内存: 339.5MB | 核心数: 12 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 43188) [🟡普通] 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 32456) [🔴关键] 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (21:18:54) === 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 43188  | 状态: RUNNING      | 运行: 0:00:00.209831 | 重启: 0 | 心跳: 0:00:00.209831 前 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 71.0% (原始) / 5.9% (标准化) | 内存: 31.1MB | 核心数: 12 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 32456  | 状态: RUNNING      | 运行: 0:00:00.204221 | 重启: 0 | 心跳: 0:00:00.204221 前 
+2025-12-10 21:18:54 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 117.6% (原始) / 9.8% (标准化) | 内存: 29.8MB | 核心数: 12 
+2025-12-10 21:18:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (21:18:59) === 
+2025-12-10 21:18:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 43188  | 状态: FINISHED     | 运行: 0:00:05.413163 | 重启: 0 | 心跳: 0:00:04.115230 前 
+2025-12-10 21:18:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 98.8% (原始) / 8.2% (标准化) | 内存: 95.8MB | 核心数: 12 
+2025-12-10 21:18:59 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 32456  | 状态: RUNNING      | 运行: 0:00:05.307540 | 重启: 0 | 心跳: 0:00:04.017691 前 
+2025-12-10 21:18:59 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 130.3% (原始) / 10.9% (标准化) | 内存: 165.9MB | 核心数: 12 
+2025-12-10 21:19:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (21:19:04) === 
+2025-12-10 21:19:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🏁🟡 p_response_comm | PID: 43188  | 状态: FINISHED     | 运行: 0:00:10.415055 | 重启: 0 | 心跳: 0:00:09.117122 前 
+2025-12-10 21:19:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 88.8% (原始) / 7.4% (标准化) | 内存: 95.8MB | 核心数: 12 
+2025-12-10 21:19:04 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 32456  | 状态: RUNNING      | 运行: 0:00:10.309531 | 重启: 0 | 心跳: 0:00:04.018834 前 
+2025-12-10 21:19:04 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 140.5% (原始) / 11.7% (标准化) | 内存: 167.4MB | 核心数: 12 
+2025-12-10 21:19:09 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (21:19:09) === 
+2025-12-10 21:19:09 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:752 | 关键进程停止: p_main_gui (退出码: 0) 
+2025-12-10 21:19:09 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:761 | 检测到关键进程失败: ['p_main_gui'] 
+2025-12-10 21:19:09 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
+2025-12-10 21:19:09 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
+2025-12-10 21:19:09 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 43188) 

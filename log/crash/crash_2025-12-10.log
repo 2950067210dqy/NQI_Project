@@ -1,0 +1,11 @@
+2025-12-10 19:55:21 | ERROR    | Service.main_gui:quit_qt_application:86 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 19:55:22 | CRITICAL | Service.main_gui:on_crash:106 - Crash detected: Application received SIGINT...
+2025-12-10 20:28:01 | ERROR    | Service.main_gui:quit_qt_application:86 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:35:33 | ERROR    | Service.main_gui:quit_qt_application:86 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:38:19 | ERROR    | Service.main_gui:quit_qt_application:86 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:39:47 | ERROR    | Service.main_gui:quit_qt_application:86 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:45:41 | ERROR    | Service.main_gui:quit_qt_application:87 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:45:43 | CRITICAL | Service.main_gui:on_crash:107 - Crash detected: Application received SIGINT...
+2025-12-10 20:53:16 | ERROR    | Service.main_gui:quit_qt_application:87 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 20:56:56 | ERROR    | Service.main_gui:quit_qt_application:87 - ----------------------------------------quit Qt application----------------------------------------
+2025-12-10 21:19:02 | ERROR    | Service.main_gui:quit_qt_application:66 - ----------------------------------------quit Qt application----------------------------------------
