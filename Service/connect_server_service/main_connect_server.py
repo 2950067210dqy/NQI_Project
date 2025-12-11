@@ -61,7 +61,8 @@ def main(q,send_message_q):
     app = QCoreApplication(sys.argv)
     # 设置全局变量
     global_load.load_global_setting_without_Qt()
-
+    global_setting.set_setting("queue", q)
+    global_setting.set_setting("send_message_queue", send_message_q)
     global read_queue_data_thread,client_server
     client_server = Client_server()
     read_queue_data_thread.queue = send_message_q

@@ -42,8 +42,8 @@ class WebSocketClient:
     async def connect(self):
         """连接到 WebSocket 服务器"""
         try:
-            # 构建 WebSocket URL
-            ws_endpoint = f"{self.ws_url}/ws/notifications/{self.client_id}"
+            # 构建 WebSocket URL - 使用新的上位机端点
+            ws_endpoint = f"{self.ws_url}/ws/upper"
             if self.device_id:
                 ws_endpoint += f"?device_id={self.device_id}"
 
@@ -54,7 +54,7 @@ class WebSocketClient:
                 self.connected = True
                 self.running = True
 
-                logger.info(f"WebSocket 已连接: {self.client_id}")
+                logger.info(f"WebSocket 已连接: {self.client_id} (device_filter={self.device_id})")
 
                 # 调用连接成功回调
                 if self.on_connected:
@@ -86,34 +86,45 @@ class WebSocketClient:
                 try:
                     message = await asyncio.wait_for(
                         self.websocket.recv(),
-                        timeout=120  # 2分钟超时
+                        timeout=60  # 60秒超时
                     )
 
-                    # 解析消息
-                    data = json.loads(message)
-                    message_type = data.get("type", "")
-
-                    if message_type == "ping":
-                        # 响应心跳
-                        await self._send_pong()
-
-                    elif message_type == "notification":
-                        # 处理通知
-                        logger.info(f"收到通知: {data.get('message')}")
-
-                        # 加入消息队列
-                        self.message_queue.put(data)
-
-                        # 调用通知回调
-                        if self.on_notification:
-                            self.on_notification(data)
-
-                    elif message_type == "connection":
-                        logger.info(f"连接消息: {data.get('message')}")
-
-                    elif message_type == "pong":
+                    # 服务端可能发送简单的 "pong" 字符串或 JSON
+                    if message.strip().lower() == "pong":
                         self.last_heartbeat = datetime.now()
                         logger.debug("心跳响应收到")
+                        continue
+
+                    # 解析 JSON 消息
+                    try:
+                        data = json.loads(message)
+                        message_type = data.get("type", "")
+
+                        # 处理各类通知 (excel_upload, image_upload)
+                        if message_type in ["excel_upload", "image_upload"]:
+                            # 处理数据上传通知
+                            logger.info(f"收到通知: {message_type} - 设备 {data.get('device_id')} - {data.get('file_name')}")
+
+                            # 加入消息队列
+                            self.message_queue.put(data)
+
+                            # 调用通知回调
+                            if self.on_notification:
+                                self.on_notification(data)
+
+                        elif message_type == "pong":
+                            self.last_heartbeat = datetime.now()
+                            logger.debug("心跳响应收到")
+
+                        else:
+                            # 未知消息类型，但也处理
+                            logger.info(f"收到消息: {data}")
+                            self.message_queue.put(data)
+                            if self.on_notification:
+                                self.on_notification(data)
+
+                    except json.JSONDecodeError:
+                        logger.warning(f"无法解析消息: {message}")
 
                 except asyncio.TimeoutError:
                     # 发送心跳
@@ -132,38 +143,12 @@ class WebSocketClient:
         """发送心跳"""
         if self.websocket and self.connected:
             try:
-                await self.websocket.send(json.dumps({
-                    "type": "ping",
-                    "timestamp": datetime.now().isoformat()
-                }))
+                # 服务端期望简单的 "ping" 字符串
+                await self.websocket.send("ping")
                 logger.debug("心跳已发送")
             except Exception as e:
                 logger.error(f"发送心跳失败: {e}")
                 self.connected = False
-
-    async def _send_pong(self):
-        """发送心跳响应"""
-        if self.websocket and self.connected:
-            try:
-                await self.websocket.send(json.dumps({
-                    "type": "pong",
-                    "timestamp": datetime.now().isoformat()
-                }))
-            except Exception as e:
-                logger.error(f"发送心跳响应失败: {e}")
-
-    async def subscribe(self, device_id: str):
-        """订阅特定设备的通知"""
-        if self.websocket and self.connected:
-            try:
-                await self.websocket.send(json.dumps({
-                    "type": "subscribe",
-                    "device_id": device_id,
-                    "timestamp": datetime.now().isoformat()
-                }))
-                logger.info(f"已订阅设备: {device_id}")
-            except Exception as e:
-                logger.error(f"订阅失败: {e}")
 
     async def disconnect(self):
         """断开连接"""

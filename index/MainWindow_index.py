@@ -472,9 +472,7 @@ class MainWindow_Index(ThemedWindow):
             else:
                 menu_bar_action["action"].setEnabled(True)
                 #特殊情况
-                if global_setting.get_setting("app_state",AppState.INITIALIZED) == AppState.MONITORING \
-                    and menu_bar_action['obj_name'] in ["Main_New_experiment", "Main_New_experiment_open"]:
-                    menu_bar_action["action"].setEnabled(False)
+
         # 设置是否可以点击 tool_bar
         for tool_bar_action in self.tool_bar_actions:
             if tool_bar_action["app_state"] > global_setting.get_setting("app_state",AppState.INITIALIZED):
