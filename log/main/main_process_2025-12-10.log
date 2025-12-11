@@ -1276,3 +1276,28 @@
 2025-12-10 21:19:09 | CRITICAL  | MAIN | ProcessMonitor:check_critical_processes:762 | 开始关闭所有其他进程... 
 2025-12-10 21:19:09 | WARNING  | MAIN | ProcessMonitor:shutdown_all_processes:777 | 开始关闭所有进程... 
 2025-12-10 21:19:09 | INFO  | MAIN | ProcessMonitor:shutdown_all_processes:786 | 关闭进程: p_response_comm (PID: 43188) 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:__init__:482 | 系统CPU核心数: 12 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:__init__:483 | 进程监控器初始化完成 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:setup_main_process_exception_handler:555 | 主进程异常处理器已设置 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:start_exception_collector:683 | 异常收集线程已启动 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_start 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_crash 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_complete 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_restart 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_timeout 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_unresponsive 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_cpu 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_callback:1065 | 注册回调: on_high_memory 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:register_exception_callback:630 | 注册异常回调函数: on_any_exception 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_response_comm (PID: 52924) [🟡普通] 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:add_critical_process:720 | 添加关键进程: p_main_gui 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:start_worker:870 | 启动进程: p_main_gui (PID: 53936) [🔴关键] 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:monitor_loop:1205 | 开始集成进程监控 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:start_monitoring:1222 | 监控线程已启动 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:monitor_loop:1206 | 关键进程: ['p_main_gui'] 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1169 | 
+=== 进程监控报告 (21:21:24) === 
+2025-12-10 21:21:24 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🟡 p_response_comm | PID: 52924  | 状态: RUNNING      | 运行: 0:00:00.209591 | 重启: 0 | 心跳: 0:00:00.209591 前 
+2025-12-10 21:21:25 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 99.7% (原始) / 8.3% (标准化) | 内存: 28.5MB | 核心数: 12 
+2025-12-10 21:21:25 | INFO  | MAIN | ProcessMonitor:print_process_status:1054 | 🟢🔴 p_main_gui      | PID: 53936  | 状态: RUNNING      | 运行: 0:00:00.204126 | 重启: 0 | 心跳: 0:00:00.204126 前 
+2025-12-10 21:21:25 | INFO  | MAIN | ProcessMonitor:monitor_all_processes:1187 |     📊 CPU: 86.0% (原始) / 7.2% (标准化) | 内存: 28.2MB | 核心数: 12 

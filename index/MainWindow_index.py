@@ -23,29 +23,15 @@ from public.config_class.global_setting import global_setting
 from public.entity.MyQThread import MyQThread
 from public.entity.enum.Public_Enum import BaseInterfaceType, AppState, Tutorial_Type
 from public.entity.queue.ObjectQueueItem import ObjectQueueItem
-from public.function.Modbus.New_Mod_Bus import ModbusRTUMasterNew
+
 from public.function.promise.AsyPromise import AsyPromise
-from public.util.custom_data_file_util import custom_data_file_util
+
 from public.util.time_util import time_util
 from theme.ThemeQt6 import ThemedWindow
 from ui.MainWindow import Ui_MainWindow
 #logger = logger.bind(category="gui_logger")
 
-class Start_experiment_thread(MyQThread):
-    def __init__(self,name,window):
-        super().__init__(name=name)
-        self.window:MainWindow_Index = window
-    def dosomething(self):
-        self.window.start_experiment_handle()
-        self.stop()
-        pass
-class Stop_experiment_thread(MyQThread):
-    def __init__(self,name,window):
-        super().__init__(name)
-        self.window:MainWindow_Index = window
-    def dosomething(self):
-        self.window.stop_experiment_handle()
-        self.stop()
+
 class read_queue_data_Thread(MyQThread):
     def __init__(self, name,window=None):
         super().__init__(name)
@@ -72,63 +58,7 @@ class read_queue_data_Thread(MyQThread):
             if message is not None and isinstance(message, ObjectQueueItem) and message.to=='MainWindow_index':
                 # logger.error(f"{self.name}_get_message:{message}")
                 match message.title:
-                    case "gap_system_running_state":
-                        if message.data  and self.window:
-                            #  更新气路运行消息
-                            # 将运行信息放入status栏中
-                            self.window.status_bar.update_tip(message.data)
-                            if self.window.start_dialog is not None :
-                                self.window.start_dialog.insert_data_signal.emit(f"{message.data} ")
-                                # self.window.start_dialog.update_progress_value(1)
-                            pass
 
-
-                        pass
-                    case "mouse_cage_inner_module_running_state":
-                        #鼠笼环境内部模块运行情况
-                        if message.data and self.window:
-                            # 将运行信息放入status栏中
-                            self.window.status_bar.update_tip(message.data)
-                            pass
-                    case "epoch_running_state":
-                        # 一轮模块数据运行情况
-                        if message.data and self.window:
-                            # 将运行信息放入status栏中
-                            self.window.status_bar.update_tip(message.data)
-                            pass
-                    case 'close_start_experiment_dialog':
-                        #启动气路完成，关闭开始实验窗口
-                        if self.window is not None and self.window.start_dialog is not None :
-
-                            self.window.start_dialog.update_progress_value(self.window.start_dialog.progress_max)
-                    case "stop_deep_camera_return" |"stop_infrared_camera_return"|"stop_gap_system_return"|"stop_monitor_data_return":
-                        if message.data and self.window:
-                            #  更新气路运行消息
-                            # 将运行信息放入status栏中
-                            self.window.status_bar.update_tip(message.data)
-                            if self.window.stop_dialog is not None:
-                                self.window.stop_dialog.insert_data_signal.emit(f"{message.data} ")
-                                # self.window.start_dialog.update_progress_value(1)
-                            pass
-                            # 当深度相机、红外相机、气路、鼠笼内、存储数据都发过返回消息则关闭关闭实验窗口
-                            if self.old_Stop_experiment_status_text_reTurn is  None:
-                                self.old_Stop_experiment_status_text_reTurn = message.title
-                                self.old_stop_status_counts += 1
-                            elif message.title !=self.old_Stop_experiment_status_text_reTurn:
-                                self.old_Stop_experiment_status_text_reTurn=message.title
-                                self.old_stop_status_counts += 1
-
-                            if self.old_stop_status_counts >= self.old_stop_status_max:
-                                # 停止完成，关闭停止实验窗口
-                                self.old_Stop_experiment_status_text_reTurn = None
-                                self.old_stop_status_counts =0
-
-                                QTimer.singleShot(3000,self.close_stop_experiment_dialog)
-
-                        pass
-                    case 'close_stop_experiment_dialog':
-                        # 停止完成，关闭停止实验窗口
-                        self.close_stop_experiment_dialog()
                     case _:
                         pass
 
@@ -150,17 +80,17 @@ class MainWindow_Index(ThemedWindow):
         """
         state = global_setting.get_setting("app_state", None)
         # 如果在开始实验期间关闭窗口
-        if state is not None and state ==AppState.MONITORING:
-            # 停止实验
-            self.stop_experiment()
+        if state is not None and state ==AppState.CONNECTED:
+            # 停止
+            pass
         # 关闭所有串口
 
     def closeEvent(self, event):
         app_state = global_setting.get_setting("app_state", AppState.INITIALIZED)
         if len(self.open_windows)!=0:
             # 可选择使用 QMessageBox 来确认是否关闭
-            if app_state == AppState.MONITORING:
-                message="当前正在实验中，且还有其他子窗口未关闭,退出程序将停止实验，你确定要退出程序吗？"
+            if app_state == AppState.CONNECTED:
+                message="当前正在连接服务器，且还有其他子窗口未关闭,退出程序将断开连接，你确定要退出程序吗？"
             else:
                 message ="当前还有其他子窗口未关闭，你确定要退出程序吗？"
             reply = QMessageBox.question(self, '关闭窗口',
@@ -178,8 +108,8 @@ class MainWindow_Index(ThemedWindow):
                 event.ignore()  # 忽略关闭事件
         else:
             # 可选择使用 QMessageBox 来确认是否关闭
-            if app_state == AppState.MONITORING:
-                message = "当前正在实验中,退出程序将停止实验，你确定要退出程序吗？"
+            if app_state == AppState.CONNECTED:
+                message = "当前正在连接服务器,退出程序将断开连接，你确定要退出程序吗？"
             else:
                 message = "你确定要退出程序吗？"
             reply = QMessageBox.question(self, '关闭窗口',
@@ -235,12 +165,11 @@ class MainWindow_Index(ThemedWindow):
                                f"显示当前时间。")
         self.tutorial.add_step(self.status_bar.app_status_label,
                                f"显示当前程序状态 。\n 1.INITIALIZED: 初始化状态\n 2.APPLYING: 应用实验状态\n 3.CONFIGURING: 设备配置状态\n 4.MONITORING: 开始监测数据状态")
-        self.tutorial.add_step(self.status_bar.status_label,
-                               f"显示当前实验状态。\n1.未开始实验。2.开始实验。3.暂停实验。4.停止实验")
+
         self.tutorial.add_step(self.status_bar.tip_label,
                                f"显示当前帮助消息。")
-        self.tutorial.add_step(self.status_bar.setting_file_name_label,
-                               f"显示当前实验设置文件路径。")
+        self.tutorial.add_step(self.status_bar.server_label,
+                               f"显示当前服务器连接路径。")
 
         self.tutorial.add_step(self.status_bar.progress_bar,
                                f"显示进度条。")
@@ -271,27 +200,7 @@ class MainWindow_Index(ThemedWindow):
                                f"Tips：\n如果还不会操作，可再次单击该按钮查看教程。")
     def __init__(self):
         super().__init__()
-        # 开始实验dialog
-        self.start_dialog:AnimatedLoadingDialog=None
-        # 停止实验dialog
-        self.stop_dialog:AnimatedLoadingDialog=None
-        #暂停实验标志位
-        self.is_paused = False
-        # 点击开始实验 接受数据和存储数据的线程
-        self.store_thread_sub=None
-        self.send_thread_sub=None
-        self.read_queue_data_thread_sub=None
-        self.add_message_thread_sub=None
-        self.ufc_ugc_zos:UFC_UGC_ZOS_index=None
-        self.ufc_ugc_zos_thread=None
-        # 深度相机线程
-        self.deep_camera_thread_sub_list=[]
-        self.deep_camera_read_queue_data_thread_sub=None
-        self.deep_camera_delete_file_thread_sub=None
-        # 红外相机线程
-        self.infrared_camera_thread_sub_list = []
-        self.infrared_camera_read_queue_data_thread_sub = None
-        self.infrared_camera_delete_file_thread_sub = None
+
         # tool——bar-action 工具栏的action [{'obj_name':'','name';",'action':QAction,'tip':''}]
         self.tool_bar_actions = []
         self.menu_bar_actions = []
@@ -397,41 +306,7 @@ class MainWindow_Index(ThemedWindow):
         action_two.setToolTip(name)
         action_two.triggered.connect(self.toggle_theme)
         self.tool_bar_actions.append({"name":name,"obj_name":obj_name,"action":action_two,"app_state":AppState.INITIALIZED,'tip':"单击此按钮会将程序的主题颜色变换黑色和白色"})
-        name = "开始实验"
-        obj_name = "start_experiment"
-        action_three = QAction(name, self)
-        action_three.setObjectName(obj_name)
-        action_three.setToolTip(name)
-        action_three.triggered.connect(self.start_experiment)
-        self.tool_bar_actions.append({"name": name,"obj_name":obj_name, "action": action_three,"app_state":AppState.CONFIGURING,'tip':"单击此按钮会将开始实验，但是必须等待配置完成才能单击该按钮。"})
-        name = "暂停实验"
-        obj_name = "pause_experiment"
-        action_four = QAction(name, self)
-        action_four.setObjectName(obj_name)
-        action_four.setToolTip(name)
-        action_four.setDisabled(True)
-        action_four.triggered.connect(self.pause_experiment)
-        self.tool_bar_actions.append({"name": name,"obj_name":obj_name, "action": action_four,"app_state":AppState.CONFIGURING,'tip':"单击此按钮会将暂停实验，必须在实验中才能单击该按钮。"})
 
-        name = "停止实验"
-        obj_name = "stop_experiment"
-        action_five = QAction(name, self)
-        action_five.setObjectName(obj_name)
-        action_five.setToolTip(name)
-        action_five.triggered.connect(self.stop_experiment)
-        action_five.setDisabled(True)
-        self.tool_bar_actions.append({"name": name,"obj_name":obj_name, "action": action_five,"app_state":AppState.CONFIGURING,'tip':"单击此按钮会将停止实验，并将实验数据保存。"})
-
-        name = "导出实验数据"
-        obj_name = "export_experiment_datas"
-        action_six = QAction(name, self)
-        action_six.setObjectName(obj_name)
-        action_six.setToolTip(name)
-        action_six.triggered.connect(self.export_experiment_datas)
-        action_six.setDisabled(True)
-        self.tool_bar_actions.append(
-            {"name": name, "obj_name": obj_name, "action": action_six, "app_state": AppState.MONITORING,
-             'tip': "单击此按钮会将将实验数据保存。"})
 
         name = "重置教程页"
         obj_name = "reset_guidance"
@@ -449,12 +324,7 @@ class MainWindow_Index(ThemedWindow):
         self.toolbar.addSeparator()
         self.toolbar.addAction(action_two)
         self.toolbar.addSeparator()
-        self.toolbar.addAction(action_three)
-        self.toolbar.addAction(action_four)
-        self.toolbar.addAction(action_five)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(action_six)
-        self.toolbar.addSeparator()
+
         self.toolbar.addAction(action_final)
         self.toolbar.addSeparator()
     def create_menu_bar(self):
@@ -582,406 +452,11 @@ class MainWindow_Index(ThemedWindow):
         pass
 
 
-    def start_update_gui(self,resolve,reject):
-        # 更新main_gui组件显示
-        self.change_enable_component_app_state_signal.emit()
-        self.status_bar.update_status()
-        self.status_bar.update_tip(f"开启实验监测成功！")
-        for action_dict in self.tool_bar_actions:
-            if action_dict["obj_name"] == "start_experiment":
-                action_dict["action"]: QAction
-                action_dict["action"].setDisabled(True)
-            if action_dict["obj_name"] == "stop_experiment":
-                action_dict["action"]: QAction
-                action_dict["action"].setDisabled(False)
-            if action_dict["obj_name"] == "pause_experiment":
-                action_dict["action"]: QAction
-                # action_dict["action"].setDisabled(False)
-        self.setEnabled(True)
-        resolve()
-    #   延遲打開窗口
-    def start_open_window(self,resolve,reject):
-        QTimer.singleShot(1 * 1000, self.open_monitor_data_window)
-        resolve()
-    def open_monitor_data_window(self):
-        """
-        打開監控數據界面
-        :return:
-        """
-        # 打開窗口
-        for module in self.modules:
-            module: BaseModule
-            if module.name == "Main_New_Monitor_data":
-                module.click_method()
-                return
-    def start_experiment(self):
-
-        self.setEnabled(False)
-        self.status_bar.update_tip(f"正在开启实验监测...")
-        port = global_setting.get_setting("port")
-        if port is None or port == "":
-            reply = QMessageBox.question(self, '注意',
-                                         "未设置串口，请去实验配置配置串口!",
-                                         QMessageBox.StandardButton.Cancel,
-                                         QMessageBox.StandardButton.No)
-            self.setEnabled(True)
-            return
-        modbus: ModbusRTUMasterNew = global_setting.get_setting("modbus", None)
-        if modbus is None:
-            modbus = ModbusRTUMasterNew(port, baudrate=115200, timeout=float(
-                global_setting.get_setting('monitor_data')['Serial']['timeout']), )
-            global_setting.set_setting("modbus", modbus)
-        else:
-            modbus.close()
-            modbus = ModbusRTUMasterNew(port, baudrate=115200, timeout=float(
-                global_setting.get_setting('monitor_data')['Serial']['timeout']), )
-            global_setting.set_setting("modbus", modbus)
-        # 开始实验
-        global_setting.set_setting("app_state", AppState.MONITORING)
-        global_setting.set_setting("start_experiment_time", time.time())
-        global_setting.set_setting("pause_experiment_time", [])
-        global_setting.set_setting("relieve_pause_experiment_time", [])
-        # self.start_thread = Start_experiment_thread(name="start_thread",window=self)
-        # self.start_thread.start()
-
-        send_message_queue = global_setting.get_setting("send_message_queue")
-        send_message_queue.put(ObjectQueueItem(origin='MainWindow_Index', to='main_monitor_data', title='start',
-                                               data={
-                                                   'start_experiment_time':global_setting.get_setting("start_experiment_time"),
-                                                    'pause_experiment_time':global_setting.get_setting("pause_experiment_time"),
-                                                   'relieve_pause_experiment_time':global_setting.get_setting("relieve_pause_experiment_time")
-                                                     },
-                                               time=time_util.get_format_from_time(time.time())))
-        message_structs = [
-
-            ObjectQueueItem(origin='MainWindow_Index', to='main_infrared_camera', title='start',
-                            data={
-                                'start_experiment_time': global_setting.get_setting("start_experiment_time"),
-                                'pause_experiment_time': global_setting.get_setting("pause_experiment_time"),
-                                'relieve_pause_experiment_time': global_setting.get_setting(
-                                    "relieve_pause_experiment_time")
-                            },
-                            time=time_util.get_format_from_time(time.time())),
-            ObjectQueueItem(origin='MainWindow_Index', to='main_deep_camera', title='start',
-                            data={
-                                'start_experiment_time': global_setting.get_setting("start_experiment_time"),
-                                'pause_experiment_time': global_setting.get_setting("pause_experiment_time"),
-                                'relieve_pause_experiment_time': global_setting.get_setting(
-                                    "relieve_pause_experiment_time")
-                            },
-                            time=time_util.get_format_from_time(time.time())),
-        ]
-        for message_struct in message_structs:
-            queue=global_setting.get_setting("queue")
-            queue.put(           message_struct)
-        AsyPromise(self.start_update_gui).then(
-            AsyPromise(self.show_open_dialog).then(
-                AsyPromise(self.start_open_window).then().catch(lambda e: logger.error(e))
-            ).catch(lambda e: logger.error(e))
-        ).catch(lambda e: logger.error(e))
-        pass
-    def show_open_dialog(self,resolve,reject):
-        if self.start_dialog is None:
-            self.start_dialog = AnimatedLoadingDialog(countdown_seconds=float(global_setting.get_setting('UFC_UGC_ZOS_config')['UFC']['wait_time'])+15,title="开始实验",message="正在启动气路...")
-        else:
-            self.start_dialog.reset_progress()
-            self.start_dialog.clear_list_data()
-            self.start_dialog.deleteLater()
-            self.start_dialog = AnimatedLoadingDialog(
-                countdown_seconds=float(global_setting.get_setting('UFC_UGC_ZOS_config')['UFC']['wait_time'])+15,
-                title="开始实验", message="正在启动气路...")
-
-        # self.start_dialog.set_progress_range(0, ZOS_gas_path_system.process_nums+UFC_gas_path_system.process_nums+UGC_gas_path_system.process_nums)
-        result = self.start_dialog.exec()
-        if result == QDialog.DialogCode.Accepted:
-            resolve()
-        else:
-            self.stop_experiment()
-            reject()
-    def pause_experiment(self):
-        # 在with语句中自动管理加载遮罩
-        with LoadingContext(self, "正在暂停...", "animated") as mask:
-            self.setEnabled(False)
-            try:
-                if self.ufc_ugc_zos is not None and not self.ufc_ugc_zos.ispause:
-                    self.ufc_ugc_zos.pause()
-                else:
-                    self.ufc_ugc_zos.resume()
-                if self.ufc_ugc_zos_thread is not None and not self.ufc_ugc_zos_thread.isPaused():
-                    self.ufc_ugc_zos.disabled_auto_btn_handle()
-            except Exception as e:
-                logger.error(f"暂停实验监测ufc_ugc_zos错误，原因：{e}")
-            try:
-                if self.store_thread_sub is not None and not self.store_thread_sub.isPaused():
-                    self.store_thread_sub.pause()
-                else:
-                    self.store_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测store_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.add_message_thread_sub is not None and not self.add_message_thread_sub.isPaused():
-                    self.add_message_thread_sub.pause()
-                else:
-                    self.add_message_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测add_message_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.send_thread_sub is not None and not self.send_thread_sub.isPaused():
-                    self.send_thread_sub.pause()
-                else:
-                    self.send_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测send_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.read_queue_data_thread_sub is not None and not self.read_queue_data_thread_sub.isPaused():
-                    self.read_queue_data_thread_sub.pause()
-                else:
-                    self.read_queue_data_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测read_queue_data_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            # 所有红外相机线程停止
-            for camera_struct_l in self.infrared_camera_thread_sub_list:
-                if len(camera_struct_l) != 0 and 'camera' in camera_struct_l:
-                    try:
-                        if camera_struct_l['camera'] is not None and not camera_struct_l['camera'].isPaused():
-                            camera_struct_l['camera'].pause()
-                        else:
-                            camera_struct_l['camera'].resume()
-                    except Exception as e:
-                        logger.error(f"暂停实验监测infrared_camera_thread_sub_list错误，原因：{e}")
-                        self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.infrared_camera_delete_file_thread_sub is not None and not self.infrared_camera_delete_file_thread_sub.isPaused():
-                    self.infrared_camera_delete_file_thread_sub.pause()
-                else:
-                    self.infrared_camera_delete_file_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测infrared_camera_delete_file_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.infrared_camera_read_queue_data_thread_sub is not None and not self.infrared_camera_read_queue_data_thread_sub.isPaused():
-                    self.infrared_camera_read_queue_data_thread_sub.pause()
-                else:
-                    self.infrared_camera_read_queue_data_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测infrared_camera_read_queue_data_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            # 所有深度相机线程停止
-            for camera_struct_l in self.deep_camera_thread_sub_list:
-                if len(camera_struct_l) != 0 and 'camera' in camera_struct_l:
-                    try:
-                        if camera_struct_l['camera'] is not None and not camera_struct_l['camera'].isPaused():
-                            camera_struct_l['camera'].pause()
-                        else:
-                            camera_struct_l['camera'].resume()
-                    except Exception as e:
-                        logger.error(f"暂停实验监测deep_camera_thread_sub_list错误，原因：{e}")
-                        self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-                if len(camera_struct_l) != 0 and 'img_process' in camera_struct_l:
-                    try:
-                        if camera_struct_l['img_process'] is not None and not camera_struct_l['img_process'].isPaused():
-                            camera_struct_l['img_process'].pause()
-                        else:
-                            camera_struct_l['img_process'].resume()
-                    except Exception as e:
-                        logger.error(f"暂停实验监测deep_camera_thread_sub_list_img_process错误，原因：{e}")
-                        self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.deep_camera_delete_file_thread_sub is not None and not self.deep_camera_delete_file_thread_sub.isPaused():
-                    self.deep_camera_delete_file_thread_sub.pause()
-                else:
-                    self.deep_camera_delete_file_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测deep_camera_delete_file_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            try:
-                if self.deep_camera_read_queue_data_thread_sub is not None and not self.deep_camera_read_queue_data_thread_sub.isPaused():
-                    self.deep_camera_read_queue_data_thread_sub.pause()
-                else:
-                    self.deep_camera_read_queue_data_thread_sub.resume()
-            except Exception as e:
-                logger.error(f"暂停实验监测deep_camera_read_queue_data_thread_sub错误，原因：{e}")
-                self.status_bar.update_tip(f"暂停实验监测错误，原因：{e}")
-            pass
-
-
-            self.is_paused = not self.is_paused
-            if self.is_paused:
-                pause_experiment_time=global_setting.get_setting("pause_experiment_time",[])
-                pause_experiment_time.append(time.time())
-                global_setting.set_setting("pause_experiment_time",pause_experiment_time )
-                self.status_bar.update_tip(f"暂停实验监测成功！")
-            else:
-                relieve_pause_experiment_time = global_setting.get_setting("relieve_pause_experiment_time", [])
-                relieve_pause_experiment_time.append(time.time())
-                global_setting.set_setting("relieve_pause_experiment_time", relieve_pause_experiment_time)
-                self.status_bar.update_tip(f"解除暂停实验监测成功！")
-            self.status_bar.update_status(is_paused=self.is_paused)
-
-
-            for action_dict in self.tool_bar_actions:
-                if action_dict["obj_name"] == "pause_experiment":
-                    action_dict["action"]: QAction
-                    if self.is_paused:
-                        action_dict["name"]="解除暂停实验"
-                    else:
-                        action_dict["name"] = "暂停实验"
-                    action_dict["action"].setToolTip(action_dict["name"])
-                    action_dict["action"].setText(action_dict["name"])
-            self.setEnabled(True)
-        pass
-    def stop_experiment(self):
-
-        self.setEnabled(False)
-        self.status_bar.update_tip(f"正在关闭实验监测...")
-        # self.stop_experiment_thread = Stop_experiment_thread(name="stop_experiment_thread",window=self)
-        # self.stop_experiment_thread.start()
-        global_setting.set_setting("stop_experiment_time", time.time())
-        send_message_queue = global_setting.get_setting("send_message_queue")
-        send_message_queue.put( ObjectQueueItem(origin='MainWindow_Index', to='main_monitor_data', title='stop',
-                                                data={
-                                                'stop_experiment_time': global_setting.get_setting("stop_experiment_time"),
-                                                },
-                        time=time_util.get_format_from_time(time.time())))
-        message_structs = [
-            ObjectQueueItem(origin='MainWindow_Index', to='main_deep_camera', title='stop',data={
-                                                'stop_experiment_time': global_setting.get_setting("stop_experiment_time"),
-                                                },
-                            time=time_util.get_format_from_time(time.time())),
-            ObjectQueueItem(origin='MainWindow_Index', to='main_infrared_camera', title='stop',data={
-                                                'stop_experiment_time': global_setting.get_setting("stop_experiment_time"),
-                                                },
-                            time=time_util.get_format_from_time(time.time())),
-
-        ]
-        for message_struct in message_structs:
-            queue = global_setting.get_setting("queue")
-            queue.put(message_struct)
-
-        AsyPromise(self.close_monitor_data_window).then(
-            AsyPromise(self.stop_store_info_Qtimer).then(
-                AsyPromise(self.show_stop_dialog).then(
-
-                    AsyPromise(self.stop_update_gui).then(
-
-                        ).catch(lambda e: logger.error(e))
-
-                ).catch(lambda e: logger.error(e))
-            ).catch(lambda e:logger.error(e))
-        ).catch(lambda e:logger.error(e) )
-
-        # self.stop_store_info()
-        pass
-    def stop_update_gui(self,resolve,reject):
-        logger.error("stop_update_gui")
-        global_setting.set_setting("app_state", AppState.CONFIGURING)
 
 
 
 
-        # 更新main_gui组件显示
-        self.change_enable_component_app_state_signal.emit()
-        self.status_bar.update_status()
-        self.status_bar.update_tip(f"关闭实验监测成功！")
-        for action_dict in self.tool_bar_actions:
-            if action_dict["obj_name"] == "start_experiment":
-                action_dict["action"]: QAction
-                action_dict["action"].setDisabled(False)
-            if action_dict["obj_name"] == "stop_experiment":
-                action_dict["action"]: QAction
-                action_dict["action"].setDisabled(True)
 
-        self.setEnabled(True)
-        resolve()
-        pass
-
-    def show_stop_dialog(self,resolve,reject):
-        if self.stop_dialog is None:
-            self.stop_dialog = AnimatedLoadingDialog(countdown_seconds=float(global_setting.get_setting('UFC_UGC_ZOS_config')['UFC']['wait_time'])+15,title="停止实验",message="正在停止实验...")
-        else:
-            self.stop_dialog.reset_progress()
-            self.stop_dialog.clear_list_data()
-            self.stop_dialog.deleteLater()
-            self.stop_dialog = AnimatedLoadingDialog(
-                countdown_seconds=float(global_setting.get_setting('UFC_UGC_ZOS_config')['UFC']['wait_time'])+15,
-                title="停止实验",message="正在停止实验...")
-
-        # self.start_dialog.set_progress_range(0, ZOS_gas_path_system.process_nums+UFC_gas_path_system.process_nums+UGC_gas_path_system.process_nums)
-        result = self.stop_dialog.exec()
-        if result == QDialog.DialogCode.Accepted:
-            resolve()
-        else:
-            resolve()
-    def stop_store_info_Qtimer(self,resolve,reject):
-        QTimer.singleShot(100, self.stop_store_info)
-        resolve()
-    def stop_store_info(self):
-
-        # 停止实验 将文件夹的数据合并成一个数据文件
-        # 读取实验设置文件路径
-        experiment_setting_file = global_setting.get_setting("experiment_setting_file", None)
-        if experiment_setting_file is not None and os.path.exists(experiment_setting_file):
-            # 获取文件所在的文件夹路径
-            folder_path = os.path.dirname(experiment_setting_file)
-            # 获取文件名称
-            file_name = os.path.basename(experiment_setting_file)
-            # 不带扩展名的文件名称
-            file_name_without_extension = os.path.splitext(file_name)[0]
-            # 获取文件的扩展名
-            file_name_extension = os.path.splitext(file_name)[1]
-            # 定义文件夹路径
-            folder_path_data = os.getcwd() + global_setting.get_setting('monitor_data')['STORAGE'][
-                'fold_path'] + os.path.join(
-                global_setting.get_setting('monitor_data')['STORAGE']['sub_fold_path'],
-                f"{file_name_without_extension}_{time_util.get_format_file_from_time(global_setting.get_setting('start_experiment_time', time.time()))}")
-            if self.stop_dialog is not None:
-                self.stop_dialog.insert_data_signal.emit(f"正在导出数据.... ")
-            custom_data_file_util.save_folder_contents_as_custom_file(folder_path_data)
-
-    def close_monitor_data_window(self,resolve,reject):
-        """
-        关闭監控數據界面
-        :return:
-        """
-        # 关闭窗口
-        for module in self.modules:
-            module: BaseModule
-            if module.name == "Main_New_Monitor_data":
-                module.close()
-                resolve()
-                return
-        resolve()
-    def export_experiment_datas(self):
-        """
-        导出实验数据按钮函数
-        :return:
-        """
-
-        def stop_store_info_Qtimer():
-            # 读取实验设置文件路径
-            experiment_setting_file = global_setting.get_setting("experiment_setting_file", None)
-            if experiment_setting_file is not None and os.path.exists(experiment_setting_file):
-                # 获取文件所在的文件夹路径
-                folder_path = os.path.dirname(experiment_setting_file)
-                # 获取文件名称
-                file_name = os.path.basename(experiment_setting_file)
-                # 不带扩展名的文件名称
-                file_name_without_extension = os.path.splitext(file_name)[0]
-                # 获取文件的扩展名
-                file_name_extension = os.path.splitext(file_name)[1]
-                # 定义文件夹路径
-                folder_path_data = os.getcwd() + global_setting.get_setting('monitor_data')['STORAGE'][
-                    'fold_path'] + os.path.join(
-                    global_setting.get_setting('monitor_data')['STORAGE']['sub_fold_path'],
-                    f"{file_name_without_extension}_{time_util.get_format_file_from_time(global_setting.get_setting('start_experiment_time', time.time()))}")
-                custom_data_file_util.export_data_to_csv(export_file_path=None, file_name=os.path.basename(folder_path_data))
-                # custom_data_file_util.save_folder_contents_as_custom_file(folder_path_data,is_delete_original_data_file=False)
-
-        QTimer.singleShot(1000, stop_store_info_Qtimer)
     def close_tab(self, index):
         """关闭标签页"""
         self.tab_widget.widget(index).hide()

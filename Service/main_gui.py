@@ -18,7 +18,7 @@ from public.entity.MyQThread import MyThread, MyQThread
 from public.entity.enum.Public_Enum import AppState
 from public.entity.queue.ObjectQueueItem import ObjectQueueItem
 from public.function.Crash_handle.CrashHandle import CrashHandler
-from public.function.Modbus.New_Mod_Bus import ModbusRTUMasterNew
+
 from public.util.time_util import time_util
 from theme.ThemeManager import ThemeManager
 # 过滤日志
@@ -133,20 +133,20 @@ def start_qt_application():
     crash_handler = CrashHandler()
     crash_handler.crash_signal.connect(on_crash)
 
-    program_self_check_index_dialog = Program_self_check_index()
-    program_self_check_index_dialog.setWindowIcon(QIcon(global_setting.get_setting("configer",{}).get("window",{}).get("icon","")))
-    program_self_check_index_dialog.activateWindow()
-    return_Data = program_self_check_index_dialog.exec()
-    if return_Data ==QDialog.DialogCode.Accepted:
+    # program_self_check_index_dialog = Program_self_check_index()
+    # program_self_check_index_dialog.setWindowIcon(QIcon(global_setting.get_setting("configer",{}).get("window",{}).get("icon","")))
+    # program_self_check_index_dialog.activateWindow()
+    # return_Data = program_self_check_index_dialog.exec()
+    # if return_Data ==QDialog.DialogCode.Accepted:
         #点了确认
-        # # 主窗口实例化
+    # # 主窗口实例化
 
-        main_window=MainWindow_Index()
-        main_window.setWindowIcon(QIcon(global_setting.get_setting("configer",{}).get("window",{}).get("icon","")))
-        # 主窗口显示
-        logger.info("Appliacation start")
+    main_window=MainWindow_Index()
+    main_window.setWindowIcon(QIcon(global_setting.get_setting("configer",{}).get("window",{}).get("icon","")))
+    # 主窗口显示
+    logger.info("Appliacation start")
 
-        main_window.show_frame()
+    main_window.show_frame()
     # 系统退出
     sys.exit(app.exec())
     pass

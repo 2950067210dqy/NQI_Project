@@ -24,24 +24,16 @@ def load_global_setting():
     else:
         logger.error("gui配置文件读取失败。")
     global_setting.set_setting("configer", configer)
-    # 加载相机配置
-    config_file_path = os.getcwd() + config_path + "/camera_config.ini"
-    # 串口配置数据{"section":{"key1":value1,"key2":value2,....}，...}
-    config = ini_parser(config_file_path).read()
-    if (len(config) != 0):
-        logger.info("相机配置文件读取成功。")
-    else:
-        logger.error("相机配置文件读取失败。")
-    global_setting.set_setting("camera_config", config)
+
     # 加载监控数据配置
-    config_file_path = os.getcwd() + config_path + "/monitor_datas_config.ini"
+    config_file_path = os.getcwd() + config_path + "/connect_server_config.ini"
     # 配置数据{"section":{"key1":value1,"key2":value2,....}，...}
     config = ini_parser(config_file_path).read()
     if (len(config) != 0):
         logger.info("监控配置文件读取成功。")
     else:
         logger.error("监控配置文件读取失败。")
-    global_setting.set_setting("monitor_data", config)
+    global_setting.set_setting("connect_server", config)
 
     # 风格默认是dark  light
     global_setting.set_setting("style", configer['theme']['default'])
@@ -70,24 +62,16 @@ def load_global_setting_without_Qt():
     else:
         logger.error("gui配置文件读取失败。")
     global_setting.set_setting("configer", configer)
-    # 加载相机配置
-    config_file_path = os.getcwd() + config_path + "/camera_config.ini"
-    # 串口配置数据{"section":{"key1":value1,"key2":value2,....}，...}
-    config = ini_parser(config_file_path).read()
-    if (len(config) != 0):
-        logger.info("相机配置文件读取成功。")
-    else:
-        logger.error("相机配置文件读取失败。")
-    global_setting.set_setting("camera_config", config)
+
     # 加载监控数据配置
-    config_file_path = os.getcwd() + config_path + "/monitor_datas_config.ini"
+    config_file_path = os.getcwd() + config_path + "/connect_server_config.ini"
     # 配置数据{"section":{"key1":value1,"key2":value2,....}，...}
     config = ini_parser(config_file_path).read()
     if (len(config) != 0):
         logger.info("监控配置文件读取成功。")
     else:
         logger.error("监控配置文件读取失败。")
-    global_setting.set_setting("monitor_data", config)
+    global_setting.set_setting("connect_server", config)
 
     # 风格默认是dark  light
     global_setting.set_setting("style", configer['theme']['default'])
@@ -114,24 +98,16 @@ def load_global_setting_without_Qt_for_subprocess():
     else:
         logger.error("gui配置文件读取失败。")
     global_setting.set_setting("configer", configer)
-    # 加载相机配置
-    config_file_path = "../"  + config_path + "/camera_config.ini"
-    # 串口配置数据{"section":{"key1":value1,"key2":value2,....}，...}
-    config = ini_parser(config_file_path).read()
-    if (len(config) != 0):
-        logger.info("相机配置文件读取成功。")
-    else:
-        logger.error("相机配置文件读取失败。")
-    global_setting.set_setting("camera_config", config)
+
     # 加载监控数据配置
-    config_file_path = "../" + config_path + "/monitor_datas_config.ini"
+    config_file_path = "../" + config_path + "/connect_server_config.ini"
     # 配置数据{"section":{"key1":value1,"key2":value2,....}，...}
     config = ini_parser(config_file_path).read()
     if (len(config) != 0):
         logger.info("监控配置文件读取成功。")
     else:
         logger.error("监控配置文件读取失败。")
-    global_setting.set_setting("monitor_data", config)
+    global_setting.set_setting("connect_server", config)
     # 风格默认是dark  light
     global_setting.set_setting("style", configer['theme']['default'])
     # 图标风格 white black

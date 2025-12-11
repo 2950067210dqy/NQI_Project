@@ -8,7 +8,9 @@ import os
 import time
 import psutil
 from loguru import logger
-from Service import main_response_Modbus, main_gui
+from Service import  main_gui
+from Service.connect_server_service import main_connect_server
+from Service.connect_server_service.main_connect_server import service_name as service_name_connect_server
 from public.config_class.Log_Config import LogConfig
 from public.entity.queue.ObjectQueue import ObjectQueue
 from public.entity.queue.ObjectQueueItem import ObjectQueueItem
@@ -163,18 +165,18 @@ def test_integrated_monitor():
     monitor.register_exception_callback(on_any_exception)
 
     # 创建工作进程的日志配置
-    p_response_comm_config = monitor.create_process_log_config(
-        "p_response_comm",
+    p_connect_server_config = monitor.create_process_log_config(
+        f"p_{service_name_connect_server}",
         log_level="DEBUG",
-        custom_format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level} | p_response_comm | {module}:{function}:{line} | {message} </level>",
+        custom_format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level} | p_connect_server | {module}:{function}:{line} | {message} </level>",
         enable_console=True
     )
     monitor.start_worker(
-        target_func=main_response_Modbus.main,
-        args=(),
-        name="p_response_comm",
+        target_func=main_connect_server.main,
+        args=(q,send_message_q),
+        name=f"p_{service_name_connect_server}",
         auto_restart=False,
-        log_config=p_response_comm_config
+        log_config=p_connect_server_config
     )
 
 
