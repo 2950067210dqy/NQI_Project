@@ -9,7 +9,7 @@ from pathlib import Path
 from dataclasses import dataclass, field
 
 import pandas as pd
-from PyQt6.QtCore import pyqtSignal, Qt, QThread, QDate
+from PyQt6.QtCore import pyqtSignal, Qt, QThread, QDate, QMetaObject, Q_ARG
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
     QLabel, QPushButton, QGroupBox, QScrollArea,
@@ -250,8 +250,9 @@ class ExcelDataViewerWindow(ThemedWindow):
                     save_path,
                     device_id
                 )
-                thread.download_finished.connect(self.on_download_finished)
-                thread.download_failed.connect(self.on_download_failed)
+                # 使用QueuedConnection确保槽函数在主线程中执行
+                thread.download_finished.connect(self.on_download_finished, Qt.ConnectionType.QueuedConnection)
+                thread.download_failed.connect(self.on_download_failed, Qt.ConnectionType.QueuedConnection)
                 
                 self.active_threads.append(thread)
                 thread.start()
@@ -568,12 +569,13 @@ class ExcelDataViewerWindow(ThemedWindow):
                             bottom_values = device_data[:]
                         else:
                             bottom_values = [bottom_values[i] + device_data[i] for i in range(len(device_data))]
-                
-                ax.set_xlabel('相角 (°) 和 电流 (A)', fontsize=11, fontweight='bold')
+                # 设置刻度旋转45度
+                ax.tick_params(axis='x', rotation=45)
+                ax.set_xlabel('相角 (°) 和 电流 (A)', fontsize=9, fontweight='bold')
                 ax.set_ylabel(data_type_item.name, fontsize=11, fontweight='bold')
                 ax.set_title(f"{sheet_name} - {data_type_item.name}", fontsize=12, fontweight='bold')
                 ax.set_xticks(x_pos)
-                ax.set_xticklabels(x_labels, fontsize=9)
+                ax.set_xticklabels(x_labels, fontsize=7)
                 
                 # ✅ 图例放在图的外面（右侧），不遮挡图表
                 ax.legend(loc='upper left', 

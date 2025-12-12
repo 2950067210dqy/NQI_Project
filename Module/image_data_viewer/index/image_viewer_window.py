@@ -957,62 +957,6 @@ class ImageDataViewerWindow(ThemedWindow):
         # TODO: 实现筛选逻辑
         logger.info("筛选历史记录")
     
-    def on_image_download_finished(self, file_path: str, device_id: str):
-        """图片下载完成回调"""
-        logger.info(f"图片下载完成: {Path(file_path).name}, 设备: {device_id}")
-        
-        self.status_label.setText(f"状态: 下载完成 - 设备 {device_id}")
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
-        
-        # 获取或创建设备选项卡
-        device_tab = self.get_or_create_device_image_tab(device_id)
-        if not device_tab:
-            logger.error(f"无法获取设备选项卡: {device_id}")
-            return
-
-        # 获取下一个显示区域
-        target_widget = self.get_next_widget_for_device(device_tab)
-        if not target_widget:
-            logger.error("无法获取显示区域")
-            return
-
-        # 加载并显示图片
-        target_widget.load_original_image(Path(file_path))
-        logger.info(f"[设备{device_id}] 图片已加载到区域 {target_widget.index}: {Path(file_path).name}")
-        
-        # 保存到历史记录
-        record = {
-            'device_id': device_id,
-            'file_name': Path(file_path).name,
-            'original_path': file_path,
-            'recognized_path': file_path,
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        self.history_records.append(record)
-        self.update_history_list()
-        
-        # 更新设备信息
-        with self.widget_access_lock:
-            current_count = sum(1 for w in device_tab.image_widgets if w.original_image_path)
-            widget_count = len(device_tab.image_widgets)
-        
-        device_tab.info_labels['count'].setText(f"图片数量: {current_count}/{widget_count}")
-        device_tab.info_labels['batch'].setText(f"最后接收: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    def on_image_download_failed(self, error: str, device_id: str):
-        """图片下载失败回调"""
-        self.status_label.setText(f"状态: 下载失败 - 设备 {device_id} - {error}")
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
-    
-    def on_thread_finished(self, thread):
-        """线程完成回调，清理线程引用"""
-        try:
-            if thread in self.active_download_threads:
-                self.active_download_threads.remove(thread)
-                logger.info(f"图片下载线程已完成并清理，剩余: {len(self.active_download_threads)}")
-        except Exception as e:
-            logger.error(f"清理线程失败: {e}")
-    
     def set_server_client(self, client: Client_server):
         """设置服务端客户端"""
         self.server_client = client
