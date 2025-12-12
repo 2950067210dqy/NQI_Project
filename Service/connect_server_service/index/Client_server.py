@@ -1,15 +1,10 @@
-import threading
-from datetime import datetime
-
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QMessageBox
 from loguru import logger
 
 from Service.connect_server_service.api.api_client import UpperAPIClient
 from Service.connect_server_service.api.websocket_client import WebSocketThread
-from Service.connect_server_service.listener.notification_listener import NotificationListener
 from public.config_class.global_setting import global_setting
-from public.entity.queue.ObjectQueueItem import ObjectQueueItem
+from public.function.Cache.data_download_manager import download_manager
 
 
 class Client_server():
@@ -39,6 +34,9 @@ class Client_server():
 
             # 测试连接
             self.client.list_devices()
+            
+            # 设置下载管理器的客户端
+            download_manager.set_client(self)
 
             # 启动 WebSocket 连接接收实时通知
             device_filter = global_setting.get_setting("connect_server", {}).get("server", {}).get("device_id", None)
@@ -76,6 +74,9 @@ class Client_server():
 
     def disconnect_from_server(self):
         """断开服务器连接"""
+        # 停止所有下载任务
+        download_manager.stop_all_downloads()
+        
         # 停止 WebSocket 连接
         if self.ws_thread:
             self.ws_thread.stop()
@@ -101,31 +102,13 @@ class Client_server():
         
         if notification_type == "excel_upload":
             logger.info(f"[WebSocket] 收到电量数据上传通知: 设备 {device_id} - {file_name}")
-            # 发送消息到 main_gui 进程的电量数据查看器
-            queue = global_setting.get_setting("queue", None)
-            if queue:
-                queue.put(ObjectQueueItem(
-                    origin="connect_server",
-                    to="excel_data_viewer",
-                    title="new_excel_data",
-                    data=data,
-                    time=datetime.now().isoformat()
-                ))
-                logger.info(f"已发送电量数据通知到队列")
+            # ✅ 新逻辑：使用下载管理器统一下载
+            download_manager.handle_new_data_notification(data)
                 
         elif notification_type == "image_upload":
             logger.info(f"[WebSocket] 收到几何量数据上传通知: 设备 {device_id} - {file_name}")
-            # 发送消息到 main_gui 进程的图片数据查看器
-            queue = global_setting.get_setting("queue", None)
-            if queue:
-                queue.put(ObjectQueueItem(
-                    origin="connect_server",
-                    to="image_data_viewer",
-                    title="new_image_data",
-                    data=data,
-                    time=datetime.now().isoformat()
-                ))
-                logger.info(f"已发送图片数据通知到队列")
+            # ✅ 新逻辑：使用下载管理器统一下载
+            download_manager.handle_new_data_notification(data)
         else:
             logger.info(f"[WebSocket] 收到通知: {data}")
     

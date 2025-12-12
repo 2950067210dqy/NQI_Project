@@ -10,57 +10,25 @@ from datetime import datetime
 from pathlib import Path
 
 from PyQt6 import QtGui
-from PyQt6.QtCore import pyqtSignal, Qt, QSize, QThread
+from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-                              QLabel, QPushButton, QGroupBox, QGridLayout,
-                              QScrollArea, QMessageBox, QListWidget, QListWidgetItem,
-                              QSplitter, QFrame, QComboBox)
-from PyQt6.QtGui import QPixmap, QImage
+                             QLabel, QPushButton, QGroupBox, QGridLayout,
+                             QScrollArea, QListWidget, QListWidgetItem,
+                             QSplitter, QFrame, QComboBox)
+from PyQt6.QtGui import QPixmap
 from loguru import logger
 
 from Module.image_data_viewer.service.image_recognition import image_recognition_service
 from Service.connect_server_service.index.Client_server import Client_server
 from theme.ThemeQt6 import ThemedWindow
 from public.entity.MyQThread import MyQThread
-from public.entity.queue.ObjectQueueItem import ObjectQueueItem
 from public.config_class.global_setting import global_setting
-
-
-class ImageDownloadThread(QThread):
-    """图片文件下载线程"""
-    download_finished = pyqtSignal(str, str)  # file_path, device_id
-    download_failed = pyqtSignal(str, str)    # error, device_id
-    
-    def __init__(self, client, file_id, save_path, device_id):
-        super().__init__()
-        self.client = client
-        self.file_id = file_id
-        self.save_path = Path(save_path)
-        self.device_id = device_id
-        self.setTerminationEnabled(True)
-    
-    def run(self):
-        """执行下载"""
-        try:
-            logger.info(f"[下载线程] 开始下载图片: {self.save_path.name}, file_id={self.file_id}")
-            
-            if self.file_id is None:
-                raise Exception("file_id 为 None，无法下载")
-            
-            self.save_path.parent.mkdir(parents=True, exist_ok=True)
-            self.client.download_image_file(self.file_id, self.save_path)
-            
-            logger.info(f"[下载线程] 下载完成: {self.save_path}")
-            self.download_finished.emit(str(self.save_path), self.device_id)
-            
-        except Exception as e:
-            import traceback
-            logger.error(f"[下载线程] 下载失败: {e}\n{traceback.format_exc()}")
-            self.download_failed.emit(str(e), self.device_id)
+from public.function.Cache.cache_manager import cache_manager
+from public.function.Cache.data_download_manager import download_manager
 
 
 class ImageViewerQueueThread(MyQThread):
-    """队列监听线程"""
+    """队列监听线程（已废弃，保留兼容性）"""
     
     def __init__(self, name, window):
         super().__init__(name)
@@ -68,30 +36,8 @@ class ImageViewerQueueThread(MyQThread):
         self.window = window  # 窗口引用
     
     def dosomething(self):
-        if not self.queue.empty():
-            try:
-                message: ObjectQueueItem = self.queue.get()
-            except Exception as e:
-                logger.error(f"{self.name}发生错误{e}")
-                return
-            
-            if message is not None and message.is_Empty():
-                return
-            
-            if message is not None and isinstance(message, ObjectQueueItem) and message.to == 'image_data_viewer':
-                logger.info(f"图片数据查看器收到消息: {message.title}")
-                
-                match message.title:
-                    case 'new_image_data':
-                        # 收到新的图片数据通知
-                        data = message.data
-                        if data and self.window:
-                            self.window.update_data_signal.emit(data)
-                    case _:
-                        pass
-            else:
-                # 把消息放回去
-                self.queue.put(message)
+        """不再从队列接收数据，改为监听下载管理器信号"""
+        pass
 
 
 class ImageDisplayWidget(QFrame):
@@ -270,6 +216,9 @@ class ImageDataViewerWindow(ThemedWindow):
         # ✅ 正在创建的设备tab标记（防止重复创建）
         self.creating_device_tabs = set()  # 正在创建中的device_id集合
         
+        # 窗口状态
+        self.is_visible = False  # 窗口是否可见
+        
         # 服务端连接
         self.server_client: Client_server = None
         
@@ -290,33 +239,42 @@ class ImageDataViewerWindow(ThemedWindow):
         # 初始化 UI
         self.init_ui()
         
-        # 连接信号
-        self.update_data_signal.connect(self.on_new_image_received)
+        # 连接下载管理器信号（监听新数据下载完成）
+        download_manager.image_data_ready.connect(
+            self.on_cache_data_ready,
+            Qt.ConnectionType.QueuedConnection
+        )
+        
+        # 加载历史缓存
+        self.load_history_from_cache()
     
     def showEvent(self, a0: typing.Optional[QtGui.QShowEvent]) -> None:
         """窗口显示事件"""
         logger.info("几何量图片数据查看器窗口显示")
+        self.is_visible = True
         super().showEvent(a0)
+        
+        # 加载最新缓存作为实时记录
+        self.load_latest_from_cache()
     
     def hideEvent(self, a0: typing.Optional[QtGui.QHideEvent]) -> None:
         """窗口隐藏事件"""
         logger.info("几何量图片数据查看器窗口隐藏")
+        self.is_visible = False
         super().hideEvent(a0)
     
     def closeEvent(self, event):
         """窗口关闭事件"""
-        # 停止所有下载线程
-        if hasattr(self, 'active_download_threads'):
-            for thread in self.active_download_threads:
-                if thread.isRunning():
-                    thread.terminate()
-                    thread.wait(1000)
-            logger.info(f"已停止 {len(self.active_download_threads)} 个下载线程")
-        
         # 停止队列监听线程
         if hasattr(self, 'queue_thread') and self.queue_thread:
             self.queue_thread.stop()
             logger.info("图片数据查看器队列监听线程已停止")
+        
+        # 断开下载管理器信号
+        try:
+            download_manager.image_data_ready.disconnect(self.on_cache_data_ready)
+        except:
+            pass
         
         super().closeEvent(event)
     
@@ -501,75 +459,60 @@ class ImageDataViewerWindow(ThemedWindow):
         
         return tab
     
-    def on_new_image_received(self, data: dict):
+    def on_cache_data_ready(self, file_path: str, device_id: str):
         """
-        接收到新图片数据的槽函数
-        data 格式: {
-            'type': 'image_upload',
-            'device_id': 'xxx',
-            'file_id': 123,
-            'file_name': 'xxx.png',
-            'file_size': 234567,
-            'timestamp': '2025-12-11T12:00:00'
-        }
+        下载管理器通知：缓存数据已就绪
+        此时文件已下载并保存到缓存数据库，页面从缓存读取并显示
         """
-        logger.info(f"收到新几何量图片通知: {data}")
+        logger.info(f"[几何量数据页面] 收到缓存数据就绪通知: {Path(file_path).name}, 设备: {device_id}")
         
-        device_id = data.get('device_id', 'unknown')
-        file_id = data.get('file_id')
-        file_name = data.get('file_name', 'unknown')
-        timestamp = data.get('timestamp', datetime.now().isoformat())
-        
-        # 更新状态
-        self.status_label.setText(f"状态: 正在下载 - 设备 {device_id}")
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: orange;")
-        
-        # 从服务端下载图片（使用线程避免阻塞 UI）
-        if file_id and self.server_client:
-            try:
-                # 创建 data 目录
-                data_dir = Path("data/image") / device_id
-                data_dir.mkdir(parents=True, exist_ok=True)
-                
-                # 下载文件
-                save_path = data_dir / file_name
-                
-                # 创建下载线程
-                download_thread = ImageDownloadThread(
-                    client=self.server_client.client,
-                    file_id=file_id,
-                    save_path=save_path,
-                    device_id=device_id
-                )
-                
-                # 连接信号（使用 Qt.ConnectionType.QueuedConnection 确保在主线程执行）
-                download_thread.download_finished.connect(
-                    self.on_image_download_finished,
-                    Qt.ConnectionType.QueuedConnection
-                )
-                download_thread.download_failed.connect(
-                    self.on_image_download_failed,
-                    Qt.ConnectionType.QueuedConnection
-                )
-                download_thread.finished.connect(
-                    lambda t=download_thread: self.on_thread_finished(t),
-                    Qt.ConnectionType.QueuedConnection
-                )
-                
-                # 添加到活跃线程列表
-                self.active_download_threads.append(download_thread)
-                
-                # 启动下载
-                download_thread.start()
-                
-                logger.info(f"启动图片下载线程: {file_name}, 活跃线程数: {len(self.active_download_threads)}")
-                
-            except Exception as e:
-                logger.error(f"启动下载失败: {e}")
-                self.status_label.setText(f"状态: 下载失败 - {str(e)}")
+        try:
+            # 更新状态
+            self.status_label.setText(f"状态: 加载数据 - 设备 {device_id}")
+            self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: orange;")
+            
+            # 检查文件是否存在
+            if not Path(file_path).exists():
+                logger.error(f"文件不存在: {file_path}")
+                self.status_label.setText(f"状态: 文件不存在")
                 self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
-        else:
-            logger.warning("缺少 file_id 或 server_client 未初始化")
+                return
+            
+            # 获取或创建设备选项卡
+            device_tab = self.get_or_create_device_image_tab(device_id)
+            if not device_tab:
+                logger.error(f"无法创建设备选项卡: {device_id}")
+                return
+            
+            # 获取显示区域
+            target_widget = self.get_next_widget_for_device(device_tab)
+            if not target_widget:
+                logger.error("无法获取显示区域")
+                return
+            
+            # 加载图片
+            target_widget.load_original_image(Path(file_path))
+            logger.info(f"[设备{device_id}] ✅ 图片已加载到区域 {target_widget.index}: {Path(file_path).name}")
+            
+            # 更新历史记录（从缓存读取，无需手动保存）
+            self._update_history_from_cache()
+            
+            # 更新设备信息
+            with self.widget_access_lock:
+                current_count = sum(1 for w in device_tab.image_widgets if w.original_image_path)
+                widget_count = len(device_tab.image_widgets)
+            
+            device_tab.info_labels['count'].setText(f"图片数量: {current_count}/{widget_count}")
+            device_tab.info_labels['batch'].setText(f"最后接收: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            
+            self.status_label.setText(f"状态: 加载完成 - 设备 {device_id}")
+            self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
+            
+        except Exception as e:
+            import traceback
+            logger.error(f"处理缓存数据失败: {e}\n{traceback.format_exc()}")
+            self.status_label.setText(f"状态: 加载失败 - {e}")
+            self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
     
     def get_or_create_device_image_tab(self, device_id: str):
         """
@@ -753,63 +696,38 @@ class ImageDataViewerWindow(ThemedWindow):
                 else:
                     self.on_image_download_failed(result.error, result.device_id)
     
-    def on_image_download_finished(self, file_path: str, device_id: str):
-        """图片下载完成回调"""
-        logger.info(f"========== 下载完成：{Path(file_path).name}, 设备：{device_id} ==========")
-        
-        self.status_label.setText(f"状态: 下载完成 - 设备 {device_id}")
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
-        
-        # ✅ 获取或创建设备选项卡（方法内部已加锁）
-        device_tab = self.get_or_create_device_image_tab(device_id)
-        if not device_tab:
-            logger.error(f"无法获取设备选项卡: {device_id}")
-            return
-
-        # ✅ 获取显示区域（方法内部已加锁）
-        target_widget = self.get_next_widget_for_device(device_tab)
-        if not target_widget:
-            logger.error("无法获取显示区域")
-            return
-
-        # 加载图片
-        target_widget.load_original_image(Path(file_path))
-        logger.info(f"[设备{device_id}] ✅ 图片已加载到区域 {target_widget.index}: {Path(file_path).name}")
-
-        # 保存到历史记录
-        record = {
-            'device_id': device_id,
-            'file_name': Path(file_path).name,
-            'original_path': file_path,
-            'recognized_path': file_path,  # 识别后会更新
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        self.history_records.append(record)
-        self.update_history_list()
-
-        # ✅ 更新设备选项卡的显示信息（读取操作，锁在 get_next_widget_for_device 中已保护写入）
-        with self.widget_access_lock:
-            current_count = sum(1 for w in device_tab.image_widgets if w.original_image_path)
-            widget_count = len(device_tab.image_widgets)
-
-        device_tab.info_labels['count'].setText(f"图片数量: {current_count}/{widget_count}")
-        device_tab.info_labels['batch'].setText(f"最后接收: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-        logger.info(f"图片文件下载并显示成功: {file_path}，设备: {device_id}，区域: {target_widget.index if target_widget else 'Unknown'}")
-    
-    def on_image_download_failed(self, error: str, device_id: str):
-        """图片下载失败回调"""
-        self.status_label.setText(f"状态: 下载失败 - 设备 {device_id} - {error}")
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
-    
-    def on_thread_finished(self, thread):
-        """线程完成回调，清理线程引用"""
+    def _update_history_from_cache(self):
+        """从缓存更新历史记录列表（增量更新）"""
         try:
-            if thread in self.active_download_threads:
-                self.active_download_threads.remove(thread)
-                logger.info(f"下载线程已完成并清理，剩余活跃线程: {len(self.active_download_threads)}")
+            # 获取最新的几条记录
+            records = cache_manager.get_image_records(limit=10)
+            
+            # 获取已有的文件路径集合
+            existing_paths = {item['original_path'] for item in self.history_records}
+            
+            # 添加新记录
+            for record in records:
+                if record['original_path'] not in existing_paths and Path(record['original_path']).exists():
+                    history_item = {
+                        'device_id': record['device_id'],
+                        'file_name': record['file_name'],
+                        'original_path': record['original_path'],
+                        'recognized_path': record.get('recognized_path', record['original_path']),
+                        'timestamp': record['timestamp']
+                    }
+                    self.history_records.insert(0, history_item)  # 插入到开头
+                    
+                    # 添加设备到下拉框
+                    device_id = record['device_id']
+                    if device_id not in [self.history_device_combo.itemText(i) 
+                                        for i in range(1, self.history_device_combo.count())]:
+                        self.history_device_combo.addItem(device_id)
+            
+            # 更新历史列表显示
+            self.update_history_list()
+            
         except Exception as e:
-            logger.error(f"清理线程失败: {e}")
+            logger.error(f"更新历史记录失败: {e}")
     
     def ensure_display_capacity(self, required_count: int):
         """
@@ -956,6 +874,106 @@ class ImageDataViewerWindow(ThemedWindow):
         """筛选历史记录"""
         # TODO: 实现筛选逻辑
         logger.info("筛选历史记录")
+    
+    def load_history_from_cache(self):
+        """从缓存加载历史记录"""
+        try:
+            logger.info("开始从缓存加载图片历史记录...")
+            
+            # 获取所有历史记录
+            records = cache_manager.get_image_records(limit=100)
+            
+            if not records:
+                logger.info("缓存中没有图片历史记录")
+                return
+            
+            # 加载到history_records
+            for record in records:
+                if Path(record['original_path']).exists():
+                    history_item = {
+                        'device_id': record['device_id'],
+                        'file_name': record['file_name'],
+                        'original_path': record['original_path'],
+                        'recognized_path': record.get('recognized_path', record['original_path']),
+                        'timestamp': record['timestamp']
+                    }
+                    self.history_records.append(history_item)
+                    
+                    # 添加设备到下拉框
+                    device_id = record['device_id']
+                    if device_id not in [self.history_device_combo.itemText(i) 
+                                        for i in range(1, self.history_device_combo.count())]:
+                        self.history_device_combo.addItem(device_id)
+            
+            # 更新历史列表显示
+            self.update_history_list()
+            
+            logger.info(f"✅ 从缓存加载了 {len(self.history_records)} 条图片历史记录")
+            
+        except Exception as e:
+            logger.error(f"从缓存加载图片历史记录失败: {e}")
+    
+    def load_latest_from_cache(self):
+        """从缓存加载最新记录作为实时显示"""
+        try:
+            logger.info("开始从缓存加载最新图片...")
+            
+            # 获取所有设备的最新记录（每个设备最多20张）
+            devices = cache_manager.get_image_devices()
+            
+            if not devices:
+                logger.info("缓存中没有设备记录")
+                return
+            
+            loaded_count = 0
+            for device_id in devices:
+                latest_records = cache_manager.get_latest_image_records(device_id, limit=self.max_widget_count)
+                
+                if not latest_records:
+                    continue
+                
+                # 获取或创建设备选项卡
+                device_tab = self.get_or_create_device_image_tab(device_id)
+                if not device_tab:
+                    logger.warning(f"无法创建设备选项卡: {device_id}")
+                    continue
+                
+                # 加载每张图片
+                for record in reversed(latest_records):  # 从旧到新加载
+                    original_path = record['original_path']
+                    
+                    # 检查文件是否存在
+                    if not original_path or not Path(original_path).exists():
+                        logger.warning(f"缓存记录的文件不存在: {original_path}")
+                        continue
+                    
+                    # 获取显示区域并加载图片
+                    try:
+                        target_widget = self.get_next_widget_for_device(device_tab)
+                        if target_widget:
+                            target_widget.load_original_image(Path(original_path))
+                            loaded_count += 1
+                            logger.info(f"✅ 从缓存加载图片: {Path(original_path).name}")
+                    except Exception as e:
+                        logger.error(f"加载缓存图片失败 {original_path}: {e}")
+                
+                # 更新设备信息
+                with self.widget_access_lock:
+                    current_count = sum(1 for w in device_tab.image_widgets if w.original_image_path)
+                    widget_count = len(device_tab.image_widgets)
+                
+                device_tab.info_labels['count'].setText(f"图片数量: {current_count}/{widget_count}")
+                device_tab.info_labels['batch'].setText(f"最后接收: {latest_records[0]['timestamp']}")
+            
+            if loaded_count > 0:
+                self.status_label.setText(f"状态: 已从缓存加载 {loaded_count} 张图片")
+                self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
+                logger.info(f"✅ 从缓存加载了 {loaded_count} 张图片")
+            else:
+                logger.info("没有可加载的缓存图片")
+                
+        except Exception as e:
+            logger.error(f"从缓存加载最新图片失败: {e}")
     
     def set_server_client(self, client: Client_server):
         """设置服务端客户端"""

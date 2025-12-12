@@ -72,8 +72,30 @@ PyQt提供了几种连接类型：
 ## 注意事项
 
 1. **信号参数类型**：使用 `QueuedConnection` 时，信号参数必须是Qt元类型或已注册的类型
-2. **其他页面**：如果几何量数据页面也有类似问题，需要同样处理
+2. **几何量数据页面**：已经正确使用了 `Qt.ConnectionType.QueuedConnection`，无需修改
 3. **最佳实践**：所有跨线程的信号连接都应该显式指定连接类型
+
+## 几何量数据页面验证
+
+检查 `Module/image_data_viewer/index/image_viewer_window.py` 第545-557行：
+
+```python
+# 连接信号（已正确使用 QueuedConnection）
+download_thread.download_finished.connect(
+    self.on_image_download_finished,
+    Qt.ConnectionType.QueuedConnection
+)
+download_thread.download_failed.connect(
+    self.on_image_download_failed,
+    Qt.ConnectionType.QueuedConnection
+)
+download_thread.finished.connect(
+    lambda t=download_thread: self.on_thread_finished(t),
+    Qt.ConnectionType.QueuedConnection
+)
+```
+
+几何量数据页面已经正确实现了跨线程信号连接，无需修改。
 
 ## 相关文档
 

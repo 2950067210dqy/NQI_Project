@@ -9,11 +9,10 @@ from pathlib import Path
 from dataclasses import dataclass, field
 
 import pandas as pd
-from PyQt6.QtCore import pyqtSignal, Qt, QThread, QDate, QMetaObject, Q_ARG
+from PyQt6.QtCore import pyqtSignal, Qt, QDate
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-    QLabel, QPushButton, QGroupBox, QScrollArea,
-    QComboBox, QDateEdit, QListWidget, QListWidgetItem, QSplitter
+    QLabel, QPushButton, QGroupBox, QComboBox, QDateEdit, QListWidget, QListWidgetItem
 )
 from loguru import logger
 import matplotlib
@@ -27,8 +26,9 @@ plt.rcParams['axes.unicode_minus'] = False
 from Service.connect_server_service.index.Client_server import Client_server
 from theme.ThemeQt6 import ThemedWindow
 from public.entity.MyQThread import MyQThread
-from public.entity.queue.ObjectQueueItem import ObjectQueueItem
 from public.config_class.global_setting import global_setting
+from public.function.Cache.cache_manager import cache_manager
+from public.function.Cache.data_download_manager import download_manager
 
 
 # ==================== 数据结构 ====================
@@ -73,47 +73,16 @@ class xlsx_data:
 
 
 # ==================== 线程 ====================
-class ExcelDownloadThread(QThread):
-    download_finished = pyqtSignal(str, str)
-    download_failed = pyqtSignal(str, str)
-    
-    def __init__(self, client, file_id, save_path, device_id):
-        super().__init__()
-        self.client = client
-        self.file_id = file_id
-        self.save_path = Path(save_path)
-        self.device_id = device_id
-    
-    def run(self):
-        try:
-            logger.info(f"下载: {self.save_path.name}")
-            if self.file_id is None:
-                raise Exception("file_id为None")
-            self.save_path.parent.mkdir(parents=True, exist_ok=True)
-            self.client.download_excel_file(self.file_id, self.save_path)
-            logger.info(f"✅ 下载完成")
-            self.download_finished.emit(str(self.save_path), self.device_id)
-        except Exception as e:
-            logger.error(f"❌ 下载失败: {e}")
-            self.download_failed.emit(str(e), self.device_id)
-
-
 class ExcelViewerQueueThread(MyQThread):
+    """队列监听线程（已废弃，保留兼容性）"""
     def __init__(self, name, window):
         super().__init__(name)
         self.queue = None
         self.window = window
     
     def dosomething(self):
-        if not self.queue.empty():
-            try:
-                message: ObjectQueueItem = self.queue.get()
-                if message and not message.is_Empty():
-                    if isinstance(message, ObjectQueueItem) and message.to == 'excel_data_viewer':
-                        if message.title == 'new_excel_data' and message.data:
-                            self.window.update_data_signal.emit(message.data)
-            except Exception as e:
-                logger.error(f"队列错误: {e}")
+        """不再从队列接收数据，改为监听下载管理器信号"""
+        pass
 
 
 # ==================== 主窗口 ====================
@@ -130,6 +99,9 @@ class ExcelDataViewerWindow(ThemedWindow):
         self.device_tab_dict = {}  # {device_id: device_tab_widget}
         self.history_data = []
         
+        # 窗口状态
+        self.is_visible = False  # 窗口是否可见
+        
         # 服务端连接
         self.server_client: Client_server = None
         self.active_threads = []
@@ -144,8 +116,14 @@ class ExcelDataViewerWindow(ThemedWindow):
             self.queue_thread.queue = queue
             self.queue_thread.start()
         
-        # 连接信号
-        self.update_data_signal.connect(self.on_new_data_received)
+        # 连接下载管理器信号（监听新数据下载完成）
+        download_manager.excel_data_ready.connect(
+            self.on_cache_data_ready,
+            Qt.ConnectionType.QueuedConnection
+        )
+        
+        # 加载历史缓存
+        self.load_history_from_cache()
     
     def init_ui(self):
         """初始化UI"""
@@ -166,6 +144,21 @@ class ExcelDataViewerWindow(ThemedWindow):
         self.main_tabs.addTab(self.create_realtime_tab(), "实时数据")
         self.main_tabs.addTab(self.create_history_tab(), "历史数据")
         layout.addWidget(self.main_tabs)
+    
+    def showEvent(self, event):
+        """窗口显示事件"""
+        super().showEvent(event)
+        self.is_visible = True
+        logger.info("电量数据查看器窗口显示")
+        
+        # 加载最新缓存作为实时记录
+        self.load_latest_from_cache()
+    
+    def hideEvent(self, event):
+        """窗口隐藏事件"""
+        super().hideEvent(event)
+        self.is_visible = False
+        logger.info("电量数据查看器窗口隐藏")
     
     def create_realtime_tab(self):
         """创建实时数据选项卡"""
@@ -228,68 +221,52 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         return tab
     
-    def on_new_data_received(self, data: dict):
-        """接收新数据"""
-        logger.info(f"收到新数据: {data}")
-        
-        device_id = data.get('device_id', 'unknown')
-        file_id = data.get('file_id')
-        file_name = data.get('file_name', 'unknown')
-        
-        self.status_label.setText(f"状态: 正在下载 - 设备 {device_id}")
-        
-        if file_id and self.server_client:
-            try:
-                data_dir = Path("data/excel") / device_id
-                data_dir.mkdir(parents=True, exist_ok=True)
-                save_path = data_dir / file_name
-                
-                thread = ExcelDownloadThread(
-                    self.server_client.client,
-                    file_id,
-                    save_path,
-                    device_id
-                )
-                # 使用QueuedConnection确保槽函数在主线程中执行
-                thread.download_finished.connect(self.on_download_finished, Qt.ConnectionType.QueuedConnection)
-                thread.download_failed.connect(self.on_download_failed, Qt.ConnectionType.QueuedConnection)
-                
-                self.active_threads.append(thread)
-                thread.start()
-                
-            except Exception as e:
-                logger.error(f"启动下载失败: {e}")
-    
-    def on_download_finished(self, file_path: str, device_id: str):
-        """下载完成"""
-        logger.info(f"下载完成: {file_path}")
+    def on_cache_data_ready(self, file_path: str, device_id: str):
+        """
+        下载管理器通知：缓存数据已就绪
+        此时文件已下载并保存到缓存数据库，页面从缓存读取并显示
+        """
+        logger.info(f"[电量数据页面] 收到缓存数据就绪通知: {Path(file_path).name}, 设备: {device_id}")
         
         try:
+            # 更新状态
+            self.status_label.setText(f"状态: 加载数据 - 设备 {device_id}")
+            
+            # 从缓存读取最新记录
+            latest_record = cache_manager.get_latest_excel_record(device_id)
+            if not latest_record:
+                logger.warning(f"缓存中没有找到设备 {device_id} 的记录")
+                return
+            
+            file_path = latest_record['file_path']
+            
+            # 检查文件是否存在
+            if not file_path or not Path(file_path).exists():
+                logger.error(f"文件不存在: {file_path}")
+                self.status_label.setText(f"状态: 文件不存在")
+                return
+            
             # 解析Excel（所有Sheet）
             sheet_data_dict = self.parse_excel_all_sheets(file_path)
             if not sheet_data_dict:
                 raise Exception("Excel解析失败")
             
-            # 保存数据
+            # 保存数据到内存
             self.device_data[device_id] = sheet_data_dict
             
             # 创建或更新设备选项卡
             self.create_or_update_device_tab(device_id, sheet_data_dict)
             
-            # 保存历史
-            self.save_history(file_path, device_id)
+            # 更新历史列表（从缓存读取，无需手动保存）
+            self._update_history_from_cache()
             
             self.status_label.setText(f"状态: 加载完成 - 设备 {device_id}")
-            logger.info("✅ 数据加载完成")
+            logger.info(f"✅ 数据加载完成: {Path(file_path).name}")
             
         except Exception as e:
             import traceback
-            logger.error(f"处理失败: {e}\n{traceback.format_exc()}")
-            self.status_label.setText(f"状态: 失败 - {e}")
-    
-    def on_download_failed(self, error: str, device_id: str):
-        """下载失败"""
-        self.status_label.setText(f"状态: 下载失败 - {error}")
+            logger.error(f"处理缓存数据失败: {e}\n{traceback.format_exc()}")
+            self.status_label.setText(f"状态: 加载失败 - {e}")
     
     def parse_excel_all_sheets(self, file_path: str) -> dict:
         """
@@ -604,19 +581,34 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         return widget
     
-    def save_history(self, file_path: str, device_id: str):
-        """保存历史"""
-        record = {
-            'file_path': file_path,
-            'device_id': device_id,
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'file_name': Path(file_path).name
-        }
-        self.history_data.append(record)
-        
-        if device_id not in [self.history_device_combo.itemText(i) 
-                             for i in range(1, self.history_device_combo.count())]:
-            self.history_device_combo.addItem(device_id)
+    def _update_history_from_cache(self):
+        """从缓存更新历史记录列表（增量更新）"""
+        try:
+            # 获取最新的几条记录
+            records = cache_manager.get_excel_records(limit=10)
+            
+            # 获取已有的文件路径集合
+            existing_paths = {item['file_path'] for item in self.history_data}
+            
+            # 添加新记录
+            for record in records:
+                if record['file_path'] not in existing_paths and Path(record['file_path']).exists():
+                    history_item = {
+                        'file_path': record['file_path'],
+                        'device_id': record['device_id'],
+                        'timestamp': record['timestamp'],
+                        'file_name': record['file_name']
+                    }
+                    self.history_data.insert(0, history_item)  # 插入到开头
+                    
+                    # 添加设备到下拉框
+                    device_id = record['device_id']
+                    if device_id not in [self.history_device_combo.itemText(i) 
+                                        for i in range(1, self.history_device_combo.count())]:
+                        self.history_device_combo.addItem(device_id)
+            
+        except Exception as e:
+            logger.error(f"更新历史记录失败: {e}")
     
     def load_history_data(self):
         """加载历史数据"""
@@ -653,6 +645,86 @@ class ExcelDataViewerWindow(ThemedWindow):
             widget = self.create_device_tab_content(device_id, self.device_data[device_id])
             self.history_display_tabs.addTab(widget, f"{device_id} - {record['file_name']}")
     
+    def load_history_from_cache(self):
+        """从缓存加载历史记录"""
+        try:
+            logger.info("开始从缓存加载历史记录...")
+            
+            # 获取所有历史记录
+            records = cache_manager.get_excel_records(limit=100)
+            
+            if not records:
+                logger.info("缓存中没有历史记录")
+                return
+            
+            # 加载到history_data
+            for record in records:
+                if Path(record['file_path']).exists():
+                    history_item = {
+                        'file_path': record['file_path'],
+                        'device_id': record['device_id'],
+                        'timestamp': record['timestamp'],
+                        'file_name': record['file_name']
+                    }
+                    self.history_data.append(history_item)
+                    
+                    # 添加设备到下拉框
+                    device_id = record['device_id']
+                    if device_id not in [self.history_device_combo.itemText(i) 
+                                        for i in range(1, self.history_device_combo.count())]:
+                        self.history_device_combo.addItem(device_id)
+            
+            logger.info(f"✅ 从缓存加载了 {len(self.history_data)} 条历史记录")
+            
+        except Exception as e:
+            logger.error(f"从缓存加载历史记录失败: {e}")
+    
+    def load_latest_from_cache(self):
+        """从缓存加载最新记录作为实时显示"""
+        try:
+            logger.info("开始从缓存加载最新记录...")
+            
+            # 获取所有设备的最新记录
+            devices = cache_manager.get_excel_devices()
+            
+            if not devices:
+                logger.info("缓存中没有设备记录")
+                return
+            
+            loaded_count = 0
+            for device_id in devices:
+                latest_record = cache_manager.get_latest_excel_record(device_id)
+                
+                if not latest_record:
+                    continue
+                
+                file_path = latest_record['file_path']
+                
+                # 检查文件是否存在
+                if not file_path or not Path(file_path).exists():
+                    logger.warning(f"缓存记录的文件不存在: {file_path}")
+                    continue
+                
+                # 解析并显示数据
+                try:
+                    sheet_data_dict = self.parse_excel_all_sheets(file_path)
+                    if sheet_data_dict:
+                        self.device_data[device_id] = sheet_data_dict
+                        self.create_or_update_device_tab(device_id, sheet_data_dict)
+                        loaded_count += 1
+                        logger.info(f"✅ 从缓存加载设备 {device_id} 的数据")
+                except Exception as e:
+                    logger.error(f"解析缓存文件失败 {file_path}: {e}")
+            
+            if loaded_count > 0:
+                self.status_label.setText(f"状态: 已从缓存加载 {loaded_count} 个设备的数据")
+                logger.info(f"✅ 从缓存加载了 {loaded_count} 个设备的最新数据")
+            else:
+                logger.info("没有可加载的缓存数据")
+                
+        except Exception as e:
+            logger.error(f"从缓存加载最新记录失败: {e}")
+    
     def set_server_client(self, client: Client_server):
         """设置服务端客户端"""
         self.server_client = client
@@ -662,10 +734,11 @@ class ExcelDataViewerWindow(ThemedWindow):
         if hasattr(self, 'queue_thread'):
             self.queue_thread.stop()
         
-        for thread in self.active_threads:
-            if thread.isRunning():
-                thread.terminate()
-                thread.wait(1000)
+        # 断开下载管理器信号
+        try:
+            download_manager.excel_data_ready.disconnect(self.on_cache_data_ready)
+        except:
+            pass
         
         super().closeEvent(event)
     
