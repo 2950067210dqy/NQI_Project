@@ -1,0 +1,404 @@
+import math
+import time
+import typing
+
+from PyQt6.QtGui import QDoubleValidator
+from loguru import logger
+
+
+
+from Module.experiment_setting.ui.tab7_window import Ui_tab7_window
+from public.component.Guide_tutorial_interface.Tutorial_Manager import TutorialManager
+from public.component.dialog.custom.InfoDialog import InfoDialog
+from public.config_class.App_Setting import AppSettings
+
+from public.config_class.global_setting import global_setting
+
+from public.entity.MyQThread import MyQThread
+from public.entity.enum.Public_Enum import AppState, Tutorial_Type
+from public.entity.experiment_setting_entity import Experiment_setting_entity
+from public.entity.queue.ObjectQueueItem import ObjectQueueItem
+
+from theme.ThemeQt6 import ThemedWindow
+from PyQt6 import QtGui
+from PyQt6.QtCore import QRect, Qt, pyqtSignal, QTimer
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGroupBox, QLabel, QSlider, QRadioButton, \
+    QGridLayout, QButtonGroup, QComboBox, QListWidget, QPushButton, QMessageBox, QHBoxLayout, QLineEdit, QDoubleSpinBox
+
+from public.util.time_util import time_util
+
+#logger = logger.bind(category="gui_logger")
+class read_queue_data_Thread(MyQThread):
+    def __init__(self, name):
+        super().__init__(name)
+        self.queue = None
+        self.update_status_main_signal_gui_update: pyqtSignal(str) = None
+        pass
+
+    def dosomething(self):
+        if not self.queue.empty():
+            try:
+                message: ObjectQueueItem = self.queue.get()
+            except Exception as e:
+                logger.error(f"{self.name}发生错误{e}")
+                return
+                # message 结构{'to'发往哪个线程，'data'数据，‘from'从哪来}
+
+            if message is not None and isinstance(message, ObjectQueueItem) and message.to== 'tab_7':
+                logger.error(f"{self.name}_get_message:{message}")
+                match message.title:
+
+                    case _:
+                        pass
+            else:
+                # 把消息放回去
+                self.queue.put(message)
+
+        pass
+
+
+read_queue_data_thread = read_queue_data_Thread(name="tab_7_read_queue_data_thread")
+
+
+
+class Tab_7(ThemedWindow):
+    update_status_main_signal_gui_update = pyqtSignal(str)
+
+
+    def showEvent(self, a0: typing.Optional[QtGui.QShowEvent]) -> None:
+        # 加载qss样式表
+        logger.warning("tab7——show")
+
+        # 实例化自定义ui
+        self._init_customize_ui()
+        super().showEvent(a0)
+    def hideEvent(self, a0: typing.Optional[QtGui.QHideEvent]) -> None:
+        logger.warning("tab7--hide")
+
+        super().hideEvent(a0)
+    def setup_tutorial(self):
+        # 实例化提示引导器 下面式实例化模板
+        if self.tutorial:
+            self.tutorial.end_tutorial()
+
+        self.tutorial = TutorialManager(self, "experiment_setting", Tutorial_Type.ARROW_GUIDE,
+                                        global_setting.get_setting("app_setting", AppSettings()))
+
+        # 连接教程完成信号
+        self.tutorial.tutorial_completed.connect(self.on_tutorial_completed)
+
+        self.tutorial.add_step(self.port_combox,
+                               f"步骤1：\n选择正确的串口，这步非常的重要，不然无法联系到传感器。")
+        self.tutorial.add_step(self.group_box if self.group_box else self.config_layout,
+                               f"步骤2：\n可以对相关传感器进行实验前的相关配置。")
+        self.tutorial.add_step(self.response_text,
+                               f"Tips1：\n你可以查看传感器的响应信息。")
+        self.tutorial.add_step(self.start_btn,
+                               f"步骤3：\n最后单击该按钮完成配置。")
+        self.tutorial.add_step(self.status_bar.tip_btn,
+                               f"Tips2：\n如果还不会操作，可再次单击该按钮查看教程。")
+    def __init__(self, parent=None, geometry: QRect = None, title=""):
+        super().__init__()
+        self.group_box = None
+        self.port_combox=None
+        self.response_text=None
+        self.vr_desc_text:QDoubleSpinBox=None
+
+        # 下拉框数据列表
+        self.ports = []
+        self.url = ""
+        # 配置layout
+        self.config_layout:QVBoxLayout = None
+        # 确定设备配置按钮
+        self.start_btn: QPushButton=None
+        # 实例化ui
+        self._init_ui(parent, geometry, title)
+        # 获得相关数据
+        self._init_data()
+        # 实例化自定义ui
+        self._init_customize_ui()
+        # 实例化功能
+        self._init_function()
+        # 加载qss样式表
+        self._init_style_sheet()
+        # 实例化提示器
+        self.setup_tutorial()
+        # 自动启动提示教程 如果有提示页面的话
+        QTimer.singleShot(400, self.start_tutorial_if_exists)
+        pass
+
+        # 实例化ui
+
+    def _init_ui(self, parent=None, geometry: QRect = None, title=""):
+        # 将ui文件转成py文件后 直接实例化该py文件里的类对象  uic工具转换之后就是这一段代码
+        # 有父窗口添加父窗口
+        if parent != None and geometry != None:
+            self.setParent(parent)
+            self.setGeometry(geometry)
+        else:
+            pass
+
+        self.ui = Ui_tab7_window()
+
+        self.ui.setupUi(self)
+
+        self._retranslateUi()
+
+        pass
+
+    # 实例化自定义ui
+    def _init_customize_ui(self):
+        # 实例化下拉框
+        self.init_port_combox()
+
+        # logger.error(self.config)
+        self.init_config_ui()
+        super()._init_customize_ui()
+        pass
+
+    # 实例化下拉框
+    def init_port_combox(self):
+        self.port_combox: QComboBox = self.findChild(QComboBox, "tab_7_port_combox")
+        if self.port_combox == None:
+            logger.error("实例化端口下拉框失败！")
+            return
+        self.port_combox.clear()
+        if self.main_gui is not None:
+            self.port_combox.addItem(f"服务器：{self.main_gui.url}")
+
+            # 默认下拉项
+            self.url = f"{self.main_gui.url}"
+            #{self.ports[0]['description']}" + "  默认已被选中!")
+        self.port_combox.disconnect()
+        self.port_combox.currentIndexChanged.connect(self.selectionchange)
+
+    def selectionchange(self, index):
+        pass
+    def send_response_text(self, text):
+        # 往状态栏发消息
+        self.response_text: QListWidget = self.findChild(QListWidget, "tab_7_responselist")
+        if self.response_text == None:
+            logger.error("response_text状态栏未找到！")
+            return
+        self.response_text.addItem(text)
+        if self.main_gui is not None:
+            self.main_gui.status_bar.update_tip(text)
+        # 滑动滚动条到最底下
+        scroll_bar = self.response_text.verticalScrollBar()
+        if scroll_bar != None:
+            scroll_bar.setValue(scroll_bar.maximum())
+        pass
+    def remove_layout_items(self, layout):
+        # 遍历并移除布局中的所有项目
+        while layout.count():
+            item = layout.takeAt(0)  # 取出第一个项目
+            if item is not None:
+                widget = item.widget()  # 获取该项目的 widget，如果有
+                if widget is not None:
+                    widget.deleteLater()  # 删除 widget 的创建/显示
+                else:
+                    # 如果是其他布局，则递归调用
+                    sub_layout = item.layout()
+                    if sub_layout is not None:
+                        self.remove_layout_items(sub_layout)  # 递归清空子布局
+    def init_config_ui(self):
+
+        self.config_layout :QVBoxLayout= self.findChild(QVBoxLayout,"content_layout")
+
+        # 清除所有子组件
+        self.remove_layout_items(self.config_layout)
+        # 添加scroll_area
+        # 添加滚动区域
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setObjectName("content_layout_scroll_area")
+        self.scroll_area.setWidgetResizable(True)  # 使滚动区域填充空间
+        # 创建一个容器部件，用于在滚动区域中放置内容
+        self.scroll_area_content = QWidget()
+        self.scroll_area_layout = QVBoxLayout(self.scroll_area_content)
+
+        # 添加一些基本设置
+        self.init_basic_config(self.scroll_area_layout)
+
+
+        self.init_enm_config_ui(self.scroll_area_layout)
+
+        self.init_em_config_ui( self.scroll_area_layout)
+
+        pass
+        # 将容器部件设置为滚动区域的主部件
+        self.scroll_area.setWidget(self.scroll_area_content)
+        self.config_layout.addWidget(self.scroll_area)
+    # 实例化功能
+    def _init_function(self):
+        # 实例化按钮信号槽绑定
+        self.init_btn_func()
+        # 实例化信号
+        # 将更新status信号绑定更新status界面函数
+        self.update_status_main_signal_gui_update.connect(self.send_response_text)
+        global read_queue_data_thread
+        read_queue_data_thread.update_status_main_signal_gui_update = self.update_status_main_signal_gui_update
+        read_queue_data_thread.queue = global_setting.get_setting("send_message_queue")
+        if read_queue_data_thread is not None and not read_queue_data_thread.isRunning():
+            read_queue_data_thread.start()
+            pass
+        pass
+
+    # 实例化按钮信号槽绑定
+    def init_btn_func(self):
+        # 重新获取端口按钮
+        refresh_port_btn: QPushButton = self.findChild(QPushButton, "tab_7_refresh_port_btn")
+
+        refresh_port_btn.clicked.connect(self.refresh_port)
+        # 确定设备配置按钮
+        self.start_btn: QPushButton = self.findChild(QPushButton, "start_btn")
+        self.start_btn.clicked.connect(self.start_device_config)
+
+        pass
+
+    def start_device_config(self):
+        #确定设备配置按钮
+        reply = QMessageBox.question(self, '确定设备配置',
+                                     "确定该设备配置？",
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                     QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+
+
+            msg_box = InfoDialog(title="确定设备配置", info="确定该设备配置成功!",
+                                 icon=QMessageBox.Icon.Information)
+            msg_box.exec()
+            self.close()
+
+
+
+
+
+
+    # 重新获取端口
+    def refresh_port(self):
+        self.ports = []
+        self._init_data()
+        self.init_port_combox()
+
+    # 获得相关数据
+    def _init_data(self):
+        # 获得下拉框数据
+
+        pass
+    def update_slider(self, address,mouse_cage_number,function_code,data_lists,slider:QSlider):
+        value = slider.value()
+
+        data_list = ['00', '00', '00', '00']
+        pass
+
+    def update_slider_label(self,value,label):
+        label.setText(f"当前值: {value}")  # 更新当前值标签的文本
+        # 更新label
+        pass
+    def on_radio_button_clicked(self, button,address,mouse_cage_number,function_code,data_lists):
+        btn_object_name:str = button.objectName()
+        """处理按钮点击事件"""
+
+
+
+    def send_data(self):
+       pass
+
+    def init_em_config_ui(self,  scroll_area_layout):
+
+        # 创建 GroupBox
+        group_box = QGroupBox(f"按钮配置")
+        group_box.setContentsMargins(10, 10, 10, 10)
+        scroll_area_layout.addWidget(group_box)
+
+        # 创建第一个 GridLayout
+        grid_layout1 = QGridLayout()
+        grid_layout1.setContentsMargins(10, 30, 10, 10)
+        group_box.setLayout(grid_layout1)
+
+        # 添加鼠笼和 radio buttons
+        group_nums = 3
+        columns = 2
+        for i in range(math.ceil(group_nums/columns)):  # 行
+            for j in range(columns):  # 列
+                index = i * columns + j + 1  # 计算鼠笼编号
+                if index<=group_nums:
+                    label = QLabel(f"按钮 {index}")
+
+                    radio_on = QRadioButton(f"on")
+                    radio_on.setObjectName("on")
+                    radio_off = QRadioButton(f"off")
+                    radio_off.setObjectName("off")
+                    radio_off.setChecked(True)
+                    # 创建一个 ButtonGroup
+                    button_group = QButtonGroup(grid_layout1)  # 绑定到主窗口以便于管理
+                    # 添加到 ButtonGroup 中
+                    button_group.addButton(radio_on)
+                    button_group.addButton(radio_off)
+
+                    # 这里的3代表组件数量  label  radio_on radio_off 3个
+                    grid_layout1.addWidget(label, i, j * 3)  # 标签在 (i, j * 3)
+                    grid_layout1.addWidget(radio_on, i, j * 3 + 1)  # ON 按钮在 (i, j * 3 + 1)
+                    grid_layout1.addWidget(radio_off, i, j * 3 + 2)  # OFF 按钮在 (i, j * 3 + 2)
+        pass
+    def init_enm_config_ui(self, scroll_area_layout):
+        # 创建 GroupBox
+        group_box = QGroupBox(f"按钮2")
+        group_box.setContentsMargins(10,10,10,10)
+        scroll_area_layout.addWidget(group_box)
+
+        # 创建第一个 GridLayout
+        grid_layout1 = QGridLayout()
+        grid_layout1.setContentsMargins(10,30,10,10)
+        self.group_box.setLayout(grid_layout1)
+
+        group_nums = 3
+        columns = 2
+        # 添加鼠笼和 radio buttons
+        for i in range(math.ceil(group_nums/columns)):  # 行
+            for j in range(columns):  # 列
+                index = i * 2 + j + 1  # 计算鼠笼编号
+                if index <= group_nums:
+                    label = QLabel(f"操作杆 {index}")
+
+                    radio_on = QRadioButton(f"on")
+                    radio_on.setObjectName("on")
+                    radio_off = QRadioButton(f"off")
+                    radio_off.setObjectName("off")
+                    radio_off.setChecked(True)
+                    # 创建一个 ButtonGroup
+                    button_group = QButtonGroup(grid_layout1)  # 绑定到主窗口以便于管理
+                    # 添加到 ButtonGroup 中
+                    button_group.addButton(radio_on)
+                    button_group.addButton(radio_off)
+
+                    # 这里的3代表组件数量  label  radio_on radio_off 3个
+                    grid_layout1.addWidget(label, i, j * 3)  # 标签在 (i, j * 3)
+                    grid_layout1.addWidget(radio_on, i, j * 3 + 1)  # ON 按钮在 (i, j * 3 + 1)
+                    grid_layout1.addWidget(radio_off, i, j * 3 + 2)  # OFF 按钮在 (i, j * 3 + 2)
+
+
+
+    def init_basic_config(self, scroll_area_layout):
+        """
+        设置基础设置
+        :param scroll_area_layout:
+        :return:
+        """
+        # 创建 GroupBox
+        self.group_box = QGroupBox(f"基本配置")
+        self.group_box.setContentsMargins(10, 10, 10, 10)
+        scroll_area_layout.addWidget(self.group_box)
+
+        # 创建第一个 GridLayout
+        h_layout = QHBoxLayout()
+        vr_desc_label=QLabel("请输入Vr值：")
+        self.vr_desc_text=QDoubleSpinBox()
+        self.vr_desc_text.setValue(global_setting.get_setting("Vr",20.9))
+
+        h_layout.addWidget(vr_desc_label)
+        h_layout.addWidget(self.vr_desc_text)
+        self.group_box.setLayout(h_layout)
+        pass
+
+

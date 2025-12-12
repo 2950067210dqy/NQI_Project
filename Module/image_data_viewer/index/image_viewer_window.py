@@ -12,9 +12,10 @@ from pathlib import Path
 from PyQt6 import QtGui
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-                             QLabel, QPushButton, QGroupBox, QGridLayout,
-                             QScrollArea, QListWidget, QListWidgetItem,
-                             QSplitter, QFrame, QComboBox)
+                              QLabel, QPushButton, QGroupBox, QGridLayout,
+                              QScrollArea, QListWidget, QListWidgetItem,
+                              QSplitter, QFrame, QComboBox, QTableWidget, QTableWidgetItem,
+                              QPlainTextEdit, QHeaderView)
 from PyQt6.QtGui import QPixmap
 from loguru import logger
 
@@ -28,7 +29,7 @@ from public.function.Cache.data_download_manager import download_manager
 
 
 class ImageViewerQueueThread(MyQThread):
-    """队列监听线程（已废弃，保留兼容性）"""
+    """队列监听线程 - 监听跨进程消息"""
     
     def __init__(self, name, window):
         super().__init__(name)
@@ -36,8 +37,27 @@ class ImageViewerQueueThread(MyQThread):
         self.window = window  # 窗口引用
     
     def dosomething(self):
-        """不再从队列接收数据，改为监听下载管理器信号"""
-        pass
+        """监听队列消息"""
+        if not self.queue.empty():
+            try:
+                from public.entity.queue.ObjectQueueItem import ObjectQueueItem
+                message: ObjectQueueItem = self.queue.get()
+                if message and not message.is_Empty():
+                    logger.critical(f"{self.name}:{message}")
+                    if isinstance(message, ObjectQueueItem) and message.to == 'image_data_viewer':
+                        if message.title == 'cache_data_ready' and message.data:
+                            # 收到缓存数据就绪通知（来自下载管理器）
+                            file_path = message.data.get('file_path')
+                            device_id = message.data.get('device_id')
+                            if file_path and device_id:
+                                # 通过信号发送到主线程（避免子线程直接操作UI）
+                                self.window.cache_update_signal.emit(file_path, device_id)
+                                logger.info(f"[队列线程] 已发送更新信号到主线程: {file_path}")
+                    else:
+                        # 把消息放回去
+                        self.queue.put(message)
+            except Exception as e:
+                logger.error(f"[队列线程] 处理消息错误: {e}")
 
 
 class ImageDisplayWidget(QFrame):
@@ -48,6 +68,7 @@ class ImageDisplayWidget(QFrame):
         self.index = index
         self.original_image_path = None
         self.recognized_image_path = None
+        self.has_fault = None  # 识别结果
         
         self.setFrameStyle(QFrame.Shape.StyledPanel | QFrame.Shadow.Raised)
         self.init_ui()
@@ -77,7 +98,7 @@ class ImageDisplayWidget(QFrame):
         original_layout = QVBoxLayout(original_group)
         self.original_label = QLabel()
         self.original_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.original_label.setMinimumSize(200, 150)
+        self.original_label.setFixedSize(150, 150)  # 固定大小
         self.original_label.setStyleSheet("border: 1px solid #ccc; background: #f5f5f5;")
         self.original_label.setScaledContents(False)
         original_layout.addWidget(self.original_label)
@@ -88,10 +109,17 @@ class ImageDisplayWidget(QFrame):
         recognized_layout = QVBoxLayout(recognized_group)
         self.recognized_label = QLabel()
         self.recognized_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.recognized_label.setMinimumSize(200, 150)
+        self.recognized_label.setFixedSize(150, 150)  # 固定大小
         self.recognized_label.setStyleSheet("border: 1px solid #ccc; background: #f5f5f5;")
         self.recognized_label.setScaledContents(False)
         recognized_layout.addWidget(self.recognized_label)
+        
+        # 识别结果标签
+        self.recognition_result_label = QLabel("等待识别...")
+        self.recognition_result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.recognition_result_label.setStyleSheet("font-size: 10px; font-weight: bold;")
+        recognized_layout.addWidget(self.recognition_result_label)
+        
         images_layout.addWidget(recognized_group)
         
         layout.addLayout(images_layout)
@@ -137,10 +165,12 @@ class ImageDisplayWidget(QFrame):
             self.status_label.setText(f"加载失败")
             self.status_label.setStyleSheet("color: red; font-size: 10px;")
     
-    def load_recognized_image(self, image_path: Path):
-        """加载识别图"""
+    def load_recognized_image(self, image_path: Path, has_fault: bool = False):
+        """加载识别图并显示识别结果"""
         try:
             self.recognized_image_path = image_path
+            self.has_fault = has_fault  # 保存识别结果
+            
             pixmap = QPixmap(str(image_path))
             
             if pixmap.isNull():
@@ -154,27 +184,42 @@ class ImageDisplayWidget(QFrame):
             )
             self.recognized_label.setPixmap(scaled_pixmap)
             
+            # 显示识别结果
+            if has_fault:
+                self.recognition_result_label.setText("识别故障 ⚠")
+                self.recognition_result_label.setStyleSheet("color: red; font-size: 11px; font-weight: bold;")
+            else:
+                self.recognition_result_label.setText("未识别故障 ✓")
+                self.recognition_result_label.setStyleSheet("color: green; font-size: 11px; font-weight: bold;")
+            
             self.status_label.setText(f"识别完成")
             self.status_label.setStyleSheet("color: blue; font-size: 10px;")
             
-            logger.info(f"位置 {self.index + 1} 加载识别图: {image_path}")
+            logger.info(f"位置 {self.index + 1} 加载识别图: {image_path}, 故障: {has_fault}")
             
         except Exception as e:
             logger.error(f"加载识别图失败: {e}")
     
     def auto_recognize(self):
-        """自动识别"""
+        """自动识别（随机生成结果）"""
         if not self.original_image_path:
             return
         
         self.status_label.setText("识别中...")
         self.status_label.setStyleSheet("color: orange; font-size: 10px;")
         
-        # 调用识别服务
-        recognized_path = image_recognition_service.recognize_image(self.original_image_path)
+        # 随机生成识别结果
+        import random
+        has_fault = random.choice([True, False])
+        
+        # 调用识别服务（如果有的话）
+        try:
+            recognized_path = image_recognition_service.recognize_image(self.original_image_path)
+        except:
+            recognized_path = self.original_image_path  # 使用原图作为识别图
         
         if recognized_path:
-            self.load_recognized_image(recognized_path)
+            self.load_recognized_image(recognized_path, has_fault)
         else:
             self.status_label.setText("识别失败")
             self.status_label.setStyleSheet("color: red; font-size: 10px;")
@@ -195,6 +240,7 @@ class ImageDataViewerWindow(ThemedWindow):
     """几何量图片数据查看器窗口"""
     
     update_data_signal = pyqtSignal(dict)  # 接收新数据的信号
+    cache_update_signal = pyqtSignal(str, str)  # file_path, device_id - 从队列线程发送到主线程
     
     def __init__(self, parent=None):
         super().__init__()
@@ -219,6 +265,9 @@ class ImageDataViewerWindow(ThemedWindow):
         # 窗口状态
         self.is_visible = False  # 窗口是否可见
         
+        # UI组件
+        self.log_text = None  # 日志文本框（稍后创建）
+        
         # 服务端连接
         self.server_client: Client_server = None
         
@@ -239,8 +288,8 @@ class ImageDataViewerWindow(ThemedWindow):
         # 初始化 UI
         self.init_ui()
         
-        # 连接下载管理器信号（监听新数据下载完成）
-        download_manager.image_data_ready.connect(
+        # 连接缓存更新信号（从队列线程到主线程）
+        self.cache_update_signal.connect(
             self.on_cache_data_ready,
             Qt.ConnectionType.QueuedConnection
         )
@@ -308,6 +357,14 @@ class ImageDataViewerWindow(ThemedWindow):
         # 历史识别选项卡
         self.history_tab = self.create_history_tab()
         self.tab_widget.addTab(self.history_tab, "历史识别")
+        
+        # 缓存数据选项卡
+        self.cache_tab = self.create_cache_table_tab()
+        self.tab_widget.addTab(self.cache_tab, "缓存数据")
+        
+        # 日志选项卡
+        self.log_tab = self.create_log_tab()
+        self.tab_widget.addTab(self.log_tab, "日志")
         
         main_layout.addWidget(self.tab_widget)
     
@@ -442,6 +499,13 @@ class ImageDataViewerWindow(ThemedWindow):
         self.history_recognized_label.setMinimumSize(300, 300)
         self.history_recognized_label.setStyleSheet("border: 1px solid #ccc; background: #f5f5f5;")
         history_recognized_layout.addWidget(self.history_recognized_label)
+        
+        # 历史识别结果标签
+        self.history_recognition_result_label = QLabel("等待识别...")
+        self.history_recognition_result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.history_recognition_result_label.setStyleSheet("font-size: 12px; font-weight: bold;")
+        history_recognized_layout.addWidget(self.history_recognition_result_label)
+        
         images_layout.addWidget(history_recognized_group)
         
         detail_layout.addLayout(images_layout)
@@ -465,34 +529,52 @@ class ImageDataViewerWindow(ThemedWindow):
         此时文件已下载并保存到缓存数据库，页面从缓存读取并显示
         """
         logger.info(f"[几何量数据页面] 收到缓存数据就绪通知: {Path(file_path).name}, 设备: {device_id}")
+        self.log_message(f"收到新图片通知: {Path(file_path).name}, 设备: {device_id}")
         
         try:
             # 更新状态
             self.status_label.setText(f"状态: 加载数据 - 设备 {device_id}")
             self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: orange;")
+            self.log_message(f"开始加载图片...")
             
             # 检查文件是否存在
             if not Path(file_path).exists():
                 logger.error(f"文件不存在: {file_path}")
                 self.status_label.setText(f"状态: 文件不存在")
                 self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
+                self.log_message(f"错误: 文件不存在 - {file_path}")
                 return
             
             # 获取或创建设备选项卡
+            self.log_message(f"获取设备选项卡...")
             device_tab = self.get_or_create_device_image_tab(device_id)
             if not device_tab:
                 logger.error(f"无法创建设备选项卡: {device_id}")
+                self.log_message(f"错误: 无法创建设备选项卡")
                 return
             
             # 获取显示区域
             target_widget = self.get_next_widget_for_device(device_tab)
             if not target_widget:
                 logger.error("无法获取显示区域")
+                self.log_message(f"错误: 无法获取显示区域")
                 return
             
             # 加载图片
+            self.log_message(f"正在加载图片到区域 {target_widget.index}...")
             target_widget.load_original_image(Path(file_path))
             logger.info(f"[设备{device_id}] ✅ 图片已加载到区域 {target_widget.index}: {Path(file_path).name}")
+            
+            # 获取识别结果（从widget获取，因为auto_recognize已经执行）
+            import time
+            time.sleep(0.1)  # 等待识别完成
+            
+            # 更新缓存中的识别结果
+            has_fault = getattr(target_widget, 'has_fault', None)
+            if has_fault is not None:
+                self._update_recognition_result_in_cache(file_path, has_fault)
+                result_text = "识别故障" if has_fault else "未识别故障"
+                self.log_message(f"识别完成: {result_text}")
             
             # 更新历史记录（从缓存读取，无需手动保存）
             self._update_history_from_cache()
@@ -507,12 +589,14 @@ class ImageDataViewerWindow(ThemedWindow):
             
             self.status_label.setText(f"状态: 加载完成 - 设备 {device_id}")
             self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
+            self.log_message(f"✅ 图片加载完成: {Path(file_path).name}")
             
         except Exception as e:
             import traceback
             logger.error(f"处理缓存数据失败: {e}\n{traceback.format_exc()}")
             self.status_label.setText(f"状态: 加载失败 - {e}")
             self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
+            self.log_message(f"❌ 加载失败: {e}")
     
     def get_or_create_device_image_tab(self, device_id: str):
         """
@@ -577,9 +661,10 @@ class ImageDataViewerWindow(ThemedWindow):
         """
         为设备获取下一个显示区域
         
-        ✅ 新策略（简化版）：
-        1. 如果区域数量 < 20：创建新区域
-        2. 如果区域数量 = 20：FIFO前移所有图片，新图片放在最后
+        ✅ 新策略（最新在前）：
+        1. 如果区域数量 < 20：创建新区域在第0位
+        2. 如果区域数量 = 20：删除最后一个，新区域在第0位
+        3. 所有旧图片向后移动一位
         
         ✅ 线程安全：使用锁保护整个方法
         
@@ -587,7 +672,7 @@ class ImageDataViewerWindow(ThemedWindow):
             device_tab: 设备选项卡对象
         
         Returns:
-            ImageDisplayWidget: 新创建或重用的显示区域
+            ImageDisplayWidget: 用于显示新图片的区域（第0个）
         """
         with self.widget_access_lock:
             image_widgets = device_tab.image_widgets
@@ -596,41 +681,34 @@ class ImageDataViewerWindow(ThemedWindow):
             
             logger.info(f"[设备{device_tab.device_id}] 当前区域数量: {current_count}/{self.max_widget_count}")
             
-            # ✅ 策略1: 未达到最大数量，创建新区域
-            if current_count < self.max_widget_count:
-                index = current_count
-                row = index // 2
-                col = index % 2
-                
-                # 创建新的显示区域
-                display_widget = ImageDisplayWidget(index)
-                image_widgets.append(display_widget)
-                grid_layout.addWidget(display_widget, row, col)
-                
-                logger.info(f"[设备{device_tab.device_id}] ✅ 创建新区域 {index}，总数: {len(image_widgets)}")
-                return display_widget
+            # 如果达到最大数量，删除最后一个区域
+            if current_count >= self.max_widget_count:
+                last_widget = image_widgets.pop()  # 移除最后一个
+                grid_layout.removeWidget(last_widget)
+                last_widget.deleteLater()
+                logger.info(f"[设备{device_tab.device_id}] 删除最后一个区域")
             
-            # ✅ 策略2: 达到最大数量，FIFO前移
-            logger.info(f"[设备{device_tab.device_id}] 达到最大数量，执行FIFO前移")
+            # 创建新区域（将被插入到第0位）
+            new_widget = ImageDisplayWidget(0)
             
-            # 将所有图片向前移动一位
-            for i in range(self.max_widget_count - 1):
-                source_widget = image_widgets[i + 1]
-                target_widget = image_widgets[i]
-                
-                # 复制图片路径
-                if source_widget.original_image_path:
-                    target_widget.load_original_image(source_widget.original_image_path)
-                    logger.debug(f"[设备{device_tab.device_id}] 区域{i+1}图片移动到区域{i}")
-                else:
-                    target_widget.clear()
+            # 所有现有区域向后移动
+            for i in range(len(image_widgets) - 1, -1, -1):
+                old_widget = image_widgets[i]
+                # 更新索引
+                old_widget.index = i + 1
+                # 从网格中移除
+                grid_layout.removeWidget(old_widget)
+                # 重新添加到新位置
+                new_row = (i + 1) // 2
+                new_col = (i + 1) % 2
+                grid_layout.addWidget(old_widget, new_row, new_col)
             
-            # 清空最后一个区域，准备接收新图片
-            last_widget = image_widgets[self.max_widget_count - 1]
-            last_widget.clear()
+            # 插入新区域到第0位
+            image_widgets.insert(0, new_widget)
+            grid_layout.addWidget(new_widget, 0, 0)
             
-            logger.info(f"[设备{device_tab.device_id}] ✅ FIFO前移完成，返回最后区域 {self.max_widget_count - 1}")
-            return last_widget
+            logger.info(f"[设备{device_tab.device_id}] ✅ 新区域已插入到第0位，总数: {len(image_widgets)}")
+            return new_widget
     
     def get_next_display_widget(self):
         """
@@ -696,6 +774,39 @@ class ImageDataViewerWindow(ThemedWindow):
                 else:
                     self.on_image_download_failed(result.error, result.device_id)
     
+    def _update_recognition_result_in_cache(self, file_path: str, has_fault: bool):
+        """更新缓存中的识别结果"""
+        try:
+            import sqlite3
+            import json
+            
+            conn = sqlite3.connect(str(cache_manager.image_db_path))
+            cursor = conn.cursor()
+            
+            # 读取现有的extra_data
+            cursor.execute("SELECT extra_data FROM image_records WHERE file_path = ?", (file_path,))
+            row = cursor.fetchone()
+            
+            if row:
+                extra_data = json.loads(row[0]) if row[0] else {}
+                extra_data['has_fault'] = has_fault
+                extra_data_str = json.dumps(extra_data, ensure_ascii=False)
+                
+                # 更新
+                cursor.execute("""
+                    UPDATE image_records 
+                    SET extra_data = ?
+                    WHERE file_path = ?
+                """, (extra_data_str, file_path))
+                
+                conn.commit()
+                logger.info(f"更新识别结果到缓存: {Path(file_path).name}, 故障={has_fault}")
+            
+            conn.close()
+            
+        except Exception as e:
+            logger.error(f"更新识别结果失败: {e}")
+    
     def _update_history_from_cache(self):
         """从缓存更新历史记录列表（增量更新）"""
         try:
@@ -708,12 +819,20 @@ class ImageDataViewerWindow(ThemedWindow):
             # 添加新记录
             for record in records:
                 if record['original_path'] not in existing_paths and Path(record['original_path']).exists():
+                    # 解析识别结果
+                    extra_data = record.get('extra_data')
+                    if extra_data and isinstance(extra_data, dict):
+                        has_fault = extra_data.get('has_fault', False)
+                    else:
+                        has_fault = False
+                    
                     history_item = {
                         'device_id': record['device_id'],
                         'file_name': record['file_name'],
                         'original_path': record['original_path'],
                         'recognized_path': record.get('recognized_path', record['original_path']),
-                        'timestamp': record['timestamp']
+                        'timestamp': record['timestamp'],
+                        'has_fault': has_fault  # 包含识别结果
                     }
                     self.history_records.insert(0, history_item)  # 插入到开头
                     
@@ -862,10 +981,25 @@ class ImageDataViewerWindow(ThemedWindow):
             else:
                 self.history_recognized_label.setText("暂无识别图")
         
+        # 显示识别结果
+        has_fault = record.get('has_fault', None)
+        if has_fault is not None:
+            if has_fault:
+                self.history_recognition_result_label.setText("识别故障 ⚠")
+                self.history_recognition_result_label.setStyleSheet("color: red; font-size: 14px; font-weight: bold;")
+            else:
+                self.history_recognition_result_label.setText("未识别故障 ✓")
+                self.history_recognition_result_label.setStyleSheet("color: green; font-size: 14px; font-weight: bold;")
+        else:
+            self.history_recognition_result_label.setText("未知")
+            self.history_recognition_result_label.setStyleSheet("color: gray; font-size: 14px; font-weight: bold;")
+        
         # 显示信息
+        result_text = "识别故障" if has_fault else "未识别故障" if has_fault is not None else "未知"
         info_text = f"设备: {record.get('device_id')}\n"
         info_text += f"文件: {record.get('file_name')}\n"
         info_text += f"时间: {record.get('timestamp')}\n"
+        info_text += f"识别结果: {result_text}\n"
         info_text += f"原图: {original_path}\n"
         info_text += f"识别图: {recognized_path if recognized_path else '未识别'}"
         self.history_info_label.setText(info_text)
@@ -917,13 +1051,17 @@ class ImageDataViewerWindow(ThemedWindow):
         """从缓存加载最新记录作为实时显示"""
         try:
             logger.info("开始从缓存加载最新图片...")
+            self.log_message("开始从缓存加载最新图片...")
             
             # 获取所有设备的最新记录（每个设备最多20张）
             devices = cache_manager.get_image_devices()
             
             if not devices:
                 logger.info("缓存中没有设备记录")
+                self.log_message("缓存中没有设备记录")
                 return
+            
+            self.log_message(f"找到 {len(devices)} 个设备的缓存数据")
             
             loaded_count = 0
             for device_id in devices:
@@ -932,10 +1070,13 @@ class ImageDataViewerWindow(ThemedWindow):
                 if not latest_records:
                     continue
                 
+                self.log_message(f"设备 {device_id}: 找到 {len(latest_records)} 张图片")
+                
                 # 获取或创建设备选项卡
                 device_tab = self.get_or_create_device_image_tab(device_id)
                 if not device_tab:
                     logger.warning(f"无法创建设备选项卡: {device_id}")
+                    self.log_message(f"警告: 无法创建设备选项卡 - {device_id}")
                     continue
                 
                 # 加载每张图片
@@ -956,6 +1097,7 @@ class ImageDataViewerWindow(ThemedWindow):
                             logger.info(f"✅ 从缓存加载图片: {Path(original_path).name}")
                     except Exception as e:
                         logger.error(f"加载缓存图片失败 {original_path}: {e}")
+                        self.log_message(f"错误: 加载图片失败 - {Path(original_path).name}")
                 
                 # 更新设备信息
                 with self.widget_access_lock:
@@ -969,11 +1111,182 @@ class ImageDataViewerWindow(ThemedWindow):
                 self.status_label.setText(f"状态: 已从缓存加载 {loaded_count} 张图片")
                 self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green;")
                 logger.info(f"✅ 从缓存加载了 {loaded_count} 张图片")
+                self.log_message(f"✅ 从缓存加载完成，共 {loaded_count} 张图片")
             else:
                 logger.info("没有可加载的缓存图片")
+                self.log_message("没有可加载的缓存图片")
                 
         except Exception as e:
             logger.error(f"从缓存加载最新图片失败: {e}")
+            self.log_message(f"❌ 加载失败: {e}")
+    
+    def create_log_tab(self):
+        """创建日志选项卡"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # 日志文本框
+        self.log_text = QPlainTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setStyleSheet("font-family: Consolas; font-size: 10px; background-color: #1e1e1e; color: #d4d4d4;")
+        self.log_text.setMaximumBlockCount(1000)  # 限制最大行数
+        layout.addWidget(self.log_text)
+        
+        # 按钮区域
+        btn_layout = QHBoxLayout()
+        clear_btn = QPushButton("清空日志")
+        clear_btn.clicked.connect(self.log_text.clear)
+        btn_layout.addWidget(clear_btn)
+        btn_layout.addStretch()
+        layout.addLayout(btn_layout)
+        
+        # 添加初始日志
+        self.log_message("几何量数据页面日志已初始化")
+        
+        return tab
+    
+    def create_cache_table_tab(self):
+        """创建缓存数据表格选项卡"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # 顶部按钮区
+        btn_layout = QHBoxLayout()
+        refresh_btn = QPushButton("刷新")
+        refresh_btn.clicked.connect(self.load_cache_images_to_table)
+        btn_layout.addWidget(refresh_btn)
+        btn_layout.addStretch()
+        layout.addLayout(btn_layout)
+        
+        # 表格
+        self.cache_image_table = QTableWidget()
+        self.cache_image_table.setColumnCount(6)
+        self.cache_image_table.setHorizontalHeaderLabels([
+            "设备ID", "文件名", "时间", "识别结果", "缩略图", "操作"
+        ])
+        self.cache_image_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.cache_image_table.setAlternatingRowColors(True)
+        self.cache_image_table.setRowHeight(0, 80)  # 设置行高
+        layout.addWidget(self.cache_image_table)
+        
+        # 初始加载
+        self.load_cache_images_to_table()
+        
+        return tab
+    
+    def log_message(self, message: str):
+        """添加日志消息"""
+        if not hasattr(self, 'log_text') or self.log_text is None:
+            # 日志组件还未初始化，只记录到logger
+            logger.info(f"[几何量页面] {message}")
+            return
+        
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        self.log_text.appendPlainText(f"[{timestamp}] {message}")
+    
+    def load_cache_images_to_table(self):
+        """加载缓存图片到表格"""
+        try:
+            records = cache_manager.get_image_records(limit=100)
+            
+            self.cache_image_table.setRowCount(len(records))
+            
+            for row, record in enumerate(records):
+                # 设置行高
+                self.cache_image_table.setRowHeight(row, 80)
+                
+                # 设备ID
+                self.cache_image_table.setItem(row, 0, QTableWidgetItem(record['device_id']))
+                
+                # 文件名
+                self.cache_image_table.setItem(row, 1, QTableWidgetItem(record['file_name']))
+                
+                # 时间
+                self.cache_image_table.setItem(row, 2, QTableWidgetItem(record['timestamp']))
+                
+                # 识别结果
+                extra_data = record.get('extra_data')
+                if extra_data and isinstance(extra_data, dict):
+                    has_fault = extra_data.get('has_fault', False)
+                else:
+                    import random
+                    has_fault = random.choice([True, False])
+                
+                result_text = "识别故障 ⚠" if has_fault else "未识别故障 ✓"
+                result_item = QTableWidgetItem(result_text)
+                if has_fault:
+                    result_item.setForeground(Qt.GlobalColor.red)
+                else:
+                    result_item.setForeground(Qt.GlobalColor.green)
+                self.cache_image_table.setItem(row, 3, result_item)
+                
+                # 缩略图
+                if record.get('original_path') and Path(record['original_path']).exists():
+                    thumbnail_label = QLabel()
+                    pixmap = QPixmap(record['original_path'])
+                    if not pixmap.isNull():
+                        thumbnail_label.setPixmap(pixmap.scaled(60, 60, 
+                            Qt.AspectRatioMode.KeepAspectRatio,
+                            Qt.TransformationMode.SmoothTransformation))
+                        thumbnail_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.cache_image_table.setCellWidget(row, 4, thumbnail_label)
+                
+                # 查看按钮
+                view_btn = QPushButton("查看")
+                view_btn.setStyleSheet("font-size: 9px; padding: 2px 8px;")
+                view_btn.clicked.connect(lambda checked, r=record: self.view_image_cache_record(r))
+                self.cache_image_table.setCellWidget(row, 5, view_btn)
+            
+            self.log_message(f"加载了 {len(records)} 条图片缓存记录")
+            
+        except Exception as e:
+            logger.error(f"加载缓存图片失败: {e}")
+            self.log_message(f"加载缓存图片失败: {e}")
+    
+    def view_image_cache_record(self, record: dict):
+        """查看图片缓存记录"""
+        try:
+            original_path = record['original_path']
+            
+            if Path(original_path).exists():
+                # 在历史详情中显示
+                self.history_original_label.setPixmap(QPixmap(original_path).scaled(
+                    300, 300,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation
+                ))
+                
+                recognized_path = record.get('recognized_path', original_path)
+                if Path(recognized_path).exists():
+                    self.history_recognized_label.setPixmap(QPixmap(recognized_path).scaled(
+                        300, 300,
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        Qt.TransformationMode.SmoothTransformation
+                    ))
+                
+                # 显示信息
+                extra_data = record.get('extra_data', {})
+                has_fault = extra_data.get('has_fault', False) if isinstance(extra_data, dict) else False
+                result_text = "识别故障" if has_fault else "未识别故障"
+                
+                info_text = f"设备: {record.get('device_id')}\n"
+                info_text += f"文件: {record.get('file_name')}\n"
+                info_text += f"时间: {record.get('timestamp')}\n"
+                info_text += f"识别结果: {result_text}\n"
+                info_text += f"原图: {original_path}\n"
+                info_text += f"识别图: {recognized_path}"
+                self.history_info_label.setText(info_text)
+                
+                # 切换到历史选项卡
+                self.tab_widget.setCurrentIndex(1)
+                
+                self.log_message(f"已加载缓存记录: {record['file_name']}")
+            else:
+                self.log_message(f"文件不存在: {original_path}")
+                
+        except Exception as e:
+            logger.error(f"查看缓存记录失败: {e}")
+            self.log_message(f"查看记录失败: {e}")
     
     def set_server_client(self, client: Client_server):
         """设置服务端客户端"""

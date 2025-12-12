@@ -36,13 +36,10 @@ class read_queue_data_Thread(MyQThread):
     def __init__(self, name,window=None):
         super().__init__(name)
         self.queue = None
-        self.camera_list = None
+
         self.window:MainWindow_Index = window
 
-        # 停止实验用到的 返回状态，当深度相机、红外相机、气路、鼠笼内、存储数据都发过返回消息则关闭关闭实验窗口
-        self.old_Stop_experiment_status_text_reTurn =None
-        self.old_stop_status_counts = 0
-        self.old_stop_status_max = 4
+
         pass
 
     def dosomething(self):
@@ -58,7 +55,17 @@ class read_queue_data_Thread(MyQThread):
             if message is not None and isinstance(message, ObjectQueueItem) and message.to=='MainWindow_index':
                 # logger.error(f"{self.name}_get_message:{message}")
                 match message.title:
-
+                    case "connected":
+                        global_setting.set_setting("app_state",AppState.CONNECTED)
+                        self.window.change_enable_component_app_state()
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_server_label(f"已连接到服务器：{message.data}")
+                            self.window.url = message.data
+                        pass
+                    case "tip":
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_tip(message.data)
+                            pass
                     case _:
                         pass
 
@@ -202,6 +209,7 @@ class MainWindow_Index(ThemedWindow):
         super().__init__()
 
         # tool——bar-action 工具栏的action [{'obj_name':'','name';",'action':QAction,'tip':''}]
+        self.url = ""
         self.tool_bar_actions = []
         self.menu_bar_actions = []
         # 模块
@@ -463,7 +471,8 @@ class MainWindow_Index(ThemedWindow):
         self.tab_widget.removeTab(index)
     def change_enable_component_app_state(self):
         # 更新程序状态值
-        self.status_bar.update_app_state()
+        if self.status_bar is not None:
+            self.status_bar.update_app_state()
         #根据程序状态来改变是否可以点击的组件'
         #设置是否可以点击 menu_bar
         for menu_bar_action in self.menu_bar_actions:

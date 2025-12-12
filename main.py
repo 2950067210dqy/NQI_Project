@@ -164,20 +164,7 @@ def test_integrated_monitor():
     monitor.register_callback('on_high_memory', on_high_memory)
     monitor.register_exception_callback(on_any_exception)
 
-    # 创建工作进程的日志配置
-    p_connect_server_config = monitor.create_process_log_config(
-        f"p_{service_name_connect_server}",
-        log_level="DEBUG",
-        custom_format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level} | p_connect_server | {module}:{function}:{line} | {message} </level>",
-        enable_console=True
-    )
-    monitor.start_worker(
-        target_func=main_connect_server.main,
-        args=(q,send_message_q),
-        name=f"p_{service_name_connect_server}",
-        auto_restart=False,
-        log_config=p_connect_server_config
-    )
+
 
 
 
@@ -195,7 +182,21 @@ def test_integrated_monitor():
         is_critical=True,  # 标记为关键进程
         log_config = p_main_gui_config
     )
-
+    time.sleep(6)
+    # 创建工作进程的日志配置
+    p_connect_server_config = monitor.create_process_log_config(
+        f"p_{service_name_connect_server}",
+        log_level="DEBUG",
+        custom_format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level} | p_connect_server | {module}:{function}:{line} | {message} </level>",
+        enable_console=True
+    )
+    monitor.start_worker(
+        target_func=main_connect_server.main,
+        args=(q, send_message_q),
+        name=f"p_{service_name_connect_server}",
+        auto_restart=False,
+        log_config=p_connect_server_config
+    )
 
     # 开始监控
     monitor.start_monitoring(interval=5)

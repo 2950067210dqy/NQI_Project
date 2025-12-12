@@ -95,6 +95,7 @@ class DataDownloadManager(QObject):
         self.active_threads = []  # 活跃的下载线程
         self.download_queue = Queue()  # 下载队列（备用）
         self.lock = threading.Lock()  # 线程锁
+        self.message_queue = None  # 跨进程消息队列
         
         logger.info("[下载管理器] 初始化完成")
     
@@ -102,6 +103,11 @@ class DataDownloadManager(QObject):
         """设置服务端客户端"""
         self.client = client
         logger.info("[下载管理器] 设置服务端客户端")
+    
+    def set_message_queue(self, queue):
+        """设置跨进程消息队列"""
+        self.message_queue = queue
+        logger.info("[下载管理器] 设置跨进程消息队列")
     
     def handle_new_data_notification(self, data: Dict[str, Any]):
         """
@@ -201,19 +207,49 @@ class DataDownloadManager(QObject):
             # 保存到缓存
             if data_type == 'excel':
                 self._save_excel_to_cache(file_path, device_id)
-                # 通知电量数据页面
-                self.excel_data_ready.emit(file_path, device_id)
-                logger.info(f"[下载管理器] 已通知电量数据页面更新")
+                # 通过队列通知电量数据页面（跨进程）
+                self._send_queue_message('excel_data_viewer', 'cache_data_ready', {
+                    'file_path': file_path,
+                    'device_id': device_id
+                })
+                logger.info(f"[下载管理器] 已通过队列通知电量数据页面更新")
                 
             elif data_type == 'image':
                 self._save_image_to_cache(file_path, device_id)
-                # 通知几何量数据页面
-                self.image_data_ready.emit(file_path, device_id)
-                logger.info(f"[下载管理器] 已通知几何量数据页面更新")
+                # 通过队列通知几何量数据页面（跨进程）
+                self._send_queue_message('image_data_viewer', 'cache_data_ready', {
+                    'file_path': file_path,
+                    'device_id': device_id
+                })
+                logger.info(f"[下载管理器] 已通过队列通知几何量数据页面更新")
             
         except Exception as e:
             import traceback
             logger.error(f"[下载管理器] 处理下载完成失败: {e}\n{traceback.format_exc()}")
+    
+    def _send_queue_message(self, target: str, title: str, data: dict):
+        """通过队列发送消息（跨进程通信）"""
+        try:
+            if self.message_queue is None:
+                logger.warning("[下载管理器] 消息队列未设置，无法发送通知")
+                return
+            
+            from public.entity.queue.ObjectQueueItem import ObjectQueueItem
+            from datetime import datetime
+            
+            message = ObjectQueueItem(
+                origin="download_manager",
+                to=target,
+                title=title,
+                data=data,
+                time=datetime.now().isoformat()
+            )
+            
+            self.message_queue.put(message)
+            logger.info(f"[下载管理器] 已发送队列消息到 {target}")
+            
+        except Exception as e:
+            logger.error(f"[下载管理器] 发送队列消息失败: {e}")
     
     def _on_download_failed(self, data_type: str, error: str, device_id: str):
         """下载失败回调"""

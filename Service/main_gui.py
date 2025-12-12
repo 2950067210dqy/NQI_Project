@@ -89,12 +89,7 @@ def on_crash( error_msg):
     #     logger.error("stop_modbus_crash_application")
     #     modbus.close()
     # 不同进程的全局变量不同，所以让数据监控进程来关闭modbus
-    queue = global_setting.get_setting("queue", None)
-    if queue:
-        queue.put(
-            ObjectQueueItem(origin="main_gui", to="main_monitor_data", title="stop_modbus",
 
-                            time=time_util.get_format_from_time(time.time())))
     # 显示崩溃对话框
 
     msg_box = QMessageBox()

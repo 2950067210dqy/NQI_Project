@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtCore import QThread, pyqtSignal, Qt
 from PyQt6.QtWidgets import QStatusBar, QLabel, QProgressBar, QPushButton
 
 from public.component.list_view.Custom_List_view import CustomListView
@@ -9,6 +9,11 @@ from public.config_class.global_setting import global_setting
 from public.entity.MyQThread import MyQThread
 from public.entity.enum.Public_Enum import AppState
 from public.util.time_util import time_util
+
+try:
+    from public.function.Cache.data_download_manager import download_manager
+except:
+    download_manager = None
 
 
 class Time_thread(MyQThread):
@@ -56,19 +61,35 @@ class CustomStatusBar(QStatusBar):
             self.addWidget(self.app_status_label)
 
         # 添加 tip
-        self.tip_label =None
+        self.tip_label = QLabel("")
         # self.addWidget(self.tip_label)
         if is_main:
 
             # 添加连接服务器地址显示
             self.server_label = QLabel("当前未连接服务器")
             self.addWidget(self.server_label)
+            
+            # 添加下载状态显示
+            self.download_status_label = QLabel("下载: 就绪")
+            self.download_status_label.setStyleSheet("QLabel { color: green; font-weight: bold; }")
+            self.addWidget(self.download_status_label)
 
             # 添加 QProgressBar
             self.progress_bar = QProgressBar()
             self.progress_bar.setMaximum(100)
             self.progress_bar.setValue(0)
             # self.addWidget(self.progress_bar)  # 将进度条添加为永久小部件
+            
+            # 连接下载管理器信号
+            if download_manager:
+                download_manager.excel_data_ready.connect(
+                    lambda path, device: self.on_download_completed("电量数据", device),
+                    Qt.ConnectionType.QueuedConnection
+                )
+                download_manager.image_data_ready.connect(
+                    lambda path, device: self.on_download_completed("几何量数据", device),
+                    Qt.ConnectionType.QueuedConnection
+                )
 
         self.tip_btn = QPushButton("教程帮助")
         self.tip_btn.setStyleSheet("QPushButton { font-weight:bolder; font-size: 15px;padding: 5px; }")
@@ -84,10 +105,8 @@ class CustomStatusBar(QStatusBar):
 
 
     def update_tip(self, message):
-        if self.tip_label is None:
-            self.tip_label = CustomListView()
-            self.addWidget(self.tip_label)
-        self.tip_label.insert_data(message)
+        if self.tip_label is not None:
+            self.tip_label.setText(message)
     def update_server_label(self,message):
         self.server_label.setText(message)
     def set_progress(self, value):
@@ -105,3 +124,13 @@ class CustomStatusBar(QStatusBar):
         # 设置文本
         self.time_label.setText(timeStr)
         pass
+    
+    def on_download_completed(self, data_type: str, device_id: str):
+        """下载完成回调"""
+        message = f"下载: {data_type} (设备{device_id}) ✓"
+        self.download_status_label.setText(message)
+        self.download_status_label.setStyleSheet("QLabel { color: green; font-weight: bold; }")
+        
+        # 3秒后恢复状态
+        from PyQt6.QtCore import QTimer
+        QTimer.singleShot(3000, lambda: self.download_status_label.setText("下载: 就绪"))

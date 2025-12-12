@@ -12,7 +12,8 @@ import pandas as pd
 from PyQt6.QtCore import pyqtSignal, Qt, QDate
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-    QLabel, QPushButton, QGroupBox, QComboBox, QDateEdit, QListWidget, QListWidgetItem
+    QLabel, QPushButton, QGroupBox, QComboBox, QDateEdit, QListWidget, QListWidgetItem,
+    QTableWidget, QTableWidgetItem, QPlainTextEdit, QHeaderView
 )
 from loguru import logger
 import matplotlib
@@ -74,26 +75,45 @@ class xlsx_data:
 
 # ==================== 线程 ====================
 class ExcelViewerQueueThread(MyQThread):
-    """队列监听线程（已废弃，保留兼容性）"""
+    """队列监听线程 - 监听跨进程消息"""
     def __init__(self, name, window):
         super().__init__(name)
         self.queue = None
         self.window = window
     
     def dosomething(self):
-        """不再从队列接收数据，改为监听下载管理器信号"""
-        pass
+        """监听队列消息"""
+        if not self.queue.empty():
+            try:
+                from public.entity.queue.ObjectQueueItem import ObjectQueueItem
+                message: ObjectQueueItem = self.queue.get()
+                if message and not message.is_Empty():
+                    logger.critical(f"{self.name}:{message}")
+                    if isinstance(message, ObjectQueueItem) and message.to == 'excel_data_viewer':
+                        if message.title == 'cache_data_ready' and message.data:
+                            # 收到缓存数据就绪通知（来自下载管理器）
+                            file_path = message.data.get('file_path')
+                            device_id = message.data.get('device_id')
+                            if file_path and device_id:
+                                # 通过信号发送到主线程（避免子线程直接操作UI）
+                                self.window.cache_update_signal.emit(file_path, device_id)
+                                logger.info(f"[队列线程] 已发送更新信号到主线程: {file_path}")
+                    else:
+                        # 把消息放回去
+                        self.queue.put(message)
+            except Exception as e:
+                logger.error(f"[队列线程] 处理消息错误: {e}")
 
 
 # ==================== 主窗口 ====================
 class ExcelDataViewerWindow(ThemedWindow):
     update_data_signal = pyqtSignal(dict)
+    cache_update_signal = pyqtSignal(str, str)  # file_path, device_id - 从队列线程发送到主线程
     
     def __init__(self, parent=None):
         super().__init__()
         self.setWindowTitle("电量数据查看器")
         self.resize(1400, 900)
-        
         # 数据存储
         self.device_data = {}  # {device_id: {sheet_name: xlsx_data}}
         self.device_tab_dict = {}  # {device_id: device_tab_widget}
@@ -101,6 +121,9 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         # 窗口状态
         self.is_visible = False  # 窗口是否可见
+        
+        # UI组件
+        self.log_text = None  # 日志文本框（稍后创建）
         
         # 服务端连接
         self.server_client: Client_server = None
@@ -116,8 +139,8 @@ class ExcelDataViewerWindow(ThemedWindow):
             self.queue_thread.queue = queue
             self.queue_thread.start()
         
-        # 连接下载管理器信号（监听新数据下载完成）
-        download_manager.excel_data_ready.connect(
+        # 连接缓存更新信号（从队列线程到主线程）
+        self.cache_update_signal.connect(
             self.on_cache_data_ready,
             Qt.ConnectionType.QueuedConnection
         )
@@ -143,6 +166,9 @@ class ExcelDataViewerWindow(ThemedWindow):
         self.main_tabs = QTabWidget()
         self.main_tabs.addTab(self.create_realtime_tab(), "实时数据")
         self.main_tabs.addTab(self.create_history_tab(), "历史数据")
+        self.main_tabs.addTab(self.create_cache_table_tab(), "缓存数据")
+        self.main_tabs.addTab(self.create_trend_chart_tab(), "数据趋势")
+        self.main_tabs.addTab(self.create_log_tab(), "日志")
         layout.addWidget(self.main_tabs)
     
     def showEvent(self, event):
@@ -227,15 +253,18 @@ class ExcelDataViewerWindow(ThemedWindow):
         此时文件已下载并保存到缓存数据库，页面从缓存读取并显示
         """
         logger.info(f"[电量数据页面] 收到缓存数据就绪通知: {Path(file_path).name}, 设备: {device_id}")
+        self.log_message(f"收到新数据通知: {Path(file_path).name}, 设备: {device_id}")
         
         try:
             # 更新状态
             self.status_label.setText(f"状态: 加载数据 - 设备 {device_id}")
+            self.log_message(f"开始加载数据...")
             
             # 从缓存读取最新记录
             latest_record = cache_manager.get_latest_excel_record(device_id)
             if not latest_record:
                 logger.warning(f"缓存中没有找到设备 {device_id} 的记录")
+                self.log_message(f"警告: 缓存中没有找到设备 {device_id} 的记录")
                 return
             
             file_path = latest_record['file_path']
@@ -244,29 +273,37 @@ class ExcelDataViewerWindow(ThemedWindow):
             if not file_path or not Path(file_path).exists():
                 logger.error(f"文件不存在: {file_path}")
                 self.status_label.setText(f"状态: 文件不存在")
+                self.log_message(f"错误: 文件不存在 - {file_path}")
                 return
             
             # 解析Excel（所有Sheet）
+            self.log_message(f"正在解析Excel文件...")
             sheet_data_dict = self.parse_excel_all_sheets(file_path)
             if not sheet_data_dict:
                 raise Exception("Excel解析失败")
+            
+            self.log_message(f"解析成功，共 {len(sheet_data_dict)} 个Sheet")
             
             # 保存数据到内存
             self.device_data[device_id] = sheet_data_dict
             
             # 创建或更新设备选项卡
-            self.create_or_update_device_tab(device_id, sheet_data_dict)
+            self.log_message(f"创建设备选项卡...")
+            file_name = Path(file_path).name
+            self.create_or_update_device_tab(device_id, sheet_data_dict, file_name)
             
             # 更新历史列表（从缓存读取，无需手动保存）
             self._update_history_from_cache()
             
             self.status_label.setText(f"状态: 加载完成 - 设备 {device_id}")
+            self.log_message(f"✅ 数据加载完成: {Path(file_path).name}")
             logger.info(f"✅ 数据加载完成: {Path(file_path).name}")
             
         except Exception as e:
             import traceback
             logger.error(f"处理缓存数据失败: {e}\n{traceback.format_exc()}")
             self.status_label.setText(f"状态: 加载失败 - {e}")
+            self.log_message(f"❌ 加载失败: {e}")
     
     def parse_excel_all_sheets(self, file_path: str) -> dict:
         """
@@ -401,7 +438,7 @@ class ExcelDataViewerWindow(ThemedWindow):
             logger.error(f"解析Sheet失败: {e}")
             return None
     
-    def create_or_update_device_tab(self, device_id: str, sheet_data_dict: dict):
+    def create_or_update_device_tab(self, device_id: str, sheet_data_dict: dict, file_name: str = None):
         """创建或更新设备选项卡"""
         logger.info(f"创建设备选项卡: {device_id}")
         
@@ -417,7 +454,7 @@ class ExcelDataViewerWindow(ThemedWindow):
                 self.device_tabs.removeTab(index)
         
         # 创建新的设备选项卡
-        device_tab = self.create_device_tab_content(device_id, sheet_data_dict)
+        device_tab = self.create_device_tab_content(device_id, sheet_data_dict, file_name)
         self.device_tabs.addTab(device_tab, f"设备 {device_id}")
         self.device_tab_dict[device_id] = device_tab
         
@@ -427,7 +464,7 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         logger.info(f"✅ 设备选项卡创建完成")
     
-    def create_device_tab_content(self, device_id: str, sheet_data_dict: dict) -> QWidget:
+    def create_device_tab_content(self, device_id: str, sheet_data_dict: dict, file_name: str = None) -> QWidget:
         """
         创建设备选项卡内容
         层次：device_tab → data_type_tabs → sheet_tabs → 数据类型tabs
@@ -441,6 +478,13 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         first_sheet = list(sheet_data_dict.values())[0]
         info_layout.addWidget(QLabel(f"设备ID: {device_id}"))
+        
+        # 显示文件名（如果有）
+        if file_name:
+            file_label = QLabel(f"文件名: {file_name}")
+            file_label.setStyleSheet("color: #0066cc; font-weight: bold;")
+            info_layout.addWidget(file_label)
+        
         info_layout.addWidget(QLabel(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"))
         info_layout.addWidget(QLabel(f"额定电压: {first_sheet.rated_voltage}{first_sheet.rated_voltage_unit}"))
         info_layout.addWidget(QLabel(f"额定频率: {first_sheet.rated_frequency}{first_sheet.rated_frequency_unit}"))
@@ -683,13 +727,17 @@ class ExcelDataViewerWindow(ThemedWindow):
         """从缓存加载最新记录作为实时显示"""
         try:
             logger.info("开始从缓存加载最新记录...")
+            self.log_message("开始从缓存加载最新记录...")
             
             # 获取所有设备的最新记录
             devices = cache_manager.get_excel_devices()
             
             if not devices:
                 logger.info("缓存中没有设备记录")
+                self.log_message("缓存中没有设备记录")
                 return
+            
+            self.log_message(f"找到 {len(devices)} 个设备的缓存数据")
             
             loaded_count = 0
             for device_id in devices:
@@ -703,27 +751,308 @@ class ExcelDataViewerWindow(ThemedWindow):
                 # 检查文件是否存在
                 if not file_path or not Path(file_path).exists():
                     logger.warning(f"缓存记录的文件不存在: {file_path}")
+                    self.log_message(f"警告: 缓存文件不存在 - {Path(file_path).name}")
                     continue
                 
                 # 解析并显示数据
                 try:
+                    self.log_message(f"正在加载设备 {device_id} 的数据...")
                     sheet_data_dict = self.parse_excel_all_sheets(file_path)
                     if sheet_data_dict:
                         self.device_data[device_id] = sheet_data_dict
-                        self.create_or_update_device_tab(device_id, sheet_data_dict)
+                        file_name = Path(file_path).name
+                        self.create_or_update_device_tab(device_id, sheet_data_dict, file_name)
                         loaded_count += 1
                         logger.info(f"✅ 从缓存加载设备 {device_id} 的数据")
+                        self.log_message(f"✅ 设备 {device_id} 数据加载成功")
                 except Exception as e:
                     logger.error(f"解析缓存文件失败 {file_path}: {e}")
+                    self.log_message(f"错误: 解析失败 - {Path(file_path).name}")
             
             if loaded_count > 0:
                 self.status_label.setText(f"状态: 已从缓存加载 {loaded_count} 个设备的数据")
                 logger.info(f"✅ 从缓存加载了 {loaded_count} 个设备的最新数据")
+                self.log_message(f"✅ 从缓存加载完成，共 {loaded_count} 个设备")
             else:
                 logger.info("没有可加载的缓存数据")
+                self.log_message("没有可加载的缓存数据")
                 
         except Exception as e:
             logger.error(f"从缓存加载最新记录失败: {e}")
+            self.log_message(f"❌ 加载失败: {e}")
+    
+    def create_log_tab(self):
+        """创建日志选项卡"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # 日志文本框
+        self.log_text = QPlainTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setStyleSheet("font-family: Consolas; font-size: 10px; background-color: #1e1e1e; color: #d4d4d4;")
+        self.log_text.setMaximumBlockCount(1000)  # 限制最大行数
+        layout.addWidget(self.log_text)
+        
+        # 按钮区域
+        btn_layout = QHBoxLayout()
+        clear_btn = QPushButton("清空日志")
+        clear_btn.clicked.connect(self.log_text.clear)
+        btn_layout.addWidget(clear_btn)
+        btn_layout.addStretch()
+        layout.addLayout(btn_layout)
+        
+        # 添加初始日志
+        self.log_message("电量数据页面日志已初始化")
+        
+        return tab
+    
+    def create_cache_table_tab(self):
+        """创建缓存数据表格选项卡"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # 顶部按钮区
+        btn_layout = QHBoxLayout()
+        refresh_btn = QPushButton("刷新")
+        refresh_btn.clicked.connect(self.load_cache_data_to_table)
+        btn_layout.addWidget(refresh_btn)
+        btn_layout.addStretch()
+        layout.addLayout(btn_layout)
+        
+        # 表格
+        self.cache_table = QTableWidget()
+        self.cache_table.setColumnCount(7)
+        self.cache_table.setHorizontalHeaderLabels([
+            "设备ID", "文件名", "时间", "Sheet数", "额定电压", "额定频率", "操作"
+        ])
+        self.cache_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.cache_table.setAlternatingRowColors(True)
+        layout.addWidget(self.cache_table)
+        
+        # 初始加载
+        self.load_cache_data_to_table()
+        
+        return tab
+    
+    def create_trend_chart_tab(self):
+        """创建数据趋势图选项卡"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # 控制区
+        control_layout = QHBoxLayout()
+        control_layout.addWidget(QLabel("选择设备:"))
+        
+        self.trend_device_combo = QComboBox()
+        self.trend_device_combo.currentTextChanged.connect(self.update_trend_chart)
+        control_layout.addWidget(self.trend_device_combo)
+        
+        control_layout.addWidget(QLabel("数据类型:"))
+        self.trend_data_type_combo = QComboBox()
+        self.trend_data_type_combo.addItems(["功率W", "电压", "电流", "相角"])
+        self.trend_data_type_combo.currentTextChanged.connect(self.update_trend_chart)
+        control_layout.addWidget(self.trend_data_type_combo)
+        
+        control_layout.addWidget(QLabel("相位:"))
+        self.trend_phase_combo = QComboBox()
+        self.trend_phase_combo.addItems(["A相", "B相", "C相"])
+        self.trend_phase_combo.currentTextChanged.connect(self.update_trend_chart)
+        control_layout.addWidget(self.trend_phase_combo)
+        
+        refresh_btn = QPushButton("刷新")
+        refresh_btn.clicked.connect(self.refresh_trend_chart)
+        control_layout.addWidget(refresh_btn)
+        
+        control_layout.addStretch()
+        layout.addLayout(control_layout)
+        
+        # 图表区域
+        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+        from matplotlib.figure import Figure
+        
+        self.trend_figure = Figure(figsize=(12, 6))
+        self.trend_canvas = FigureCanvasQTAgg(self.trend_figure)
+        layout.addWidget(self.trend_canvas)
+        
+        # 加载设备列表
+        devices = cache_manager.get_excel_devices()
+        self.trend_device_combo.addItems(devices)
+        
+        return tab
+    
+    def log_message(self, message: str):
+        """添加日志消息"""
+        if not hasattr(self, 'log_text') or self.log_text is None:
+            # 日志组件还未初始化，只记录到logger
+            logger.info(f"[电量页面] {message}")
+            return
+        
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        self.log_text.appendPlainText(f"[{timestamp}] {message}")
+    
+    def load_cache_data_to_table(self):
+        """加载缓存数据到表格"""
+        try:
+            records = cache_manager.get_excel_records(limit=100)
+            
+            self.cache_table.setRowCount(len(records))
+            
+            for row, record in enumerate(records):
+                self.cache_table.setItem(row, 0, QTableWidgetItem(record['device_id']))
+                self.cache_table.setItem(row, 1, QTableWidgetItem(record['file_name']))
+                self.cache_table.setItem(row, 2, QTableWidgetItem(record['timestamp']))
+                self.cache_table.setItem(row, 3, QTableWidgetItem(str(record.get('sheet_count', 0))))
+                
+                voltage_text = f"{record.get('rated_voltage', 0)}{record.get('rated_voltage_unit', '')}"
+                self.cache_table.setItem(row, 4, QTableWidgetItem(voltage_text))
+                
+                freq_text = f"{record.get('rated_frequency', 0)}{record.get('rated_frequency_unit', '')}"
+                self.cache_table.setItem(row, 5, QTableWidgetItem(freq_text))
+                
+                # 查看按钮
+                view_btn = QPushButton("查看")
+                view_btn.setStyleSheet("font-size: 9px; padding: 2px 8px;")
+                view_btn.clicked.connect(lambda checked, r=record: self.view_cache_record(r))
+                self.cache_table.setCellWidget(row, 6, view_btn)
+            
+            self.log_message(f"加载了 {len(records)} 条缓存记录")
+            
+        except Exception as e:
+            logger.error(f"加载缓存数据失败: {e}")
+            self.log_message(f"加载缓存数据失败: {e}")
+    
+    def view_cache_record(self, record: dict):
+        """查看缓存记录"""
+        try:
+            file_path = record['file_path']
+            device_id = record['device_id']
+            
+            if Path(file_path).exists():
+                # 解析并显示
+                sheet_data_dict = self.parse_excel_all_sheets(file_path)
+                if sheet_data_dict:
+                    self.device_data[device_id] = sheet_data_dict
+                    self.create_or_update_device_tab(device_id, sheet_data_dict)
+                    # 切换到实时数据选项卡
+                    self.main_tabs.setCurrentIndex(0)
+                    self.log_message(f"已加载缓存记录: {record['file_name']}")
+            else:
+                self.log_message(f"文件不存在: {file_path}")
+                
+        except Exception as e:
+            logger.error(f"查看缓存记录失败: {e}")
+            self.log_message(f"查看记录失败: {e}")
+    
+    def refresh_trend_chart(self):
+        """刷新趋势图"""
+        devices = cache_manager.get_excel_devices()
+        current_device = self.trend_device_combo.currentText()
+        
+        self.trend_device_combo.clear()
+        self.trend_device_combo.addItems(devices)
+        
+        if current_device in devices:
+            self.trend_device_combo.setCurrentText(current_device)
+        
+        self.update_trend_chart(current_device)
+    
+    def update_trend_chart(self, device_id: str = None):
+        """更新趋势图 - 从每个Excel提取实际测量数据"""
+        try:
+            if not device_id:
+                device_id = self.trend_device_combo.currentText()
+            
+            if not device_id:
+                return
+            
+            # 从缓存读取历史数据
+            records = cache_manager.get_excel_records(device_id=device_id, limit=50)
+            
+            if not records:
+                self.log_message(f"设备 {device_id} 没有历史数据")
+                return
+            
+            # 解析数据
+            timestamps = []
+            values = []
+            
+            data_type = self.trend_data_type_combo.currentText()
+            phase = self.trend_phase_combo.currentText()
+            
+            self.log_message(f"正在提取 {data_type} - {phase} 的数据...")
+            
+            for record in reversed(records):  # 从旧到新
+                try:
+                    file_path = record['file_path']
+                    if not Path(file_path).exists():
+                        continue
+                    
+                    # 解析Excel获取实际测量数据
+                    sheet_data_dict = self.parse_excel_all_sheets(file_path)
+                    if not sheet_data_dict:
+                        continue
+                    
+                    # 取第一个Sheet的数据
+                    first_sheet = list(sheet_data_dict.values())[0]
+                    
+                    # 找到对应的数据类型
+                    data_type_item = None
+                    for item in first_sheet.data:
+                        if item.name == data_type:
+                            data_type_item = item
+                            break
+                    
+                    if not data_type_item:
+                        continue
+                    
+                    # 找到对应的相位
+                    phase_item = None
+                    for p_item in data_type_item.data.y:
+                        if phase in p_item.name:
+                            phase_item = p_item
+                            break
+                    
+                    if not phase_item or not phase_item.data:
+                        continue
+                    
+                    # 取第一个设备的平均值作为代表值
+                    if phase_item.data[0].data:
+                        avg_value = sum(phase_item.data[0].data) / len(phase_item.data[0].data)
+                        timestamps.append(datetime.strptime(record['timestamp'], '%Y-%m-%d %H:%M:%S'))
+                        values.append(avg_value)
+                    
+                except Exception as e:
+                    logger.error(f"解析记录失败: {e}")
+                    continue
+            
+            # 绘制折线图
+            self.trend_figure.clear()
+            ax = self.trend_figure.add_subplot(111)
+            
+            if timestamps and values:
+                ax.plot(timestamps, values, marker='o', linestyle='-', linewidth=2, markersize=6, color='#1976D2')
+                ax.set_xlabel('时间', fontsize=11, fontweight='bold')
+                ax.set_ylabel(data_type, fontsize=11, fontweight='bold')
+                ax.set_title(f'设备 {device_id} - {data_type} ({phase}) 趋势图', fontsize=12, fontweight='bold')
+                ax.grid(True, alpha=0.3, linestyle='--')
+                
+                # 旋转x轴标签
+                import matplotlib.dates as mdates
+                ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
+                self.trend_figure.autofmt_xdate()
+                
+                self.log_message(f"绘制完成: {len(values)} 个数据点")
+            else:
+                ax.text(0.5, 0.5, f'暂无数据\n({data_type} - {phase})', ha='center', va='center', fontsize=14)
+                self.log_message(f"没有可用数据")
+            
+            self.trend_canvas.draw()
+            self.log_message(f"更新趋势图: 设备{device_id}, {data_type}, {phase}")
+            
+        except Exception as e:
+            import traceback
+            logger.error(f"更新趋势图失败: {e}\n{traceback.format_exc()}")
+            self.log_message(f"更新趋势图失败: {e}")
     
     def set_server_client(self, client: Client_server):
         """设置服务端客户端"""
