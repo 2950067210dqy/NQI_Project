@@ -4,10 +4,10 @@ import os
 import time
 from json import JSONDecodeError
 from PyQt6 import QtCore
-from PyQt6.QtCore import QTimer, QObject, pyqtSignal
-from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QTimer, QObject, pyqtSignal, Qt
+from PyQt6.QtGui import QAction, QPixmap
 from PyQt6.QtWidgets import QMessageBox, QVBoxLayout, QToolBar, QTabWidget, QDialog, QMenu, QMenuBar, QWidget, \
-    QApplication
+    QApplication, QLabel, QSizePolicy
 from loguru import logger
 
 
@@ -327,6 +327,9 @@ class MainWindow_Index(ThemedWindow):
             {"name": name, "obj_name": obj_name, "action": action_final, "app_state": AppState.INITIALIZED,
              'tip': "单击此按钮会将重置教程。"})
 
+
+
+
         # 将动作添加到工具栏
         self.toolbar.addAction(action_one)
         self.toolbar.addSeparator()
@@ -335,6 +338,22 @@ class MainWindow_Index(ThemedWindow):
 
         self.toolbar.addAction(action_final)
         self.toolbar.addSeparator()
+        # 创建一个空的QWidget作为占位符，让它扩展填充剩余空间
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+
+        self.toolbar.addWidget(spacer)
+        icon_image = QLabel()
+        icon_image.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        icon_image.setPixmap(QPixmap(global_setting.get_setting("configer")['window']['nqi_path']).scaledToHeight(50))
+        self.toolbar.addWidget(icon_image)
+        spacer_2 = QWidget()
+        spacer_2.setFixedWidth(30)
+        self.toolbar.addWidget(spacer_2)
+        school_image = QLabel()
+        school_image.setAlignment(Qt.AlignmentFlag.AlignRight)
+        school_image.setPixmap(QPixmap(global_setting.get_setting("configer")['window']['school_path']).scaledToHeight(50))
+        self.toolbar.addWidget(school_image)
     def create_menu_bar(self):
     # 创建菜单
         for menu_dict in self.menu_name:
