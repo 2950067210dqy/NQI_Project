@@ -2,6 +2,7 @@ import typing
 from abc import ABC, abstractmethod
 
 from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QGuiApplication
 
 from public.entity.BaseWindow import BaseWindow
 from public.entity.enum.Public_Enum import Frame_state
@@ -99,17 +100,32 @@ class BaseInterfaceWidget(ABC):
     @typing.overload
     def setMinimumSize(self)->None:...
 
+    @staticmethod
+    def _bounded_minimum_size(window: BaseWindow, suggested: QSize) -> QSize:
+        """限制模块最小尺寸，避免大页面把主窗口或独立窗口撑到屏幕外。"""
+        screen = None
+        if window is not None:
+            screen = window.screen() or QGuiApplication.screenAt(window.frameGeometry().center())
+        screen = screen or QGuiApplication.primaryScreen()
+        available = screen.availableGeometry() if screen is not None else None
+        if available is None:
+            return suggested
+        max_width = max(320, int(available.width() * 0.92))
+        max_height = max(240, int(available.height() * 0.88))
+        return QSize(min(suggested.width(), max_width), min(suggested.height(), max_height))
+
+    def _set_bounded_minimum_size(self, window: BaseWindow):
+        if window is None:
+            return
+        window.setMinimumSize(self._bounded_minimum_size(window, window.calculate_minimum_suggested_size()))
+
     # 这里是实际的实现
     def setMinimumSize(self, width: typing.Union[int]=None,height: typing.Union[int]=None) -> typing.Union[None]:
         if width is None and height is None:
-            if self.frame_obj is not None:
-                self.frame_obj.setMinimumSize(self.frame_obj.calculate_minimum_suggested_size())
-            if self.left_frame_obj is not None:
-                self.left_frame_obj.setMinimumSize(self.left_frame_obj.calculate_minimum_suggested_size())
-            if self.right_frame_obj is not None:
-                self.right_frame_obj.setMinimumSize(self.right_frame_obj.calculate_minimum_suggested_size())
-            if self.bottom_frame_obj is not None:
-                self.bottom_frame_obj.setMinimumSize(self.bottom_frame_obj.calculate_minimum_suggested_size())
+            self._set_bounded_minimum_size(self.frame_obj)
+            self._set_bounded_minimum_size(self.left_frame_obj)
+            self._set_bounded_minimum_size(self.right_frame_obj)
+            self._set_bounded_minimum_size(self.bottom_frame_obj)
         elif isinstance(width, int) and isinstance(height, int):
             # 设置最小界面大小
             if self.frame_obj is not None:

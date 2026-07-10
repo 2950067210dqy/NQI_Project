@@ -200,3 +200,122 @@ class UpperAPIClient:
         except Exception as e:
             logger.error(f"Failed to list devices: {e}")
             raise
+
+    def list_registration_requests(
+            self,
+            status: str = None,
+            device_id: str = None,
+            keyword: str = None
+    ) -> Dict:
+        """获取设备注册申请列表，供上位机审批页面筛选展示。"""
+        url = f"{self.base_url}/api/device/registration-requests"
+        params = {
+            "status": status,
+            "device_id": device_id,
+            "keyword": keyword,
+        }
+        response = self.session.get(
+            url,
+            params={k: v for k, v in params.items() if v not in (None, "")},
+            timeout=self.timeout
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def approve_registration_request(self, request_id: int, review_message: str = "approved") -> Dict:
+        """批准下位机注册申请。"""
+        url = f"{self.base_url}/api/device/registration-requests/{request_id}/approve"
+        response = self.session.post(url, data={"review_message": review_message}, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+
+    def reject_registration_request(self, request_id: int, review_message: str = "rejected") -> Dict:
+        """驳回下位机注册申请。"""
+        url = f"{self.base_url}/api/device/registration-requests/{request_id}/reject"
+        response = self.session.post(url, data={"review_message": review_message}, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+    def search_data(self, **filters) -> Dict:
+        """按时间、地点、故障、设备号等条件检索数据集。"""
+        url = f"{self.base_url}/api/search/data"
+        params = {key: value for key, value in filters.items() if value is not None}
+        response = self.session.get(url, params=params, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+
+    def list_faults(self, device_id: str = None, status: str = None, limit: int = 100, skip: int = 0) -> Dict:
+        """查询故障报警记录。"""
+        url = f"{self.base_url}/api/faults"
+        params = {"device_id": device_id, "status": status, "limit": limit, "skip": skip}
+        response = self.session.get(url, params={k: v for k, v in params.items() if v is not None}, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+
+    def report_fault(self, device_id: str, data_type: str, file_id: int, message: str, severity: str = "warning") -> Dict:
+        """手动提交故障反馈。"""
+        url = f"{self.base_url}/api/faults/report"
+        response = self.session.post(url, data={
+            "device_id": device_id,
+            "data_type": data_type,
+            "file_id": file_id,
+            "message": message,
+            "severity": severity
+        }, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+    def update_fault_status(self, fault_id: int, status: str = "acknowledged") -> Dict:
+        """更新故障报警状态，用于上位机报警预警界面的确认和关闭操作。"""
+        url = f"{self.base_url}/api/faults/{fault_id}/status"
+        response = self.session.post(url, data={"status": status}, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+
+
+    def list_alarm_rules(self, data_type: str = None, enabled: bool = None) -> Dict:
+        """获取服务器预警规则列表，供上位机预警配置界面展示。"""
+        url = f"{self.base_url}/api/alarm-rules"
+        params = {"data_type": data_type, "enabled": enabled}
+        response = self.session.get(
+            url,
+            params={k: v for k, v in params.items() if v is not None},
+            timeout=self.timeout
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def save_alarm_rule(self, payload: Dict) -> Dict:
+        """保存预警规则到服务器，可用于新增或更新。"""
+        url = f"{self.base_url}/api/alarm-rules/save"
+        response = self.session.post(url, json=payload, timeout=self.timeout)
+        response.raise_for_status()
+        return response.json()
+
+    def list_notifications(
+            self,
+            notification_type: str = None,
+            device_id: str = None,
+            status: str = None,
+            keyword: str = None,
+            limit: int = 100,
+            skip: int = 0
+    ) -> Dict:
+        """查询通知历史，可用于预警通知历史界面。"""
+        url = f"{self.base_url}/api/notifications"
+        params = {
+            "notification_type": notification_type,
+            "device_id": device_id,
+            "status": status,
+            "keyword": keyword,
+            "limit": limit,
+            "skip": skip,
+        }
+        response = self.session.get(
+            url,
+            params={k: v for k, v in params.items() if v is not None},
+            timeout=self.timeout
+        )
+        response.raise_for_status()
+        return response.json()
+
+
+

@@ -2,6 +2,8 @@
 import queue
 from abc import abstractmethod, ABC
 
+from PyQt6.QtCore import QPoint, QRect, QTimer
+from PyQt6.QtGui import QGuiApplication
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QMainWindow
 
 from index import Content_index
@@ -100,6 +102,107 @@ class BaseModule(ABC):
         )
         # self.start_service()
         # self.adjustGUIPolicy()
+    def _available_screen_rect(self) -> QRect:
+        """获取主界面所在屏幕的可用区域，窗口模式统一用它做边界。"""
+        if self.main_gui is not None:
+            screen = self.main_gui.screen() or QGuiApplication.screenAt(self.main_gui.frameGeometry().center())
+        else:
+            screen = QGuiApplication.primaryScreen()
+        return screen.availableGeometry() if screen is not None else QRect(0, 0, 1280, 720)
+
+    def _bounded_global_rect(self, local_x: int, local_y: int, width: int, height: int) -> QRect:
+        """把基于主窗口的局部矩形转换为屏幕矩形，并夹在可见屏幕内。"""
+        available = self._available_screen_rect().adjusted(8, 8, -8, -8)
+        if self.main_gui is not None:
+            global_top_left = self.main_gui.mapToGlobal(QPoint(int(local_x), int(local_y)))
+        else:
+            global_top_left = QPoint(int(local_x), int(local_y))
+        width = max(240, min(int(width), available.width()))
+        height = max(180, min(int(height), available.height()))
+        x = min(max(global_top_left.x(), available.left()), available.right() - width + 1)
+        y = min(max(global_top_left.y(), available.top()), available.bottom() - height + 1)
+        return QRect(x, y, width, height)
+
+    def _bounded_screen_rect(self, global_x: int, global_y: int, width: int, height: int) -> QRect:
+        """把已经是屏幕坐标的矩形夹在可见屏幕内。"""
+        available = self._available_screen_rect().adjusted(0, 0, 0, 0)
+        width = max(240, min(int(width), available.width()))
+        height = max(180, min(int(height), available.height()))
+        x = min(max(int(global_x), available.left()), available.right() - width + 1)
+        y = min(max(int(global_y), available.top()), available.bottom() - height + 1)
+        return QRect(x, y, width, height)
+
+    def _move_window_frame_to_rect(self, window: QMainWindow, rect: QRect):
+        """按外框目标矩形移动窗口，确保模块窗口不遮住主窗口状态栏。"""
+        target_width = int(rect.width())
+        target_height = int(rect.height())
+        window.resize(target_width, target_height)
+
+        frame_geometry = window.frameGeometry()
+        frame_delta_width = max(0, frame_geometry.width() - window.geometry().width())
+        frame_delta_height = max(0, frame_geometry.height() - window.geometry().height())
+
+        # resize 设置的是内容区大小；这里反算内容区尺寸，让窗口外框落在目标矩形内。
+        content_width = max(240, target_width - frame_delta_width)
+        content_height = max(180, target_height - frame_delta_height)
+        if content_width != window.width() or content_height != window.height():
+            window.resize(content_width, content_height)
+            frame_geometry = window.frameGeometry()
+
+        client_offset = window.geometry().topLeft() - frame_geometry.topLeft()
+        window.move(rect.topLeft() + client_offset)
+
+    def _apply_bounded_screen_geometry(self, window: QMainWindow, global_x: int, global_y: int, width: int, height: int):
+        """使用屏幕全局坐标设置模块窗口几何。"""
+        # 模块独立窗口由 BaseModule 精确对齐，跳过 BaseWindow 的二次防越界移动。
+        setattr(window, "_nqi_skip_auto_screen_adjust", True)
+        rect = self._bounded_screen_rect(global_x, global_y, width, height)
+        self._move_window_frame_to_rect(window, rect)
+
+    def _apply_bounded_geometry(self, window: QMainWindow, local_x: int, local_y: int, width: int, height: int):
+        """设置窗口几何并确保不会跑到屏幕外，避免标题栏被放到屏幕外。"""
+        rect = self._bounded_global_rect(local_x, local_y, width, height)
+        self._move_window_frame_to_rect(window, rect)
+        if hasattr(window, "ensure_within_available_screen"):
+            window.ensure_within_available_screen()
+
+    def _module_window_global_top(self) -> int:
+        """窗口模式的模块页面外框顶部与主窗口菜单栏底边对齐。"""
+        if self.main_gui is None:
+            return 0
+        menu_bar = self.main_gui.menuBar()
+        if menu_bar is not None:
+            return menu_bar.mapToGlobal(QPoint(0, menu_bar.height())).y() + 1
+        toolbar = getattr(self.main_gui, "toolbar", None)
+        if toolbar is not None:
+            return toolbar.mapToGlobal(QPoint(0, toolbar.height())).y() + 1
+        central_widget = self.main_gui.centralWidget()
+        return central_widget.mapToGlobal(QPoint(0, 0)).y() if central_widget is not None else 0
+
+    def _module_window_global_left(self) -> int:
+        """模块窗口左侧与主窗口内容外框左侧对齐。"""
+        if self.main_gui is None:
+            return 0
+        return self.main_gui.frameGeometry().left()
+
+    def _module_window_height(self, global_top: int) -> int:
+        """计算菜单栏下方到状态栏上方的屏幕可用高度。"""
+        if self.main_gui is None:
+            return 720
+        status_bar = self.main_gui.statusBar()
+        if status_bar is not None and status_bar.isVisible():
+            bottom = status_bar.mapToGlobal(QPoint(0, 0)).y()
+        else:
+            bottom = self.main_gui.frameGeometry().bottom()
+        return max(240, bottom - global_top)
+
+    def _align_module_window_later(self, window: QMainWindow, global_x: int, global_y: int, width: int, height: int):
+        """窗口 show 后多次强制校准，避免 Qt 首次显示时按标题栏/最小尺寸改位置。"""
+        setattr(window, "_nqi_skip_auto_screen_adjust", True)
+        QTimer.singleShot(0, lambda: self._apply_bounded_screen_geometry(window, global_x, global_y, width, height))
+        QTimer.singleShot(120, lambda: self._apply_bounded_screen_geometry(window, global_x, global_y, width, height))
+        QTimer.singleShot(350, lambda: self._apply_bounded_screen_geometry(window, global_x, global_y, width, height))
+
     def start_service(self,resolve,reject):
         """开始服务"""
         if self.service is not None:
@@ -214,8 +317,8 @@ class BaseModule(ABC):
             pass
         else:
             self.show()
-            #WINDOW
-            flag = 10
+            # WINDOW 模式下以主窗口中央区域顶部为起点，避免重复叠加工具栏高度导致子页面偏下。
+            flag = 0
             # ，每部分layout占多少
             if self.interface_widget.bottom_frame_obj is None:
                 "没有bottomlayout"
@@ -233,51 +336,53 @@ class BaseModule(ABC):
 
             h_all = h_stretch['left']+h_stretch['middle']+h_stretch['right']
             v_all = v_stretch['top']+v_stretch['bottom']
+            module_left = self._module_window_global_left()
+            module_top = self._module_window_global_top()
+            module_height = self._module_window_height(module_top)
             h_each = self.main_gui.centralWidget().geometry().width()//h_all
-            v_each = (self.main_gui.centralWidget().geometry().height()-self.main_gui.statusBar().height())//v_all
+            v_each = module_height//v_all
 
             self.interface_widget.setMinimumSize(0, 0)
             if self.interface_widget.left_frame_obj is not None:
                 self.interface_widget.left_frame_obj.menuBar().show()
                 self.interface_widget.left_frame_obj.statusBar().show()
                 self.interface_widget.left_frame_obj.setWindowTitle(self.title + 'left')
-                self.interface_widget.left_frame_obj.setGeometry(
-                    0,
-                    self.main_gui.centralWidget().geometry().top() + self.main_gui.toolbar.geometry().height() + flag,
-                    h_each * (h_stretch['left']),
-                    v_each * (v_stretch['top'])
-
-                )
+                left_x = module_left
+                left_y = module_top + flag
+                left_w = h_each * (h_stretch['left'])
+                left_h = v_each * (v_stretch['top'])
+                self._apply_bounded_screen_geometry(self.interface_widget.left_frame_obj, left_x, left_y, left_w, left_h)
+                self._align_module_window_later(self.interface_widget.left_frame_obj, left_x, left_y, left_w, left_h)
             if self.interface_widget.frame_obj is not None:
                 self.interface_widget.frame_obj.menuBar().show()
                 self.interface_widget.frame_obj.statusBar().show()
                 self.interface_widget.frame_obj.setWindowTitle(self.title+'content')
-                self.interface_widget.frame_obj.setGeometry(h_each*(h_stretch['left']),
-                                                            self.main_gui.centralWidget().geometry().top() + self.main_gui.toolbar.geometry().height() + flag,
-                                                            h_each*(h_stretch['middle']),
-                                                            v_each*(v_stretch['top']),
-                                                            )
+                middle_x = module_left + h_each * (h_stretch['left'])
+                middle_y = module_top + flag
+                middle_w = h_each * (h_stretch['middle'])
+                middle_h = v_each * (v_stretch['top'])
+                self._apply_bounded_screen_geometry(self.interface_widget.frame_obj, middle_x, middle_y, middle_w, middle_h)
+                self._align_module_window_later(self.interface_widget.frame_obj, middle_x, middle_y, middle_w, middle_h)
             if self.interface_widget.right_frame_obj is not None:
                 self.interface_widget.right_frame_obj.menuBar().show()
                 self.interface_widget.right_frame_obj.statusBar().show()
                 self.interface_widget.right_frame_obj.setWindowTitle(self.title+'right')
-                self.interface_widget.right_frame_obj.setGeometry(
-                    h_each * (h_stretch['middle'] +h_stretch['left']),
-                    self.main_gui.centralWidget().geometry().top() + self.main_gui.toolbar.geometry().height() + flag,
-                    h_each * (h_stretch['right']),
-                    v_each * (v_stretch['top']) ,
-                )
+                right_x = module_left + h_each * (h_stretch['middle'] + h_stretch['left'])
+                right_y = module_top + flag
+                right_w = h_each * (h_stretch['right'])
+                right_h = v_each * (v_stretch['top'])
+                self._apply_bounded_screen_geometry(self.interface_widget.right_frame_obj, right_x, right_y, right_w, right_h)
+                self._align_module_window_later(self.interface_widget.right_frame_obj, right_x, right_y, right_w, right_h)
             if self.interface_widget.bottom_frame_obj is not None:
                 self.interface_widget.bottom_frame_obj.menuBar().show()
                 self.interface_widget.bottom_frame_obj.statusBar().show()
                 self.interface_widget.bottom_frame_obj.setWindowTitle(self.title+'bottom')
-                self.interface_widget.bottom_frame_obj.setGeometry(
-                    0,
-                    self.main_gui.centralWidget().geometry().top()+v_each * (v_stretch['top'])+ self.main_gui.toolbar.geometry().height() ,
-                    self.main_gui.centralWidget().width(),
-                    v_each * (v_stretch['bottom'])-self.main_gui.toolbar.geometry().height() ,
-
-                )
+                bottom_x = module_left
+                bottom_y = module_top + v_each * (v_stretch['top']) + flag
+                bottom_w = self.main_gui.centralWidget().width()
+                bottom_h = v_each * (v_stretch['bottom'])
+                self._apply_bounded_screen_geometry(self.interface_widget.bottom_frame_obj, bottom_x, bottom_y, bottom_w, bottom_h)
+                self._align_module_window_later(self.interface_widget.bottom_frame_obj, bottom_x, bottom_y, bottom_w, bottom_h)
 
 
 

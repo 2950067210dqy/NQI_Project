@@ -1,16 +1,18 @@
 import abc
+import inspect
 import sys
 import typing
 
 from PyQt6 import QtCore, QtGui
-from PyQt6.QtCore import QRect, Qt, QSize, QPoint, QEvent, QTimer, QObject
-from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QRect, Qt, QSize, QPoint, QEvent, QTimer, QObject, QThread, pyqtSignal
+from PyQt6.QtGui import QAction, QGuiApplication
 from PyQt6.QtWidgets import QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QGridLayout, QFormLayout, QLayout, \
-    QScrollArea, QSizePolicy, QMessageBox, QTabWidget, QGroupBox, QTableWidget, QToolBar, QApplication, QDockWidget
+    QScrollArea, QSizePolicy, QMessageBox, QTabWidget, QGroupBox, QTableWidget, QToolBar, QApplication, QDockWidget, QAbstractButton, QTabBar, QDialog, QTextEdit, QDialogButtonBox, QLabel
 from loguru import logger
 
 from public.component.Window_Title_Bar import TitleBar
 from public.component.custom_status_bar import CustomStatusBar
+from public.component.mask.LoadingMask import AnimatedLoadingMask
 from public.config_class import App_Setting
 from public.config_class.global_setting import global_setting
 from public.entity.enum.Public_Enum import Frame_state
@@ -18,6 +20,28 @@ from wrapper.After_execution import after_execution
 
 
 #logger = logger.bind(category="gui_logger")
+
+
+class AsyncTaskThread(QThread):
+    """通用后台任务线程，避免窗口在请求服务器时阻塞主线程。"""
+
+    result_ready = pyqtSignal(object)
+    error_occurred = pyqtSignal(str)
+
+    def __init__(self, target, args=None, kwargs=None, parent=None):
+        super().__init__(parent)
+        self.target = target
+        self.args = args or ()
+        self.kwargs = kwargs or {}
+
+    def run(self):
+        try:
+            result = self.target(*self.args, **self.kwargs)
+            self.result_ready.emit(result)
+        except Exception as exc:
+            logger.exception(f"后台任务执行失败: {exc}")
+            self.error_occurred.emit(str(exc))
+
 class BaseWindow(QMainWindow):
     def changeEvent(self, event):
         # 监听状态变化事件
@@ -36,7 +60,46 @@ class BaseWindow(QMainWindow):
         # 一定要调用父类的 changeEvent 方法
         super().changeEvent(event)
     def showEvent(self, a0: typing.Optional[QtGui.QShowEvent]) -> None:
-        pass
+        super().showEvent(a0)
+        QTimer.singleShot(0, self.ensure_within_available_screen)
+
+    def _available_screen_geometry(self) -> QRect:
+        """获取当前窗口所在屏幕的可用区域，供模块窗口统一防越界。"""
+        screen = self.screen()
+        if screen is None:
+            center = self.frameGeometry().center()
+            screen = QGuiApplication.screenAt(center) or QGuiApplication.primaryScreen()
+        return screen.availableGeometry() if screen is not None else QRect(0, 0, 1280, 720)
+
+    def ensure_within_available_screen(self):
+        """限制顶层窗口不要超出屏幕，同时保留系统标题栏可见。"""
+        if getattr(self, "_nqi_skip_auto_screen_adjust", False):
+            return
+        if not self.isWindow() or self.isMaximized() or self.isFullScreen():
+            return
+        margin = 0 if self.objectName() == "mainWindow_Index" else 8
+        available = self._available_screen_geometry().adjusted(margin, margin, -margin, -margin)
+        frame_geometry = self.frameGeometry()
+        if frame_geometry.isNull():
+            return
+
+        frame_delta_width = max(0, frame_geometry.width() - self.geometry().width())
+        frame_delta_height = max(0, frame_geometry.height() - self.geometry().height())
+        max_content_width = max(320, available.width() - frame_delta_width)
+        max_content_height = max(240, available.height() - frame_delta_height)
+        content_width = min(max(320, self.width()), max_content_width)
+        content_height = min(max(240, self.height()), max_content_height)
+        if content_width != self.width() or content_height != self.height():
+            self.resize(content_width, content_height)
+            frame_geometry = self.frameGeometry()
+
+        frame_width = min(frame_geometry.width(), available.width())
+        frame_height = min(frame_geometry.height(), available.height())
+        frame_x = min(max(frame_geometry.x(), available.left()), available.right() - frame_width + 1)
+        frame_y = min(max(frame_geometry.y(), available.top()), available.bottom() - frame_height + 1)
+        client_offset = self.geometry().topLeft() - self.frameGeometry().topLeft()
+        # move 设置的是内容区左上角，所以需要加回标题栏/边框偏移。
+        self.move(QPoint(frame_x, frame_y) + client_offset)
     def hideEvent(self, a0: typing.Optional[QtGui.QHideEvent]) -> None:
         # 主界面的当前页面为None
 
@@ -81,7 +144,18 @@ class BaseWindow(QMainWindow):
                     del self.main_gui.open_windows[index]
                 index+=1
 
-
+        if self._interaction_loading_enabled:
+            app = QApplication.instance()
+            if app is not None:
+                app.removeEventFilter(self)
+            self._interaction_loading_enabled = False
+        self._persistent_loading_count = 0
+        self._transient_loading_token += 1
+        if self.loading_mask is not None:
+            self.loading_mask.hide()
+            self.loading_mask.deleteLater()
+            self.loading_mask = None
+        super().closeEvent(event)
 
     def resizeEvent(self, a0 :typing.Optional[QtGui.QResizeEvent]):
         # 获取新的大小
@@ -192,6 +266,16 @@ class BaseWindow(QMainWindow):
 
         # 先初始化tutorial 提示指示器为None
         self.tutorial = None
+        self.loading_mask = None
+        self._async_threads = []
+        self._persistent_loading_count = 0
+        self._transient_loading_token = 0
+        self._interaction_loading_enabled = False
+        self._table_cell_detail_dialog = None
+        app = QApplication.instance()
+        if app is not None:
+            app.installEventFilter(self)
+            self._interaction_loading_enabled = True
         """
         如果需要添加页面指示帮助的话 请在子类的初始化函数末尾添加两句代码，
         # 实例化提示器
@@ -340,6 +424,251 @@ class BaseWindow(QMainWindow):
 
             pass
 
+    def _owns_interaction_widget(self, obj):
+        """判断当前交互控件是否属于本窗口，避免误拦截其他页面事件。"""
+        if obj is None or not isinstance(obj, QWidget):
+            return False
+        if self.loading_mask is not None and (obj is self.loading_mask or self.loading_mask.isAncestorOf(obj)):
+            return False
+        try:
+            return obj.window() is self
+        except RuntimeError:
+            return False
+
+    def _build_interaction_loading_text(self, obj):
+        """为按钮/标签切换生成简短的加载提示文案。"""
+        if isinstance(obj, QTabBar):
+            return "正在切换页面..."
+        if isinstance(obj, QAbstractButton):
+            text = (obj.text() or "").strip()
+            if not text:
+                text = (obj.toolTip() or "").strip()
+            if not text:
+                text = (obj.objectName() or "").strip()
+            if not text:
+                return "正在处理操作..."
+            if text.upper() == "X" or any(key in text for key in ("关闭", "退出")):
+                return "正在关闭页面..."
+            return f"正在执行{text}..."
+        return "正在处理中..."
+
+    def show_interaction_loading(self, text="正在处理中...", timeout_ms=900):
+        """为按钮点击、Tab 切换等轻量交互显示短时加载遮罩。"""
+        self._transient_loading_token += 1
+        token = self._transient_loading_token
+        if self.loading_mask is None:
+            self.loading_mask = AnimatedLoadingMask(self, text)
+        else:
+            self.loading_mask.updateText(text)
+            self.loading_mask.resize(self.size())
+        self.loading_mask.raise_()
+        self.loading_mask.show()
+        QTimer.singleShot(max(200, int(timeout_ms)), lambda: self._hide_interaction_loading(token))
+        return token
+
+    def bind_action_with_loading(self, action: QAction, callback, loading_text: str = None, timeout_ms: int = 900):
+        """为菜单或工具栏 QAction 统一挂接短时 loading。"""
+        def _wrapped(*args, **kwargs):
+            text = loading_text or f"正在执行{(action.text() or '操作').strip()}..."
+            self.show_interaction_loading(text, timeout_ms=timeout_ms)
+            signature = inspect.signature(callback)
+            accepts_var_args = any(
+                parameter.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                for parameter in signature.parameters.values()
+            )
+            if accepts_var_args:
+                return callback(*args, **kwargs)
+
+            positional_params = [
+                parameter for parameter in signature.parameters.values()
+                if parameter.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
+            ]
+            if not positional_params:
+                return callback()
+
+            trimmed_args = args[:len(positional_params)]
+            allowed_kwargs = {
+                key: value for key, value in kwargs.items()
+                if key in signature.parameters
+            }
+            return callback(*trimmed_args, **allowed_kwargs)
+
+        action.triggered.connect(_wrapped)
+        return _wrapped
+
+    def _hide_interaction_loading(self, token):
+        """仅在没有持久任务加载时关闭短时交互遮罩。"""
+        if token != self._transient_loading_token:
+            return
+        if self._persistent_loading_count > 0:
+            return
+        if self.loading_mask is not None:
+            self.loading_mask.hide()
+            self.loading_mask.deleteLater()
+            self.loading_mask = None
+
+    def eventFilter(self, obj, event):
+        """统一拦截按钮、标签页和表格单元格交互。"""
+        try:
+            self._handle_table_cell_click(obj, event)
+            if event is not None and event.type() == QEvent.Type.MouseButtonPress:
+                if isinstance(obj, QTabBar) and self._owns_interaction_widget(obj):
+                    self.show_interaction_loading("正在切换页面...", timeout_ms=700)
+                elif isinstance(obj, QAbstractButton) and self._owns_interaction_widget(obj) and obj.isEnabled():
+                    self.show_interaction_loading(self._build_interaction_loading_text(obj), timeout_ms=900)
+        except Exception as exc:
+            logger.debug(f"交互事件过滤失败: {exc}")
+        return super().eventFilter(obj, event)
+
+    def _table_widget_from_event_object(self, obj):
+        """从鼠标事件对象向上查找所属 QTableWidget。"""
+        current = obj
+        while current is not None:
+            if isinstance(current, QTableWidget):
+                return current
+            current = current.parent() if hasattr(current, "parent") else None
+        return None
+
+    def _header_text(self, table: QTableWidget, orientation, index: int) -> str:
+        """读取表头文本，表头为空时退回到序号。"""
+        header_item = table.horizontalHeaderItem(index) if orientation == Qt.Orientation.Horizontal else table.verticalHeaderItem(index)
+        if header_item is not None and header_item.text():
+            return header_item.text()
+        return str(index + 1)
+
+    def _show_table_cell_detail(self, table: QTableWidget, row: int, column: int):
+        """弹出表格单元格完整内容窗口，解决表格内容被截断的问题。"""
+        item = table.item(row, column)
+        text = item.text() if item is not None else ""
+        if not text:
+            cell_widget = table.cellWidget(row, column)
+            if cell_widget is not None:
+                text = cell_widget.toolTip() or getattr(cell_widget, "text", lambda: "")()
+        text = "" if text is None else str(text)
+        if not text.strip():
+            return
+
+        row_name = self._header_text(table, Qt.Orientation.Vertical, row)
+        column_name = self._header_text(table, Qt.Orientation.Horizontal, column)
+        dialog = QDialog(self)
+        dialog.setWindowTitle("单元格详细内容")
+        dialog.resize(620, 360)
+
+        layout = QVBoxLayout(dialog)
+        title = QLabel(f"第 {row + 1} 行 / {column_name}")
+        title.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        layout.addWidget(title)
+
+        text_edit = QTextEdit(dialog)
+        text_edit.setReadOnly(True)
+        text_edit.setPlainText(text)
+        layout.addWidget(text_edit)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok, dialog)
+        buttons.accepted.connect(dialog.accept)
+        layout.addWidget(buttons)
+
+        self._table_cell_detail_dialog = dialog
+        dialog.finished.connect(lambda _: setattr(self, "_table_cell_detail_dialog", None))
+        dialog.show()
+
+    def _handle_table_cell_click(self, obj, event) -> bool:
+        """处理所有表格单元格单击查看详情。"""
+        if event is None or event.type() != QEvent.Type.MouseButtonRelease:
+            return False
+        if not isinstance(obj, QWidget) or not self._owns_interaction_widget(obj):
+            return False
+        table = self._table_widget_from_event_object(obj)
+        if table is None or obj is not table.viewport():
+            return False
+        index = table.indexAt(event.pos())
+        if not index.isValid():
+            return False
+        self._show_table_cell_detail(table, index.row(), index.column())
+        return False
+
+    def show_loading(self, text="加载中..."):
+        """显示统一的加载遮罩，给用户明确的后台执行反馈。"""
+        self._persistent_loading_count += 1
+        if self.loading_mask is None:
+            self.loading_mask = AnimatedLoadingMask(self, text)
+        else:
+            self.loading_mask.updateText(text)
+            self.loading_mask.resize(self.size())
+        self.loading_mask.raise_()
+        self.loading_mask.show()
+        return self.loading_mask
+
+    def update_loading_text(self, text: str):
+        """更新加载遮罩文案。"""
+        if self.loading_mask is not None:
+            self.loading_mask.updateText(text)
+
+    def hide_loading(self):
+        """隐藏加载遮罩。"""
+        if self._persistent_loading_count > 0:
+            self._persistent_loading_count -= 1
+        if self._persistent_loading_count > 0:
+            return
+        if self.loading_mask is not None:
+            self.loading_mask.hide()
+            self.loading_mask.deleteLater()
+            self.loading_mask = None
+
+    def set_widgets_enabled(self, widgets, enabled: bool):
+        """批量设置控件可用状态，便于按钮在后台任务执行时防止重复点击。"""
+        if widgets is None:
+            return
+        if not isinstance(widgets, (list, tuple, set)):
+            widgets = [widgets]
+        for widget in widgets:
+            if widget is not None:
+                widget.setEnabled(enabled)
+
+    def run_async_task(
+            self,
+            target,
+            on_success=None,
+            on_error=None,
+            args=None,
+            kwargs=None,
+            loading_text="加载中...",
+            show_loading=True,
+            widgets=None,
+    ):
+        """使用通用线程执行后台任务，并通过信号槽把结果切回界面线程。"""
+        if show_loading:
+            self.show_loading(loading_text)
+        self.set_widgets_enabled(widgets, False)
+
+        thread = AsyncTaskThread(target=target, args=args, kwargs=kwargs, parent=self)
+        self._async_threads.append(thread)
+
+        def _cleanup():
+            self.set_widgets_enabled(widgets, True)
+            if show_loading:
+                self.hide_loading()
+            if thread in self._async_threads:
+                self._async_threads.remove(thread)
+            thread.deleteLater()
+
+        def _success(result):
+            _cleanup()
+            if on_success is not None:
+                on_success(result)
+
+        def _failed(message):
+            _cleanup()
+            if on_error is not None:
+                on_error(message)
+            else:
+                QMessageBox.critical(self, "操作失败", message)
+
+        thread.result_ready.connect(_success)
+        thread.error_occurred.connect(_failed)
+        thread.start()
+        return thread
+
     @abc.abstractmethod
     def _init_ui(self):
         # 实例化ui
@@ -392,10 +721,12 @@ class BaseWindow(QMainWindow):
         # 创建 QScrollArea
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
-        # scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-        # scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         # 创建一个新的 QWidget 作为滚动区域的内容
         scroll_content = QWidget()
+        scroll_content.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         scroll_content_layout = QVBoxLayout(scroll_content)
 
         # 将内容设置为滚动区域的内容
@@ -451,6 +782,7 @@ class BaseWindow(QMainWindow):
     # 显示窗口
     def show_frame(self):
         self.show()
+        self.ensure_within_available_screen()
         # 将窗口提升到前台并激活
         self.raise_()
         self.activateWindow()

@@ -182,7 +182,7 @@ def test_integrated_monitor():
         is_critical=True,  # 标记为关键进程
         log_config = p_main_gui_config
     )
-    time.sleep(6)
+    # 主界面进程先启动，连接服务稍后跟上，避免首屏等待过久。`r`n    time.sleep(1)
     # 创建工作进程的日志配置
     p_connect_server_config = monitor.create_process_log_config(
         f"p_{service_name_connect_server}",

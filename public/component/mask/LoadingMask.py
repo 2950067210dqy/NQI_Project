@@ -5,7 +5,6 @@ from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QRect, py
 from PyQt6.QtGui import QPainter, QColor, QFont, QMovie
 from PyQt6.QtWidgets import QVBoxLayout, QProgressBar, QLabel, QApplication, QPushButton, QWidget, QMainWindow
 
-from theme.ThemeQt6 import ThemedWidget
 
 
 class LoadingMask(QWidget):

@@ -16,6 +16,7 @@ from loguru import logger
 from my_abc.BaseModule import BaseModule
 from public.component.Guide_tutorial_interface.Tutorial_Manager import TutorialManager
 from public.component.custom_status_bar import CustomStatusBar
+from public.component.alarm_toast import AlarmToastManager
 from public.component.dialog.custom.loading_dialog_seconds import AnimatedLoadingDialog
 from public.component.mask.LoadingMask import LoadingContext
 from public.config_class.App_Setting import AppSettings
@@ -43,7 +44,7 @@ class read_queue_data_Thread(MyQThread):
         pass
 
     def dosomething(self):
-        if self.queue and  not self.queue.empty():
+        if self.queue and not self.queue.empty():
             try:
                 message: ObjectQueueItem = self.queue.get()
             except Exception as e:
@@ -52,25 +53,62 @@ class read_queue_data_Thread(MyQThread):
 
             if message is not None and message.is_Empty():
                 return
-            if message is not None and isinstance(message, ObjectQueueItem) and message.to=='MainWindow_index':
-                # logger.error(f"{self.name}_get_message:{message}")
+            if message is not None and isinstance(message, ObjectQueueItem) and message.to == 'MainWindow_index':
+                payload = message.data if isinstance(message.data, dict) else {"server_url": message.data, "message": message.data}
+                if self.window.status_bar is not None and message.title not in {"background_task", "device_status_summary", "latest_alarm"}:
+                    display_message = payload.get("message") or payload.get("status_text") or payload.get("error")
+                    if display_message:
+                        self.window.status_bar.append_server_message(str(display_message), category=message.title, payload=payload)
                 match message.title:
                     case "connected":
-                        global_setting.set_setting("app_state",AppState.CONNECTED)
+                        global_setting.set_setting("app_state", AppState.CONNECTED)
                         self.window.change_enable_component_app_state()
                         if self.window.status_bar is not None:
-                            self.window.status_bar.update_server_label(f"已连接到服务器：{message.data}")
-                            self.window.url = message.data
-                        pass
+                            self.window.status_bar.update_server_address(payload.get("server_url", ""))
+                            self.window.status_bar.update_connection_status(payload.get("status_text", "已连接"), True)
+                            self.window.status_bar.update_background_task("服务器连接成功，正在监听消息")
+                            self.window.url = payload.get("server_url", "")
+                    case "connecting":
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
+                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接中"), None)
+                            self.window.status_bar.update_background_task(payload.get("task", "正在连接服务器"))
+                    case "disconnected":
+                        global_setting.set_setting("app_state", AppState.INITIALIZED)
+                        self.window.change_enable_component_app_state()
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
+                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接已断开"), False)
+                            self.window.status_bar.update_background_task(payload.get("task", "等待重新连接"))
+                    case "connection_error":
+                        global_setting.set_setting("app_state", AppState.INITIALIZED)
+                        self.window.change_enable_component_app_state()
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
+                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接失败"), False)
+                            self.window.status_bar.update_tip(payload.get("error", "服务器连接失败"))
+                            self.window.status_bar.update_background_task(payload.get("task", "服务器连接失败"))
                     case "tip":
                         if self.window.status_bar is not None:
-                            self.window.status_bar.update_tip(message.data)
-                            pass
+                            tip_message = payload.get("message", message.data)
+                            self.window.status_bar.update_tip(tip_message)
+                    case "background_task":
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_background_task(payload.get("message", "后台处理中"))
+                    case "device_status_summary":
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_device_summary(
+                                int(payload.get("online", 0)),
+                                int(payload.get("total", 0)),
+                                payload.get("detail", "")
+                            )
+                    case "latest_alarm":
+                        if self.window.status_bar is not None:
+                            self.window.status_bar.update_latest_alarm(payload.get("message", "最新预警"), payload)
+                        self.window.alarm_toast_signal.emit(payload.get("message", "收到新的报警预警"), payload)
                     case _:
                         pass
-
             else:
-                # 把消息放回去
                 self.queue.put(message)
     def close_stop_experiment_dialog(self):
         if self.window is not None and self.window.stop_dialog is not None:
@@ -79,6 +117,7 @@ read_queue_data_thread = read_queue_data_Thread(name="MainWindow_index_read_queu
 class MainWindow_Index(ThemedWindow):
     # 根据程序状态来改变是否可以点击的组件
     change_enable_component_app_state_signal = QtCore.pyqtSignal()
+    alarm_toast_signal = QtCore.pyqtSignal(str, dict)
 
     def close_window_handle(self):
         """
@@ -108,6 +147,8 @@ class MainWindow_Index(ThemedWindow):
                 for window in self.open_windows:
                     self.close_window_handle()
                     window.close()
+                if self.alarm_toast_manager is not None:
+                    self.alarm_toast_manager.clear()
                 # 关闭所有窗口
                 QApplication.closeAllWindows()
                 event.accept()  # 关闭窗口
@@ -125,6 +166,8 @@ class MainWindow_Index(ThemedWindow):
                                          QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 self.close_window_handle()
+                if self.alarm_toast_manager is not None:
+                    self.alarm_toast_manager.clear()
                 # 关闭所有窗口
                 QApplication.closeAllWindows()
                 event.accept()  # 关闭窗口
@@ -209,7 +252,9 @@ class MainWindow_Index(ThemedWindow):
         super().__init__()
 
         # tool——bar-action 工具栏的action [{'obj_name':'','name';",'action':QAction,'tip':''}]
-        self.url = ""
+        server_config = global_setting.get_setting("connect_server", {}).get("server", {})
+        self.url = server_config.get("url", "")
+        self._startup_auto_connect_triggered = False
         self.tool_bar_actions = []
         self.menu_bar_actions = []
         # 模块
@@ -222,6 +267,7 @@ class MainWindow_Index(ThemedWindow):
         self.toolbar = None
         #状态栏
         self.status_bar:CustomStatusBar = None
+        self.alarm_toast_manager = None
         # 内容layout
         self.content_layout :QVBoxLayout =None
         # tab_widget
@@ -239,16 +285,35 @@ class MainWindow_Index(ThemedWindow):
         self.setup_tutorial()
         # 自动启动提示教程 如果有提示页面的话
         QTimer.singleShot(400, self.start_tutorial_if_exists)
+        QTimer.singleShot(1200, self.auto_connect_server_on_startup)
         pass
+    def _visible_main_window_geometry(self):
+        """返回不会把系统标题栏挤出屏幕的主窗口初始区域。"""
+        screen = QApplication.primaryScreen()
+        if screen is not None:
+            rect = QtCore.QRect(screen.availableGeometry())
+        else:
+            rect = QtCore.QRect(global_setting.get_setting("screen"))
+        # 主窗口只保留很小边距，避免窗口整体明显下移，同时确保标题栏可拖拽可见。
+        if rect.width() > 20 and rect.height() > 80:
+            rect = rect.adjusted(4, 4, -4, -4)
+        return rect
+
     # 实例化ui
     def _init_ui(self, title=""):
         # 将ui文件转成py文件后 直接实例化该py文件里的类对象  uic工具转换之后就是这一段代码
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # 设置窗口大小为屏幕大小
-        self.setGeometry(global_setting.get_setting("screen"))
+        # 设置主窗口初始大小，并保证系统标题栏始终在可见屏幕内。
+        self.setGeometry(self._visible_main_window_geometry())
         self.setObjectName("mainWindow_Index")
         pass
+
+    def show_frame(self):
+        """主窗口启动时最大化显示，贴合屏幕顶部并保留系统标题栏。"""
+        self.showMaximized()
+        self.raise_()
+        self.activateWindow()
     def _init_customize_ui(self):
         global read_queue_data_thread
         read_queue_data_thread.queue = global_setting.get_setting("queue",None)
@@ -265,27 +330,22 @@ class MainWindow_Index(ThemedWindow):
         # 加载模块
         self.modules = self.load_modules()
         # 实例化菜单
-        # [{id:0,text:"文件"},....]
-        menu_name=global_setting.get_setting("configer")['menu']['menu_name']
-        self.menu_name = None
-        if menu_name is not None and menu_name != "":
-            try:
-                self.menu_name =  json.loads(menu_name)
-            except JSONDecodeError  as e:
-                logger.error(f"读取菜单json字符串解析错误：{e}")
-                self.menu_name = None
-            except Exception as e:
-                logger.error(e)
-                self.menu_name = None
-            if self.menu_name is not None:
-                # 创建菜单栏
-                self.create_menu_bar()
-            pass
+        self.menu_name = self.get_menu_structure()
+        self.create_menu_bar()
         # 创建工具栏
         self.create_tool_bar()
         # 初始化自定义状态栏
+        self.alarm_toast_manager = AlarmToastManager(self)
         self.status_bar = CustomStatusBar(self)
         self.setStatusBar(self.status_bar)
+        if self.status_bar is not None:
+            self.status_bar.update_server_address(self.url)
+            current_state = global_setting.get_setting("app_state", AppState.INITIALIZED)
+            if current_state == AppState.CONNECTED:
+                self.status_bar.update_connection_status("已连接", True)
+                self.status_bar.update_background_task("服务器已连接，正在等待后台消息")
+            else:
+                self.status_bar.update_connection_status("未连接", False)
         super()._init_customize_ui()
         pass
     def _init_function(self):
@@ -293,7 +353,109 @@ class MainWindow_Index(ThemedWindow):
         self.change_enable_component_app_state()
         # 连接信号
         self.change_enable_component_app_state_signal.connect(self.change_enable_component_app_state)
+        self.alarm_toast_signal.connect(self.show_alarm_toast, Qt.ConnectionType.QueuedConnection)
         pass
+
+    def auto_connect_server_on_startup(self):
+        """Try connecting to the server automatically after the main window starts."""
+        if self._startup_auto_connect_triggered:
+            return
+        self._startup_auto_connect_triggered = True
+
+        if not self.url:
+            if self.status_bar is not None:
+                self.status_bar.update_tip("未配置服务器地址，已跳过自动连接")
+            return
+
+        if global_setting.get_setting("app_state", AppState.INITIALIZED) == AppState.CONNECTED:
+            if self.status_bar is not None:
+                self.status_bar.update_server_address(self.url)
+                self.status_bar.update_connection_status("已连接", True)
+                self.status_bar.update_background_task("服务器已连接，正在监听消息")
+            return
+
+        if self.status_bar is not None:
+            self.status_bar.update_server_address(self.url)
+            self.status_bar.update_connection_status("连接中", None)
+            self.status_bar.update_tip(f"启动后自动连接服务器: {self.url}")
+            self.status_bar.update_background_task("主界面启动完成，正在自动连接服务器")
+
+        self.reconnect_server()
+
+
+    def reconnect_server(self):
+        """向 connect_server 服务发送重连指令。"""
+        send_message_queue = global_setting.get_setting("send_message_queue", None)
+        if send_message_queue is None:
+            if self.status_bar is not None:
+                self.status_bar.update_tip("连接服务队列不可用，无法重连服务器")
+            return
+
+        if self.status_bar is not None:
+            self.status_bar.update_server_address(self.url)
+            self.status_bar.update_connection_status("连接中", None)
+            self.status_bar.update_tip(f"正在重连服务器: {self.url}")
+
+        send_message_queue.put(
+            ObjectQueueItem(
+                origin="MainWindow_index",
+                to="main_connect_server",
+                title="reconnect",
+                data={"server_url": self.url},
+                time=time_util.get_format_from_time(time.time())
+            )
+        )
+    def open_module_by_name(self, module_name: str):
+        """按模块名打开页面，供状态栏快捷跳转使用。"""
+        for module in self.modules:
+            if getattr(module, 'name', None) == module_name:
+                module.set_main_gui(self)
+                module.click_method()
+                return True
+        if self.status_bar is not None:
+            self.status_bar.update_tip(f'未找到模块: {module_name}')
+        return False
+
+    def show_alarm_toast(self, message: str, payload: dict):
+        """在主线程中显示常驻预警 toast。"""
+        if self.alarm_toast_manager is not None:
+            self.alarm_toast_manager.show_alarm(message, payload)
+
+    def open_notification_history_page(self):
+        """历史预警通知统一并入报警预警中心页。"""
+        return self.open_module_by_name('FaultAlarmModule')
+
+    def open_fault_alarm_page(self):
+        """打开报警预警页面。"""
+        return self.open_module_by_name('FaultAlarmModule')
+
+    def open_device_status_page(self):
+        """打开设备在线状态页面。"""
+        return self.open_module_by_name('DeviceStatusModule')
+
+    def open_server_message_center_page(self):
+        """打开服务器消息中心页面。"""
+        opened = self.open_module_by_name('ServerMessageCenterModule')
+        if opened:
+            self.notify_server_message_center_updated()
+        return opened
+
+    def notify_server_message_center_updated(self):
+        """当状态栏消息更新时，刷新已经打开的服务器消息中心。"""
+        for module in self.modules:
+            if getattr(module, 'name', None) != 'ServerMessageCenterModule':
+                continue
+            frame_obj = getattr(getattr(module, 'interface_widget', None), 'frame_obj', None)
+            if frame_obj is not None and hasattr(frame_obj, 'refresh_messages'):
+                try:
+                    frame_obj.refresh_messages()
+                except Exception as exc:
+                    logger.warning(f'刷新服务器消息中心失败: {exc}')
+            break
+
+    def open_alarm_rule_config_page(self):
+        """打开预警配置页面。"""
+        return self.open_module_by_name('AlarmRuleConfigModule')
     # 创建工具栏
     def create_tool_bar(self):
         # 创建 QToolBar
@@ -354,33 +516,87 @@ class MainWindow_Index(ThemedWindow):
         school_image.setAlignment(Qt.AlignmentFlag.AlignRight)
         school_image.setPixmap(QPixmap(global_setting.get_setting("configer")['window']['school_path']).scaledToHeight(50))
         self.toolbar.addWidget(school_image)
+    def get_menu_structure(self):
+        """按当前业务需求固定上位机主菜单结构。"""
+        return [
+            {
+                "text": "设备",
+                "tip": "设备注册审批、在线状态和设备配置入口",
+                "items": [
+                    {"text": "设备注册审批", "module": "RegistrationApprovalModule"},
+                    {"text": "设备在线状态", "module": "DeviceStatusModule"},
+                    {"text": "设备配置", "module": "Main_experiment_setting"},
+                ],
+            },
+            {
+                "text": "数据",
+                "tip": "电量、几何量和数据检索入口",
+                "items": [
+                    {"text": "电量数据查看", "module": "ExcelDataViewerModule"},
+                    {"text": "几何量图片数据查看", "module": "ImageDataViewerModule"},
+                    {"text": "数据检索", "module": "DataSearchModule"},
+                ],
+            },
+            {
+                "text": "预警",
+                "tip": "预警配置与报警预警入口",
+                "items": [
+                    {"text": "预警配置", "module": "AlarmRuleConfigModule"},
+                    {"text": "报警预警", "module": "FaultAlarmModule"},
+                ],
+            },
+            {
+                "text": "数据处理",
+                "tip": "数据处理功能预留菜单",
+                "items": [
+                    {"text": "待开发", "module": None},
+                ],
+            },
+            {
+                "text": "工具",
+                "tip": "工具功能与服务器消息查看入口",
+                "items": [
+                    {"text": "服务器消息中心", "module": "ServerMessageCenterModule"},
+                    {"text": "待开发", "module": None},
+                ],
+            },
+            {
+                "text": "帮助",
+                "tip": "帮助功能预留菜单",
+                "items": [
+                    {"text": "待开发", "module": None},
+                ],
+            },
+        ]
+
     def create_menu_bar(self):
-    # 创建菜单
+        """按固定菜单结构挂接模块，避免继续依赖旧配置 id 分组。"""
+        self.menuBar().clear()
+        self.menu_bar_actions.clear()
+        module_map = {module.name: module for module in self.modules}
+
         for menu_dict in self.menu_name:
-            # 创建文件菜单
             menu = self.menuBar().addMenu(menu_dict['text'])
-            menu.setToolTip(menu_dict.get('tip',""))
-            # 从module加载组件...
-            for module in self.modules:
-                module:BaseModule
-                module_menu_name = module.menu_name
-                module_title = module.title
-                if module_menu_name is not None and module_menu_name != "" and "id" in module_menu_name and "id" in menu_dict and menu_dict["id"] == module_menu_name["id"]:
-                    # 创建menu action
+            menu.setToolTip(menu_dict.get('tip', ''))
+            for item in menu_dict.get('items', []):
+                action = QAction(item['text'], self)
+                module_name = item.get('module')
+                if module_name and module_name in module_map:
+                    module = module_map[module_name]
                     module.set_main_gui(main_gui=self)
-                    action = QAction(module_title, self)
-                    action.setObjectName(f"{module.name}")
-                    # 创建点击事件
-                    # action.triggered.connect(module.start_service)
-                    action.triggered.connect(module.click_method)
-                    # action.triggered.connect( module.adjustGUIPolicy)
-                    # action.triggered.connect( module.interface_widget.show)
+                    action.setObjectName(module.name)
+                    self.bind_action_with_loading(action, module.click_method, loading_text=f"正在打开{item['text']}...", timeout_ms=1000)
                     self.menu_bar_actions.append(
-                        {"name": module_title, "obj_name": f"{module.name}", "action": action, "app_state": module.app_state})
-                    # 将操作添加到文件菜单
-                    menu.addAction(action)
-                    menu.addSeparator()  # 添加分隔线
-        pass
+                        {"name": item['text'], "obj_name": module.name, "action": action, "app_state": module.app_state}
+                    )
+                else:
+                    action.setObjectName(f"placeholder_{menu_dict['text']}_{item['text']}")
+                    action.setEnabled(False)
+                    self.menu_bar_actions.append(
+                        {"name": item['text'], "obj_name": action.objectName(), "action": action, "app_state": AppState.INITIALIZED}
+                    )
+                menu.addAction(action)
+            menu.addSeparator()
     def _retranslateUi(self, **kwargs):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate(self.objectName(),global_setting.get_setting("configer")["window"]["title"]))
@@ -484,8 +700,15 @@ class MainWindow_Index(ThemedWindow):
 
 
 
+    def resizeEvent(self, event):
+        """主窗口尺寸变化时同步调整悬浮预警位置。"""
+        super().resizeEvent(event)
+        if self.alarm_toast_manager is not None:
+            self.alarm_toast_manager.reposition()
+
     def close_tab(self, index):
         """关闭标签页"""
+        self.show_interaction_loading("正在关闭页面...", timeout_ms=700)
         self.tab_widget.widget(index).hide()
         self.tab_widget.removeTab(index)
     def change_enable_component_app_state(self):
@@ -561,3 +784,5 @@ class MainWindow_Index(ThemedWindow):
             )
 
             self.status_bar.update_tip("✅ 所有页面的首次访问状态已重置")
+
+
