@@ -1,5 +1,6 @@
 import os
 import sys
+from queue import Empty
 
 from PyQt6.QtCore import QCoreApplication
 from loguru import logger
@@ -23,26 +24,32 @@ class read_queue_data_Thread(MyQThread):
         super().stop()
 
     def dosomething(self):
-        if not self.queue.empty():
-            try:
-                message: ObjectQueueItem = self.queue.get()
-            except Exception as e:
-                logger.error(f'{self.name}发生错误{e}')
-                return
+        if self.queue is None:
+            self.msleep(20)
+            return
+        try:
+            message: ObjectQueueItem = self.queue.get(timeout=0.05)
+        except Empty:
+            return
+        except Exception as e:
+            logger.error(f'{self.name}发生错误{e}')
+            return
 
-            if message is not None and message.is_Empty():
-                return
+        if message is not None and message.is_Empty():
+            return
 
-            if message is not None and isinstance(message, ObjectQueueItem) and message.to == f'main_{service_name}':
-                match message.title:
-                    case 'reconnect':
-                        logger.info('收到上位机重连服务器指令')
-                        client_server.disconnect_from_server(notify_ui=False)
-                        client_server.connect_to_server()
-                    case _:
-                        pass
-            else:
-                self.queue.put(message)
+        if message is not None and isinstance(message, ObjectQueueItem) and message.to == f'main_{service_name}':
+            match message.title:
+                case 'reconnect':
+                    logger.info('收到上位机重连服务器指令')
+                    payload = message.data if isinstance(message.data, dict) else {}
+                    client_server.disconnect_from_server(notify_ui=False)
+                    client_server.connect_to_server(auto_connect=bool(payload.get('auto_connect', False)))
+                case _:
+                    pass
+        else:
+            self.queue.put(message)
+
 
 
 read_queue_data_thread = read_queue_data_Thread(name=f'main_{service_name}_read_queue_data_thread')
@@ -67,7 +74,8 @@ def main(q, send_message_q):
 def start():
     logger.info(f"{'-' * 30}{service_name}_run{'-' * 30}")
     global client_server
-    client_server.connect_to_server()
+    # 进程启动时自动连接服务器，并通知主界面进入自动重连锁定状态。
+    client_server.connect_to_server(auto_connect=True)
 
 
 def restart(q, send_message_q):
@@ -82,3 +90,4 @@ def stop():
     logger.info(f"{'-' * 30}{service_name}_stop{'-' * 30}")
     if client_server is not None:
         client_server.disconnect_from_server()
+

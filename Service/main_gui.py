@@ -164,9 +164,10 @@ def main(q, send_message_q):
     global_load.load_global_setting()
     global_setting.set_setting("queue", q)
     global_setting.set_setting("send_message_queue", send_message_q)
+    # GUI 队列由 MainWindow_Index 在全部控件和信号初始化完成后统一消费。
+    # 这里不再提前启动空监听器，避免启动阶段与模块争抢消息。
     global read_queue_data_thread
     read_queue_data_thread.queue = q
-    read_queue_data_thread.start()
 
     # qt程序开始
     start_qt_application()

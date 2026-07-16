@@ -35,7 +35,9 @@ class NotificationListener(QThread):
 
             except Exception as e:
                 logger.error(f"Notification polling error: {e}")
-                time.sleep(self.poll_interval)
+                # API 客户端已完成 INI 配置次数的尝试；最终失败后退出，避免旧监听器持续请求和弹错。
+                self.running = False
+                break
 
     def stop(self):
         """停止监听"""

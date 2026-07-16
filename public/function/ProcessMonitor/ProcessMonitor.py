@@ -126,11 +126,13 @@ class LoggerManager:
             filter=lambda record: record["extra"].get("logger_type", "default") == process_id
         )
 
-        # 添加控制台handler（如果启用）
+        # 添加控制台handler（如果启用）。PyInstaller windowed exe 下 sys.stdout 可能为 None，
+        # 此时只能写文件日志，否则 loguru.add(None) 会直接抛 TypeError。
         console_handler_id = None
-        if config.enable_console:
+        console_sink = sys.stdout or getattr(sys, "__stdout__", None) or sys.stderr or getattr(sys, "__stderr__", None)
+        if config.enable_console and console_sink is not None:
             console_handler_id = logger.add(
-                sys.stdout,
+                console_sink,
                 level=config.console_level,
                 format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level} | {process.name} | {thread.name} | {name}:{module}:{line} | {message} </level>",
                 backtrace=config.backtrace,
@@ -248,10 +250,11 @@ def monitored_target(target_func, args, health_queue, process_id, exception_queu
                 diagnose=config.diagnose
             )
 
-            # 添加控制台输出（如果启用）
-            if config.enable_console:
+            # 添加控制台输出（如果启用）。打包为 windowed exe 时 stderr/stdout 可能为 None。
+            console_sink = sys.stderr or getattr(sys, "__stderr__", None) or sys.stdout or getattr(sys, "__stdout__", None)
+            if config.enable_console and console_sink is not None:
                 logger.add(
-                    sys.stderr,
+                    console_sink,
                     level=config.console_level,
                     format=config.format,
                     backtrace=config.backtrace,

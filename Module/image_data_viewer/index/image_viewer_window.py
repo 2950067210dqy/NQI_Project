@@ -16,7 +16,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
                               QLabel, QPushButton, QGroupBox, QGridLayout,
                               QScrollArea, QListWidget, QListWidgetItem,
                               QSplitter, QFrame, QComboBox, QTableWidget, QTableWidgetItem,
-                              QPlainTextEdit, QHeaderView, QFileDialog, QMessageBox)
+                              QPlainTextEdit, QHeaderView, QFileDialog, QMessageBox, QProgressBar, QApplication)
 from PyQt6.QtGui import QPixmap
 from loguru import logger
 
@@ -26,6 +26,7 @@ from public.entity.MyQThread import MyQThread
 from public.config_class.global_setting import global_setting
 from public.function.Cache.cache_manager import cache_manager
 from public.function.Cache.data_download_manager import download_manager
+from public.util.alarm_message_formatter import format_alarm_message
 
 
 class ImageViewerQueueThread(MyQThread):
@@ -231,6 +232,9 @@ class ImageDataViewerWindow(ThemedWindow):
         
         # UI组件
         self.log_text = None  # 日志文本框（稍后创建）
+        self.realtime_loading_bar = None  # 实时识别页加载条
+        self.realtime_loading_label = None
+        self._realtime_loading_count = 0
         
         # 服务端连接
         self.server_client: Client_server = None
@@ -240,14 +244,15 @@ class ImageDataViewerWindow(ThemedWindow):
         self.cache_bootstrap_started = False
         self.history_cache_loaded = False
         self.latest_cache_loaded = False
+        self.displayed_image_file_ids = set()  # 记录实时识别页已显示的图片，避免同一张图被多次插入。
         
         # 队列监听线程
         self.queue_thread = ImageViewerQueueThread("image_viewer_queue_thread", self)
         queue = global_setting.get_setting("queue", None)
         if queue:
             self.queue_thread.queue = queue
-            self.queue_thread.start()
-            logger.info("图片数据查看器队列监听线程已启动")
+            # 跨进程消息由主窗口统一分发，避免多个线程争抢同一队列。
+            logger.info("图片数据查看器已使用主窗口统一消息分发")
         
         # 用于动态添加区域的引用
         self.grid_layout = None
@@ -295,6 +300,28 @@ class ImageDataViewerWindow(ThemedWindow):
         except Exception:
             pass
 
+    def _begin_realtime_loading(self, text: str = "正在加载几何量实时数据..."):
+        """显示实时识别页内加载条；下载远程图片时给用户持续反馈。"""
+        self._realtime_loading_count += 1
+        if self.realtime_loading_label is not None:
+            self.realtime_loading_label.setText(text)
+            self.realtime_loading_label.setVisible(True)
+        if self.realtime_loading_bar is not None:
+            self.realtime_loading_bar.setRange(0, 0)
+            self.realtime_loading_bar.setVisible(True)
+        QApplication.processEvents()
+
+    def _end_realtime_loading(self):
+        """隐藏实时识别页内加载条，支持嵌套加载调用。"""
+        if self._realtime_loading_count > 0:
+            self._realtime_loading_count -= 1
+        if self._realtime_loading_count > 0:
+            return
+        if self.realtime_loading_label is not None:
+            self.realtime_loading_label.setVisible(False)
+        if self.realtime_loading_bar is not None:
+            self.realtime_loading_bar.setVisible(False)
+
     def _get_api_client(self):
         """返回页面用于读取服务器分析结果的 API 客户端。"""
         return getattr(self.server_client, 'client', None) if self.server_client else None
@@ -317,6 +344,7 @@ class ImageDataViewerWindow(ThemedWindow):
 
     def _normalize_image_record(self, record: dict) -> dict:
         """统一列表/详情记录结构。"""
+        record = record or {}
         analysis_result = record.get('analysis_result') or {}
         upload_time = record.get('upload_time') or ''
         return {
@@ -331,7 +359,29 @@ class ImageDataViewerWindow(ThemedWindow):
             'processing_status': record.get('processing_status', ''),
             'processing_error': record.get('processing_error'),
             'image_type': record.get('image_type', ''),
+            'alarm_info': record.get('alarm_info') or {},
         }
+
+    def _format_alarm_text(self, alarm_info: dict) -> str:
+        """把服务端预警结构转换为几何量页面可读的中文文本。"""
+        alarm_info = alarm_info or {}
+        if not alarm_info.get('has_alarm'):
+            return "无预警"
+        severity_map = {"critical": "严重", "warning": "预警", "info": "提示"}
+        severity = severity_map.get(alarm_info.get('severity'), alarm_info.get('severity') or "预警")
+        # 历史记录可能仍包含 sharpness_score、lt 等内部编码，显示前统一翻译为中文。
+        message = format_alarm_message(alarm_info.get('message') or "检测到预警")
+        created_at = (alarm_info.get('created_at') or '').replace('T', ' ')[:19]
+        return f"[{severity}] {created_at} {message}".strip()
+
+    def _make_alarm_table_item(self, alarm_info: dict) -> QTableWidgetItem:
+        """创建预警表格单元格，有预警时用红色并保留完整 tooltip。"""
+        text = self._format_alarm_text(alarm_info)
+        item = QTableWidgetItem(text)
+        item.setToolTip(text)
+        if (alarm_info or {}).get('has_alarm'):
+            item.setForeground(Qt.GlobalColor.red)
+        return item
 
     def _get_preview_cache_dir(self) -> Path:
         """Store remote image previews locally so QPixmap can render them."""
@@ -461,12 +511,14 @@ class ImageDataViewerWindow(ThemedWindow):
         else:
             self.history_recognition_result_label.setText("未识别故障 ✓")
             self.history_recognition_result_label.setStyleSheet("color: green; font-size: 14px; font-weight: bold;")
+        alarm_text = self._format_alarm_text(normalized.get('alarm_info') or {})
         self.history_info_label.setText(
             f"设备: {normalized.get('device_id', '')}\n"
             f"文件: {normalized.get('file_name', '')}\n"
             f"时间: {normalized.get('timestamp', '')}\n"
             f"状态: {normalized.get('processing_status', '')}\n"
             f"结论: {summary}\n"
+            f"预警信息: {alarm_text}\n"
             f"原图路径: {original_remote}\n"
             f"识别图路径: {recognized_remote}"
         )
@@ -494,10 +546,15 @@ class ImageDataViewerWindow(ThemedWindow):
             target_widget.load_original_image(Path(original_local))
             target_widget.apply_server_analysis(normalized.get("analysis_result", {}), Path(recognized_local or original_local))
             device_tab.info_labels["batch"].setText(f"最后接收: {normalized.get('timestamp', '')}")
+            self.displayed_image_file_ids.add(int(normalized["file_id"]))
             with self.widget_access_lock:
                 current_count = sum(1 for widget in device_tab.image_widgets if widget.original_image_path)
                 device_tab.info_labels["count"].setText(f"图片数量: {current_count}")
-            self.status_label.setText(f"状态: 已加载设备 {normalized.get('device_id', '')} 的图片")
+            # 实时识别区域加载完成后，同步把该文件对应的服务端预警显示到页面状态栏。
+            if (normalized.get('alarm_info') or {}).get('has_alarm'):
+                self.status_label.setText(f"状态: 已加载设备 {normalized.get('device_id', '')} 的图片；预警: {self._format_alarm_text(normalized.get('alarm_info'))}")
+            else:
+                self.status_label.setText(f"状态: 已加载设备 {normalized.get('device_id', '')} 的图片")
             return True
         except Exception as exc:
             logger.error(f"加载几何量实时数据失败: {exc}")
@@ -601,6 +658,18 @@ class ImageDataViewerWindow(ThemedWindow):
         tab = QWidget()
         layout = QVBoxLayout(tab)
         
+        loading_layout = QHBoxLayout()
+        self.realtime_loading_label = QLabel("正在加载几何量实时数据...")
+        self.realtime_loading_label.setStyleSheet("color: #1565c0; font-weight: bold;")
+        self.realtime_loading_bar = QProgressBar()
+        self.realtime_loading_bar.setRange(0, 0)
+        self.realtime_loading_bar.setFixedHeight(16)
+        self.realtime_loading_label.setVisible(False)
+        self.realtime_loading_bar.setVisible(False)
+        loading_layout.addWidget(self.realtime_loading_label)
+        loading_layout.addWidget(self.realtime_loading_bar, 1)
+        layout.addLayout(loading_layout)
+
         # ✅ 多设备选项卡
         self.device_image_tabs = QTabWidget()
         
@@ -701,14 +770,34 @@ class ImageDataViewerWindow(ThemedWindow):
         return tab
     
     def on_cache_data_ready(self, file_path: str, device_id: str):
-        """收到新图片通知后，直接回源服务端读取最新分析结果。"""
+        """收到新图片通知后，批量回源读取最近已分析图片，避免同批多图只显示一部分。"""
         logger.info(f"[几何量数据页面] 收到服务端数据通知: {Path(file_path).name if file_path else 'server_record'}, 设备: {device_id}")
         self.log_message(f"收到新图片通知: 设备 {device_id}")
-        for raw_record in self._fetch_image_records(device_id=device_id, limit=20):
-            if self._load_image_record_into_ui(raw_record):
+        self._begin_realtime_loading("正在加载最新几何量实时数据...")
+        try:
+            records = []
+            for raw_record in self._fetch_image_records(device_id=device_id, limit=20):
+                normalized = self._normalize_image_record(raw_record)
+                file_id = normalized.get("file_id")
+                if normalized.get("processing_status") != "done" or not file_id:
+                    continue
+                if int(file_id) in self.displayed_image_file_ids:
+                    continue
+                records.append(raw_record)
+
+            loaded_count = 0
+            # 服务端按上传时间倒序返回；倒序插入可让最新图片最终停在实时页最前面。
+            for raw_record in reversed(records):
+                if self._load_image_record_into_ui(raw_record):
+                    loaded_count += 1
+
+            if loaded_count:
                 self.load_history_from_cache()
                 self.load_cache_images_to_table()
-            break
+            else:
+                self.log_message("暂未发现新的已分析图片，等待服务端分析完成。")
+        finally:
+            self._end_realtime_loading()
     def get_or_create_device_image_tab(self, device_id: str):
         """
         获取或创建设备的图片显示选项卡
@@ -1034,32 +1123,39 @@ class ImageDataViewerWindow(ThemedWindow):
         for image_type in type_values:
             self.history_type_combo.addItem(image_type)
         self.update_history_list()
-    def load_latest_from_cache(self):
-        """Load the latest analyzed image record per device and skip bad records safely."""
-        logger.info("Loading latest image records from server...")
-        records = [self._normalize_image_record(record) for record in self._fetch_image_records(limit=200)]
-        latest_by_device = {}
-        for record in records:
-            device_id = record.get("device_id")
-            if not device_id or device_id in latest_by_device:
-                continue
-            latest_by_device[device_id] = record
-        self.device_image_tabs.clear()
-        loaded_count = 0
-        for record in latest_by_device.values():
-            try:
-                if self._load_image_record_into_ui(record):
-                    loaded_count += 1
-            except Exception as exc:
-                logger.warning(f"Skip broken image record {record.get('file_name', '')}: {exc}")
-        if loaded_count == 0:
-            placeholder_widget = QWidget()
-            placeholder_layout = QVBoxLayout(placeholder_widget)
-            placeholder_layout.addWidget(QLabel("等待服务端分析后的几何量图片数据..."))
-            self.device_image_tabs.addTab(placeholder_widget, "暂无设备")
-            self.status_label.setText("状态: 暂无已分析的几何量图片数据")
-            return
-        self.status_label.setText(f"状态: 已加载 {loaded_count} 台设备的几何量图片数据")
+    def load_latest_from_cache(self, show_realtime_loading: bool = True):
+        """Load recent analyzed image records and skip bad records safely."""
+        if show_realtime_loading:
+            self._begin_realtime_loading("正在加载几何量实时数据...")
+        try:
+            logger.info("Loading latest image records from server...")
+            records = list(self._fetch_image_records(limit=200))
+            done_records = []
+            for record in records:
+                normalized = self._normalize_image_record(record)
+                if normalized.get("device_id") and normalized.get("processing_status") == "done":
+                    done_records.append(record)
+            self.device_image_tabs.clear()
+            self.displayed_image_file_ids.clear()
+            loaded_count = 0
+            for record in reversed(done_records[:self.max_widget_count]):
+                normalized = self._normalize_image_record(record)
+                try:
+                    if self._load_image_record_into_ui(record):
+                        loaded_count += 1
+                except Exception as exc:
+                    logger.warning(f"Skip broken image record {normalized.get('file_name', '')}: {exc}")
+            if loaded_count == 0:
+                placeholder_widget = QWidget()
+                placeholder_layout = QVBoxLayout(placeholder_widget)
+                placeholder_layout.addWidget(QLabel("等待服务端分析后的几何量图片数据..."))
+                self.device_image_tabs.addTab(placeholder_widget, "暂无设备")
+                self.status_label.setText("状态: 暂无已分析的几何量图片数据")
+                return
+            self.status_label.setText(f"状态: 已加载 {loaded_count} 张几何量图片数据")
+        finally:
+            if show_realtime_loading:
+                self._end_realtime_loading()
 
 
     def create_log_tab(self):
@@ -1102,11 +1198,12 @@ class ImageDataViewerWindow(ThemedWindow):
         
         # 表格
         self.cache_image_table = QTableWidget()
-        self.cache_image_table.setColumnCount(6)
+        self.cache_image_table.setColumnCount(7)
         self.cache_image_table.setHorizontalHeaderLabels([
-            "设备ID", "文件名", "时间", "识别结果", "缩略图", "操作"
+            "设备ID", "文件名", "时间", "识别结果", "预警信息", "缩略图", "操作"
         ])
         self.cache_image_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.cache_image_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
         self.cache_image_table.setAlternatingRowColors(True)
         self.cache_image_table.setRowHeight(0, 80)  # 设置行高
         layout.addWidget(self.cache_image_table)
@@ -1128,6 +1225,7 @@ class ImageDataViewerWindow(ThemedWindow):
     
     def _populate_cache_images_table(self, records):
         """Render server image records in the cache table."""
+        self.cache_image_table.setSortingEnabled(False)
         self.cache_image_table.setRowCount(len(records))
         for row, record in enumerate(records):
             self.cache_image_table.setRowHeight(row, 80)
@@ -1140,6 +1238,7 @@ class ImageDataViewerWindow(ThemedWindow):
             if record.get("processing_status") == "done":
                 result_item.setForeground(Qt.GlobalColor.red if has_fault else Qt.GlobalColor.green)
             self.cache_image_table.setItem(row, 3, result_item)
+            self.cache_image_table.setItem(row, 4, self._make_alarm_table_item(record.get("alarm_info") or {}))
             original_path = self._ensure_local_image_path(record.get("file_path"), record.get("file_id"), record.get("file_name") or "image.png")
             thumbnail_label = QLabel()
             thumbnail_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1149,7 +1248,7 @@ class ImageDataViewerWindow(ThemedWindow):
                     thumbnail_label.setPixmap(pixmap.scaled(60, 60, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
             else:
                 thumbnail_label.setText("远程图片")
-            self.cache_image_table.setCellWidget(row, 4, thumbnail_label)
+            self.cache_image_table.setCellWidget(row, 5, thumbnail_label)
             action_widget = QWidget()
             action_layout = QHBoxLayout(action_widget)
             action_layout.setContentsMargins(2, 2, 2, 2)
@@ -1163,7 +1262,8 @@ class ImageDataViewerWindow(ThemedWindow):
             download_btn.clicked.connect(lambda checked, r=record: self._download_image_record(r))
             action_layout.addWidget(download_btn)
             action_layout.addStretch()
-            self.cache_image_table.setCellWidget(row, 5, action_widget)
+            self.cache_image_table.setCellWidget(row, 6, action_widget)
+        self.sort_table_by_latest_time(self.cache_image_table, ("时间",))
         self.log_message(f"Loaded {len(records)} image records from server")
 
     def load_cache_images_to_table(self, show_loading: bool = True):
@@ -1194,16 +1294,25 @@ class ImageDataViewerWindow(ThemedWindow):
             prepared["recognized_local_path"] = str(self._ensure_local_image_path(prepared.get("recognized_path"), None, f"recognized_{prepared.get('file_name', 'image.png')}") or prepared.get("original_local_path") or "")
             return prepared
 
+        self._begin_realtime_loading(f"正在加载 {normalized.get('file_name', '')}...")
+
         def on_success(detail):
-            self._display_history_record(detail)
-            self.tab_widget.setCurrentIndex(1)
-            self.log_message(f"Loaded image record: {normalized.get('file_name', '')}")
+            try:
+                self._display_history_record(detail)
+                self.tab_widget.setCurrentIndex(1)
+                self.log_message(f"Loaded image record: {normalized.get('file_name', '')}")
+            finally:
+                self._end_realtime_loading()
+
+        def on_error(message):
+            self._end_realtime_loading()
+            QMessageBox.critical(self, "加载失败", message)
 
         self.run_async_task(
             task,
             on_success=on_success,
-            on_error=lambda message: QMessageBox.critical(self, "加载失败", message),
-            loading_text=f"Loading {normalized.get('file_name', '')}...",
+            on_error=on_error,
+            loading_text=f"正在加载 {normalized.get('file_name', '')}...",
             widgets=[getattr(self, "cache_image_table", None)],
         )
 

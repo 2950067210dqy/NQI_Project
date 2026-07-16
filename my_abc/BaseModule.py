@@ -346,7 +346,7 @@ class BaseModule(ABC):
             if self.interface_widget.left_frame_obj is not None:
                 self.interface_widget.left_frame_obj.menuBar().show()
                 self.interface_widget.left_frame_obj.statusBar().show()
-                self.interface_widget.left_frame_obj.setWindowTitle(self.title + 'left')
+                self.interface_widget.left_frame_obj.setWindowTitle(self.title)
                 left_x = module_left
                 left_y = module_top + flag
                 left_w = h_each * (h_stretch['left'])
@@ -356,7 +356,7 @@ class BaseModule(ABC):
             if self.interface_widget.frame_obj is not None:
                 self.interface_widget.frame_obj.menuBar().show()
                 self.interface_widget.frame_obj.statusBar().show()
-                self.interface_widget.frame_obj.setWindowTitle(self.title+'content')
+                self.interface_widget.frame_obj.setWindowTitle(self.title)
                 middle_x = module_left + h_each * (h_stretch['left'])
                 middle_y = module_top + flag
                 middle_w = h_each * (h_stretch['middle'])
@@ -366,7 +366,7 @@ class BaseModule(ABC):
             if self.interface_widget.right_frame_obj is not None:
                 self.interface_widget.right_frame_obj.menuBar().show()
                 self.interface_widget.right_frame_obj.statusBar().show()
-                self.interface_widget.right_frame_obj.setWindowTitle(self.title+'right')
+                self.interface_widget.right_frame_obj.setWindowTitle(self.title)
                 right_x = module_left + h_each * (h_stretch['middle'] + h_stretch['left'])
                 right_y = module_top + flag
                 right_w = h_each * (h_stretch['right'])
@@ -376,7 +376,7 @@ class BaseModule(ABC):
             if self.interface_widget.bottom_frame_obj is not None:
                 self.interface_widget.bottom_frame_obj.menuBar().show()
                 self.interface_widget.bottom_frame_obj.statusBar().show()
-                self.interface_widget.bottom_frame_obj.setWindowTitle(self.title+'bottom')
+                self.interface_widget.bottom_frame_obj.setWindowTitle(self.title)
                 bottom_x = module_left
                 bottom_y = module_top + v_each * (v_stretch['top']) + flag
                 bottom_w = self.main_gui.centralWidget().width()

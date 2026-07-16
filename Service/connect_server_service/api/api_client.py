@@ -1,16 +1,18 @@
-import requests
 from typing import List, Dict, Optional
 from pathlib import Path
 from loguru import logger
+
+from Service.connect_server_service.api.http_retry import create_retry_session
 
 
 class UpperAPIClient:
     """上位机API客户端"""
 
     def __init__(self, base_url: str, timeout: int = 30):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = str(base_url or '').strip().rstrip('/')
         self.timeout = timeout
-        self.session = requests.Session()
+        # 所有业务请求按 INI 配置尝试，只有最终失败才会传给页面错误回调。
+        self.session = create_retry_session()
 
     def get_unread_notifications(self) -> Dict:
         """获取未读通知"""
@@ -190,11 +192,11 @@ class UpperAPIClient:
 
     # ==================== 设备接口 ====================
 
-    def list_devices(self) -> Dict:
-        """获取设备列表"""
+    def list_devices(self, timeout: int = None) -> Dict:
+        """获取设备列表；状态栏后台轮询可传入较短超时，避免设备离线或服务端慢响应时拖住界面。"""
         try:
             url = f"{self.base_url}/api/devices/list"
-            response = self.session.get(url, timeout=self.timeout)
+            response = self.session.get(url, timeout=timeout or self.timeout)
             response.raise_for_status()
             return response.json()
         except Exception as e:
@@ -238,7 +240,8 @@ class UpperAPIClient:
     def search_data(self, **filters) -> Dict:
         """按时间、地点、故障、设备号等条件检索数据集。"""
         url = f"{self.base_url}/api/search/data"
-        params = {key: value for key, value in filters.items() if value is not None}
+        # 空字符串不应作为检索条件传给服务端，否则可编辑下拉框清空后仍可能干扰精细字段过滤。
+        params = {key: value for key, value in filters.items() if value not in (None, "")}
         response = self.session.get(url, params=params, timeout=self.timeout)
         response.raise_for_status()
         return response.json()
@@ -316,6 +319,3 @@ class UpperAPIClient:
         )
         response.raise_for_status()
         return response.json()
-
-
-

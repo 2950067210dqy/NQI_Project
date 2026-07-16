@@ -536,6 +536,32 @@ class BaseWindow(QMainWindow):
             return header_item.text()
         return str(index + 1)
 
+    def sort_table_by_latest_time(self, table: QTableWidget, preferred_headers=None) -> int:
+        """将包含时间列的表格默认按最新时间降序排列。"""
+        if table is None or table.columnCount() <= 0:
+            return -1
+
+        # 多时间列表格优先选择最能代表记录新旧的列，避免按已读/审批时间等可空字段排序。
+        header_priority = preferred_headers or (
+            "更新时间", "最后心跳", "发生时间", "创建时间", "申请时间",
+            "上传时间", "接收时间", "时间", "日期", "审批时间", "已读时间",
+        )
+        headers = {
+            self._header_text(table, Qt.Orientation.Horizontal, column).strip(): column
+            for column in range(table.columnCount())
+        }
+        time_column = next(
+            (headers[name] for name in header_priority if name in headers),
+            -1,
+        )
+        if time_column < 0:
+            return -1
+
+        table.setSortingEnabled(True)
+        table.sortItems(time_column, Qt.SortOrder.DescendingOrder)
+        table.horizontalHeader().setSortIndicator(time_column, Qt.SortOrder.DescendingOrder)
+        return time_column
+
     def _show_table_cell_detail(self, table: QTableWidget, row: int, column: int):
         """弹出表格单元格完整内容窗口，解决表格内容被截断的问题。"""
         item = table.item(row, column)

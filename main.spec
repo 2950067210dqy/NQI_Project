@@ -1,8 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 from pathlib import Path
+import shutil
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 
 project_root = Path(SPECPATH).resolve() if "SPECPATH" in globals() else Path(__file__).resolve().parent
@@ -32,12 +33,11 @@ def add_tree(source_dir, target_dir, skip_parts=None, skip_suffixes=None):
 
 
 datas = []
-datas += add_tree("config", "config", skip_suffixes={".pyc", ".pyo"})
-datas += add_tree("resource", "resource", skip_suffixes={".pyc", ".pyo"})
+# config/resource 是业务可见资源，构建完成后复制到 exe 同级目录；PyInstaller 依赖仍放 _internal。
 datas += add_tree("ui", "ui", skip_suffixes={".pyc", ".pyo"})
 
 # MainWindow_index.load_modules scans Module/*.py from the filesystem, so keep
-# these module files available next to the packaged executable.
+# these module files available in the PyInstaller _internal directory.
 datas += add_tree(
     "Module",
     "Module",
@@ -52,6 +52,42 @@ if icon_file.exists():
 
 hiddenimports = []
 hiddenimports += collect_submodules("Module")
+# 动态菜单入口由源码文件扫描加载，显式列出可避免增量构建或包扫描差异导致 exe 中菜单静默缺失。
+hiddenimports += [
+    "Module.alarm_rule_config.main",
+    "Module.data_search.main",
+    "Module.device_registration_approval.main",
+    "Module.device_status.main",
+    "Module.excel_data_viewer.main",
+    "Module.experiment_setting.main",
+    "Module.fault_alarm.main",
+    "Module.image_data_viewer.main",
+    "Module.notification_history.main",
+    "Module.search_accuracy_visualization.main",
+    "Module.server_message_center.main",
+    "PyQt6.sip",
+    "charset_normalizer.md__mypyc",
+    "multiprocessing.popen_spawn_win32",
+]
+# 设备配置等动态加载模块会延迟导入自定义弹窗；显式收集，避免 exe 中打开页面时报 No module named。
+hiddenimports += collect_submodules("public.component.dialog")
+hiddenimports += [
+    "public.component.dialog.custom.InfoDialog",
+]
+# 电量数据页通过动态菜单入口加载；pandas/matplotlib 使用官方 hook，
+# 这里只补充 pandas 动态选择的 Excel 引擎和明确使用的 QtAgg 后端。
+hiddenimports += [
+    "pandas",
+    "openpyxl",
+    "openpyxl.cell._writer",
+    "openpyxl.worksheet._reader",
+    "matplotlib",
+    "matplotlib.backends.backend_qtagg",
+    "matplotlib.backends.backend_qt",
+    "matplotlib.backends.backend_agg",
+]
+
+datas += collect_data_files("matplotlib")
 
 
 a = Analysis(
@@ -62,10 +98,18 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=[str(project_root / "pyinstaller_runtime_hook.py")],
     excludes=[
         "PySide2",
         "PySide6",
+        # Optional compatibility branches discovered by third-party hooks; the
+        # upper-client source does not use them, so keep their large DLL trees out.
+        "networkx",
+        "scipy",
+        "sympy",
+        "tensorflow",
+        "torch",
+        "torchvision",
         "tkinter",
         "pytest",
         "websockets",
@@ -80,7 +124,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="NQI_Upper_Client",
+    name="NQI上位机",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -92,6 +136,7 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     icon=str(icon_file) if icon_file.exists() else None,
+    contents_directory="_internal",
 )
 coll = COLLECT(
     exe,
@@ -102,3 +147,18 @@ coll = COLLECT(
     upx_exclude=[],
     name="NQI_Upper_Client",
 )
+
+
+def copy_to_exe_dir(source_name, target_name=None):
+    """把用户需要直接看到/修改的业务资源复制到 dist/exe 同级目录。"""
+    source = project_root / source_name
+    if not source.exists():
+        return
+    target = Path(DISTPATH) / "NQI_Upper_Client" / (target_name or source_name)
+    if target.exists():
+        shutil.rmtree(target)
+    shutil.copytree(source, target, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"))
+
+
+copy_to_exe_dir("config")
+copy_to_exe_dir("resource")

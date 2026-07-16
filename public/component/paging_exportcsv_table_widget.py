@@ -197,6 +197,7 @@ class TableWidgetPaging(ThemedWidget):
             return
 
         # 清空表格并插入获取的数据
+        self.table_widget.setSortingEnabled(False)
         self.table_widget.setRowCount(0)  # 清空表格
         try:
             for row in datas:
@@ -211,6 +212,15 @@ class TableWidgetPaging(ThemedWidget):
                     self.table_widget.setItem(self.table_widget.rowCount() - 1, col, item)
         except Exception as e:
             logger.error(e)
+
+        # 有记录时间列时默认显示最新数据；累计时长等指标不参与该规则。
+        time_headers = ("更新时间", "创建时间", "获取时间", "发生时间", "时间", "日期")
+        for column in range(self.table_widget.columnCount()):
+            header = self.table_widget.horizontalHeaderItem(column)
+            if header is not None and header.text().strip() in time_headers:
+                self.table_widget.setSortingEnabled(True)
+                self.table_widget.sortItems(column, QtCore.Qt.SortOrder.DescendingOrder)
+                break
 
         # 更新分页信息
         self.update_page_info()

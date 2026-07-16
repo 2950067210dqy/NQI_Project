@@ -238,9 +238,8 @@ class Tab_7(ThemedWindow):
         global read_queue_data_thread
         read_queue_data_thread.update_status_main_signal_gui_update = self.update_status_main_signal_gui_update
         read_queue_data_thread.queue = global_setting.get_setting("send_message_queue")
-        if read_queue_data_thread is not None and not read_queue_data_thread.isRunning():
-            read_queue_data_thread.start()
-            pass
+        # send_message_queue 是 GUI 发往服务进程的命令队列，本页面不能反向消费它。
+        # 旧监听器没有处理任何消息，却会和连接服务争抢、反复放回重连命令。
         pass
 
     # 实例化按钮信号槽绑定

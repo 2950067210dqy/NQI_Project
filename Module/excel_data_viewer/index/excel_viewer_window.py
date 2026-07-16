@@ -13,12 +13,14 @@ from PyQt6.QtCore import pyqtSignal, Qt, QDate, QTimer
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
     QLabel, QPushButton, QGroupBox, QComboBox, QDateEdit, QListWidget, QListWidgetItem,
-    QTableWidget, QTableWidgetItem, QPlainTextEdit, QHeaderView, QFileDialog, QMessageBox
+    QTableWidget, QTableWidgetItem, QPlainTextEdit, QHeaderView, QFileDialog, QMessageBox,
+    QProgressBar, QApplication
 )
 from loguru import logger
 import matplotlib
-matplotlib.use('Qt5Agg')
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+# 上位机使用 PyQt6，打包后必须使用通用 QtAgg 后端，避免 Qt5Agg 触发 PyQt5 后端导入失败。
+matplotlib.use('QtAgg')
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -30,6 +32,7 @@ from public.entity.MyQThread import MyQThread
 from public.config_class.global_setting import global_setting
 from public.function.Cache.cache_manager import cache_manager
 from public.function.Cache.data_download_manager import download_manager
+from public.util.alarm_message_formatter import format_alarm_message
 
 
 # ==================== 数据结构 ====================
@@ -124,6 +127,9 @@ class ExcelDataViewerWindow(ThemedWindow):
         
         # UI组件
         self.log_text = None  # 日志文本框（稍后创建）
+        self.realtime_loading_bar = None  # 实时数据页加载条
+        self.realtime_loading_label = None
+        self._realtime_loading_count = 0
         
         # 服务端连接
         self.server_client: Client_server = None
@@ -131,6 +137,9 @@ class ExcelDataViewerWindow(ThemedWindow):
         self.cache_bootstrap_started = False
         self.history_cache_loaded = False
         self.latest_cache_loaded = False
+        self.pending_server_update = False  # 窗口未显示时收到服务端同步通知，只记录，等显示后再刷新 UI。
+        self.pending_server_device_id = None
+        self.displayed_excel_file_ids = set()  # 记录实时页已显示的电量文件，避免处理完成通知重复刷新同一条。
         
         # 初始化UI
         self.init_ui()
@@ -140,7 +149,7 @@ class ExcelDataViewerWindow(ThemedWindow):
         queue = global_setting.get_setting("queue", None)
         if queue:
             self.queue_thread.queue = queue
-            self.queue_thread.start()
+            # 跨进程消息由主窗口统一分发，避免多个线程争抢同一队列。
         
         # 连接缓存更新信号（从队列线程到主线程）
         self.cache_update_signal.connect(
@@ -181,6 +190,10 @@ class ExcelDataViewerWindow(ThemedWindow):
             self.cache_bootstrap_started = True
             self.report_background_task('正在从服务器加载电量解析结果')
             QTimer.singleShot(120, self.bootstrap_cache_load)
+        elif self.pending_server_update:
+            # 启动阶段页面未显示时可能已经收到同步消息；显示后再刷新，避免隐藏窗口操作 Qt/Matplotlib。
+            self.pending_server_update = False
+            QTimer.singleShot(120, lambda: self.on_cache_data_ready('server_record', self.pending_server_device_id or ''))
 
     def hideEvent(self, event):
         """窗口隐藏事件"""
@@ -195,6 +208,28 @@ class ExcelDataViewerWindow(ThemedWindow):
                 self.main_gui.status_bar.update_background_task(message)
         except Exception:
             pass
+
+    def _begin_realtime_loading(self, text: str = "正在加载电量实时数据..."):
+        """显示实时数据页内加载条；服务器请求可能较慢，先让界面给出明确反馈。"""
+        self._realtime_loading_count += 1
+        if self.realtime_loading_label is not None:
+            self.realtime_loading_label.setText(text)
+            self.realtime_loading_label.setVisible(True)
+        if self.realtime_loading_bar is not None:
+            self.realtime_loading_bar.setRange(0, 0)
+            self.realtime_loading_bar.setVisible(True)
+        QApplication.processEvents()
+
+    def _end_realtime_loading(self):
+        """隐藏实时数据页内加载条，支持嵌套加载调用。"""
+        if self._realtime_loading_count > 0:
+            self._realtime_loading_count -= 1
+        if self._realtime_loading_count > 0:
+            return
+        if self.realtime_loading_label is not None:
+            self.realtime_loading_label.setVisible(False)
+        if self.realtime_loading_bar is not None:
+            self.realtime_loading_bar.setVisible(False)
 
     def _get_api_client(self):
         """返回页面用于读取服务器解析结果的 API 客户端。"""
@@ -218,8 +253,19 @@ class ExcelDataViewerWindow(ThemedWindow):
 
     def _normalize_excel_record(self, record: dict) -> dict:
         """统一列表/详情记录结构。"""
+        record = record or {}
         parse_result = record.get('parse_result') or {}
         upload_time = record.get('upload_time') or ''
+        alarm_info = record.get('alarm_info') or {}
+        if not alarm_info.get('has_alarm') and record.get('fault_summary'):
+            # 兼容旧服务端/旧列表接口：没有 alarm_info 时，用搜索索引的 fault_summary 兜底展示。
+            alarm_info = {
+                'has_alarm': True,
+                'severity': record.get('severity') or 'warning',
+                'status': record.get('fault_status') or 'open',
+                'message': record.get('fault_summary'),
+                'created_at': record.get('occurred_at') or upload_time,
+            }
         return {
             'device_id': record.get('device_id', ''),
             'file_id': record.get('id') or record.get('file_id'),
@@ -235,7 +281,29 @@ class ExcelDataViewerWindow(ThemedWindow):
             'rated_frequency_unit': parse_result.get('rated_frequency_unit', ''),
             'processing_status': record.get('processing_status', ''),
             'processing_error': record.get('processing_error'),
+            'alarm_info': alarm_info,
         }
+
+    def _format_alarm_text(self, alarm_info: dict) -> str:
+        """把服务端预警结构转换为适合表格和详情页显示的中文文本。"""
+        alarm_info = alarm_info or {}
+        if not alarm_info.get('has_alarm'):
+            return "无预警"
+        severity_map = {"critical": "严重", "warning": "预警", "info": "提示"}
+        severity = severity_map.get(alarm_info.get('severity'), alarm_info.get('severity') or "预警")
+        # 兼容历史报警记录：服务端旧数据里可能还保留 gt/sheet_a_power_max 等内部字段名。
+        message = format_alarm_message(alarm_info.get('message') or "检测到预警")
+        created_at = (alarm_info.get('created_at') or '').replace('T', ' ')[:19]
+        return f"[{severity}] {created_at} {message}".strip()
+
+    def _make_alarm_table_item(self, alarm_info: dict) -> QTableWidgetItem:
+        """创建预警单元格；有预警时用醒目颜色并保留完整 tooltip。"""
+        text = self._format_alarm_text(alarm_info)
+        item = QTableWidgetItem(text)
+        item.setToolTip(text)
+        if (alarm_info or {}).get('has_alarm'):
+            item.setForeground(Qt.GlobalColor.red)
+        return item
 
     def _pick_preferred_excel_record(self, records: list):
         """优先选取服务端已完成解析的记录。"""
@@ -288,13 +356,17 @@ class ExcelDataViewerWindow(ThemedWindow):
                 self.log_message(f"文件仍在服务端处理中: {normalized.get('file_name', '')}")
                 return False
             parse_result = record.get("parse_result") or {}
-            detail = record if parse_result else (self._fetch_excel_detail(int(normalized["file_id"])) or record)
+            parsed_data = parse_result.get("parsed_data") if isinstance(parse_result, dict) else None
+            # 列表接口只返回解析摘要，不返回完整 parsed_data；实时页必须补取详情才能渲染表格。
+            detail = record if parsed_data else (self._fetch_excel_detail(int(normalized["file_id"])) or record)
             sheet_data_dict = self.build_sheet_data_dict_from_record(detail)
             if not sheet_data_dict:
                 self.log_message(f"服务端未返回可显示的解析结果: {normalized.get('file_name', '')}")
                 return False
             self.device_data[normalized["device_id"]] = sheet_data_dict
-            self.create_or_update_device_tab(normalized["device_id"], sheet_data_dict, normalized.get("file_name"))
+            detail_alarm_info = (detail or {}).get("alarm_info") or normalized.get("alarm_info") or {}
+            self.create_or_update_device_tab(normalized["device_id"], sheet_data_dict, normalized.get("file_name"), detail_alarm_info)
+            self.displayed_excel_file_ids.add(int(normalized["file_id"]))
             if switch_to_realtime and hasattr(self, "main_tabs") and self.main_tabs.count() > 0:
                 self.main_tabs.setCurrentIndex(0)
             return True
@@ -326,6 +398,18 @@ class ExcelDataViewerWindow(ThemedWindow):
         """创建实时数据选项卡"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
+
+        loading_layout = QHBoxLayout()
+        self.realtime_loading_label = QLabel("正在加载电量实时数据...")
+        self.realtime_loading_label.setStyleSheet("color: #1565c0; font-weight: bold;")
+        self.realtime_loading_bar = QProgressBar()
+        self.realtime_loading_bar.setRange(0, 0)
+        self.realtime_loading_bar.setFixedHeight(16)
+        self.realtime_loading_label.setVisible(False)
+        self.realtime_loading_bar.setVisible(False)
+        loading_layout.addWidget(self.realtime_loading_label)
+        loading_layout.addWidget(self.realtime_loading_bar, 1)
+        layout.addLayout(loading_layout)
 
         # 设备选项卡（第一层）
         self.device_tabs = QTabWidget()
@@ -387,12 +471,25 @@ class ExcelDataViewerWindow(ThemedWindow):
     def on_cache_data_ready(self, file_path: str, device_id: str):
         """收到新数据通知后，直接回源服务端读取最新解析结果。"""
         logger.info(f"[电量数据页面] 收到服务端数据通知: {Path(file_path).name if file_path else 'server_record'}, 设备: {device_id}")
+        if not self.is_visible:
+            # 模块启动时窗口尚未显示，不能在隐藏页面里刷新复杂 Qt/Matplotlib 组件，否则可能触发原生崩溃。
+            self.pending_server_update = True
+            self.pending_server_device_id = device_id
+            logger.info("[电量数据页面] 页面未显示，已延迟本次服务端数据刷新")
+            return
         self.log_message(f"收到新数据通知: 设备 {device_id}")
-        latest = self._pick_preferred_excel_record(self._fetch_excel_records(device_id=device_id, limit=20))
-        if latest and self._load_excel_record_into_ui(latest):
-            self.load_history_from_cache()
-            self.load_cache_data_to_table()
-            self.refresh_trend_chart()
+        self._begin_realtime_loading("正在加载最新电量实时数据...")
+        try:
+            records = self._fetch_excel_records(device_id=device_id, limit=20)
+            latest = self._pick_preferred_excel_record(records)
+            if latest and self._load_excel_record_into_ui(latest):
+                self.load_history_from_cache()
+                self.load_cache_data_to_table()
+                self.refresh_trend_chart()
+            else:
+                self.log_message("电量数据已上传，等待服务端解析完成后自动显示。")
+        finally:
+            self._end_realtime_loading()
 
 
     def parse_excel_all_sheets(self, file_path: str) -> dict:
@@ -571,7 +668,7 @@ class ExcelDataViewerWindow(ThemedWindow):
         return {}
 
 
-    def create_or_update_device_tab(self, device_id: str, sheet_data_dict: dict, file_name: str = None):
+    def create_or_update_device_tab(self, device_id: str, sheet_data_dict: dict, file_name: str = None, alarm_info: dict = None):
         """创建或更新设备选项卡"""
         logger.info(f"创建设备选项卡: {device_id}")
 
@@ -587,7 +684,7 @@ class ExcelDataViewerWindow(ThemedWindow):
                 self.device_tabs.removeTab(index)
 
         # 创建新的设备选项卡
-        device_tab = self.create_device_tab_content(device_id, sheet_data_dict, file_name)
+        device_tab = self.create_device_tab_content(device_id, sheet_data_dict, file_name, alarm_info)
         self.device_tabs.addTab(device_tab, f"设备 {device_id}")
         self.device_tab_dict[device_id] = device_tab
 
@@ -598,7 +695,7 @@ class ExcelDataViewerWindow(ThemedWindow):
         logger.info(f"✅ 设备选项卡创建完成")
 
 
-    def create_device_tab_content(self, device_id: str, sheet_data_dict: dict, file_name: str = None) -> QWidget:
+    def create_device_tab_content(self, device_id: str, sheet_data_dict: dict, file_name: str = None, alarm_info: dict = None) -> QWidget:
         """
         创建设备选项卡内容
         层次：device_tab → data_type_tabs → sheet_tabs → 数据类型tabs
@@ -620,6 +717,12 @@ class ExcelDataViewerWindow(ThemedWindow):
             info_layout.addWidget(file_label)
 
         info_layout.addWidget(QLabel(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"))
+        # 数据文件已经触发预警时，在图表详情顶部同步展示完整预警摘要。
+        if (alarm_info or {}).get('has_alarm'):
+            alarm_label = QLabel(f"预警信息: {self._format_alarm_text(alarm_info)}")
+            alarm_label.setWordWrap(True)
+            alarm_label.setStyleSheet("color: #c62828; font-weight: bold;")
+            info_layout.addWidget(alarm_label)
         info_layout.addWidget(QLabel(f"额定电压: {first_sheet.rated_voltage}{first_sheet.rated_voltage_unit}"))
         info_layout.addWidget(QLabel(f"额定频率: {first_sheet.rated_frequency}{first_sheet.rated_frequency_unit}"))
         layout.addWidget(info_group)
@@ -794,7 +897,8 @@ class ExcelDataViewerWindow(ThemedWindow):
             self.log_message(f"记录尚未解析完成: {record.get('file_name', '')}")
             return
         self.history_display_tabs.clear()
-        widget = self.create_device_tab_content(record['device_id'], sheet_data_dict, record.get('file_name'))
+        detail_alarm_info = (detail or {}).get('alarm_info') or record.get('alarm_info') or {}
+        widget = self.create_device_tab_content(record['device_id'], sheet_data_dict, record.get('file_name'), detail_alarm_info)
         self.history_display_tabs.addTab(widget, f"{record['device_id']} - {record['file_name']}")
 
     def load_history_from_cache(self):
@@ -808,34 +912,41 @@ class ExcelDataViewerWindow(ThemedWindow):
             self.history_device_combo.addItem(device_id)
         self.load_history_data()
 
-    def load_latest_from_cache(self):
+    def load_latest_from_cache(self, show_realtime_loading: bool = True):
         """Load the latest parsed Excel record per device and skip bad records safely."""
-        logger.info("Loading latest Excel records from server...")
-        records = [self._normalize_excel_record(record) for record in self._fetch_excel_records(limit=200)]
-        latest_by_device = {}
-        for record in records:
-            device_id = record.get("device_id")
-            if not device_id or device_id in latest_by_device:
-                continue
-            latest_by_device[device_id] = record
-        self.device_tabs.clear()
-        self.device_tab_dict.clear()
-        self.device_data.clear()
-        loaded_count = 0
-        for record in latest_by_device.values():
-            try:
-                if self._load_excel_record_into_ui(record, switch_to_realtime=False):
-                    loaded_count += 1
-            except Exception as exc:
-                logger.warning(f"Skip broken Excel record {record.get('file_name', '')}: {exc}")
-        if loaded_count == 0:
-            placeholder = QWidget()
-            placeholder_layout = QVBoxLayout(placeholder)
-            placeholder_layout.addWidget(QLabel("等待服务端解析后的电量数据..."))
-            self.device_tabs.addTab(placeholder, "暂无设备")
-            self.status_label.setText("状态: 暂无已解析的电量数据")
-            return
-        self.status_label.setText(f"状态: 已加载 {loaded_count} 台设备的电量数据")
+        if show_realtime_loading:
+            self._begin_realtime_loading("正在加载电量实时数据...")
+        try:
+            logger.info("Loading latest Excel records from server...")
+            records = [self._normalize_excel_record(record) for record in self._fetch_excel_records(limit=200)]
+            latest_by_device = {}
+            for record in records:
+                device_id = record.get("device_id")
+                if not device_id or device_id in latest_by_device:
+                    continue
+                latest_by_device[device_id] = record
+            self.device_tabs.clear()
+            self.device_tab_dict.clear()
+            self.device_data.clear()
+            self.displayed_excel_file_ids.clear()
+            loaded_count = 0
+            for record in latest_by_device.values():
+                try:
+                    if self._load_excel_record_into_ui(record, switch_to_realtime=False):
+                        loaded_count += 1
+                except Exception as exc:
+                    logger.warning(f"Skip broken Excel record {record.get('file_name', '')}: {exc}")
+            if loaded_count == 0:
+                placeholder = QWidget()
+                placeholder_layout = QVBoxLayout(placeholder)
+                placeholder_layout.addWidget(QLabel("等待服务端解析后的电量数据..."))
+                self.device_tabs.addTab(placeholder, "暂无设备")
+                self.status_label.setText("状态: 暂无已解析的电量数据")
+                return
+            self.status_label.setText(f"状态: 已加载 {loaded_count} 台设备的电量数据")
+        finally:
+            if show_realtime_loading:
+                self._end_realtime_loading()
 
 
 
@@ -880,11 +991,12 @@ class ExcelDataViewerWindow(ThemedWindow):
 
         # 表格
         self.cache_table = QTableWidget()
-        self.cache_table.setColumnCount(7)
+        self.cache_table.setColumnCount(8)
         self.cache_table.setHorizontalHeaderLabels([
-            "设备ID", "文件名", "时间", "Sheet数", "额定电压", "额定频率", "操作"
+            "设备ID", "文件名", "时间", "Sheet数", "额定电压", "额定频率", "预警信息", "操作"
         ])
         self.cache_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.cache_table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
         self.cache_table.setAlternatingRowColors(True)
         layout.addWidget(self.cache_table)
 
@@ -935,6 +1047,7 @@ class ExcelDataViewerWindow(ThemedWindow):
 
     def _populate_cache_table(self, records):
         """Render Excel records in the server data table."""
+        self.cache_table.setSortingEnabled(False)
         self.cache_table.setRowCount(len(records))
         for row, record in enumerate(records):
             status = record.get("processing_status", "pending")
@@ -946,6 +1059,7 @@ class ExcelDataViewerWindow(ThemedWindow):
             freq_text = "--" if status != "done" else f"{record.get('rated_frequency', 0)}{record.get('rated_frequency_unit', '')}"
             self.cache_table.setItem(row, 4, QTableWidgetItem(voltage_text))
             self.cache_table.setItem(row, 5, QTableWidgetItem(freq_text))
+            self.cache_table.setItem(row, 6, self._make_alarm_table_item(record.get("alarm_info") or {}))
             action_widget = QWidget()
             action_layout = QHBoxLayout(action_widget)
             action_layout.setContentsMargins(2, 2, 2, 2)
@@ -959,7 +1073,8 @@ class ExcelDataViewerWindow(ThemedWindow):
             download_btn.clicked.connect(lambda checked, r=record: self._download_excel_record(r))
             action_layout.addWidget(download_btn)
             action_layout.addStretch()
-            self.cache_table.setCellWidget(row, 6, action_widget)
+            self.cache_table.setCellWidget(row, 7, action_widget)
+        self.sort_table_by_latest_time(self.cache_table, ("时间",))
         self.log_message(f"Loaded {len(records)} Excel records from server")
 
     def load_cache_data_to_table(self, show_loading: bool = True):
@@ -991,17 +1106,26 @@ class ExcelDataViewerWindow(ThemedWindow):
                 return self._fetch_excel_detail(int(normalized["file_id"])) or record
             return record
 
+        self._begin_realtime_loading(f"正在加载 {normalized.get('file_name', '')}...")
+
         def on_success(detail):
-            if self._load_excel_record_into_ui(detail):
-                self.log_message(f"Loaded Excel record: {normalized.get('file_name', '')}")
-            else:
-                QMessageBox.information(self, "提示", "该记录尚未完成解析或暂无可显示的数据。")
+            try:
+                if self._load_excel_record_into_ui(detail):
+                    self.log_message(f"Loaded Excel record: {normalized.get('file_name', '')}")
+                else:
+                    QMessageBox.information(self, "提示", "该记录尚未完成解析或暂无可显示的数据。")
+            finally:
+                self._end_realtime_loading()
+
+        def on_error(message):
+            self._end_realtime_loading()
+            QMessageBox.critical(self, "加载失败", message)
 
         self.run_async_task(
             task,
             on_success=on_success,
-            on_error=lambda message: QMessageBox.critical(self, "加载失败", message),
-            loading_text=f"Loading {normalized.get('file_name', '')}...",
+            on_error=on_error,
+            loading_text=f"正在加载 {normalized.get('file_name', '')}...",
             widgets=[getattr(self, "cache_table", None)],
         )
 
@@ -1102,5 +1226,7 @@ class ExcelDataViewerWindow(ThemedWindow):
     def refresh_data(self):
         """刷新数据"""
         self.bootstrap_cache_load()
+
+
 
 

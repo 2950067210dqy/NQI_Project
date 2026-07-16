@@ -1,7 +1,10 @@
 import importlib
 import json
 import os
+import sys
 import time
+from queue import Empty
+from pathlib import Path
 from json import JSONDecodeError
 from PyQt6 import QtCore
 from PyQt6.QtCore import QTimer, QObject, pyqtSignal, Qt
@@ -44,72 +47,23 @@ class read_queue_data_Thread(MyQThread):
         pass
 
     def dosomething(self):
-        if self.queue and not self.queue.empty():
-            try:
-                message: ObjectQueueItem = self.queue.get()
-            except Exception as e:
-                logger.error(f"{self.name}发生错误{e}")
-                return
+        if self.queue is None:
+            self.msleep(20)
+            return
+        try:
+            message: ObjectQueueItem = self.queue.get(timeout=0.05)
+        except Empty:
+            return
+        except Exception as e:
+            logger.error(f"{self.name}发生错误{e}")
+            return
 
-            if message is not None and message.is_Empty():
-                return
-            if message is not None and isinstance(message, ObjectQueueItem) and message.to == 'MainWindow_index':
-                payload = message.data if isinstance(message.data, dict) else {"server_url": message.data, "message": message.data}
-                if self.window.status_bar is not None and message.title not in {"background_task", "device_status_summary", "latest_alarm"}:
-                    display_message = payload.get("message") or payload.get("status_text") or payload.get("error")
-                    if display_message:
-                        self.window.status_bar.append_server_message(str(display_message), category=message.title, payload=payload)
-                match message.title:
-                    case "connected":
-                        global_setting.set_setting("app_state", AppState.CONNECTED)
-                        self.window.change_enable_component_app_state()
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_server_address(payload.get("server_url", ""))
-                            self.window.status_bar.update_connection_status(payload.get("status_text", "已连接"), True)
-                            self.window.status_bar.update_background_task("服务器连接成功，正在监听消息")
-                            self.window.url = payload.get("server_url", "")
-                    case "connecting":
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
-                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接中"), None)
-                            self.window.status_bar.update_background_task(payload.get("task", "正在连接服务器"))
-                    case "disconnected":
-                        global_setting.set_setting("app_state", AppState.INITIALIZED)
-                        self.window.change_enable_component_app_state()
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
-                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接已断开"), False)
-                            self.window.status_bar.update_background_task(payload.get("task", "等待重新连接"))
-                    case "connection_error":
-                        global_setting.set_setting("app_state", AppState.INITIALIZED)
-                        self.window.change_enable_component_app_state()
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_server_address(payload.get("server_url", self.window.url))
-                            self.window.status_bar.update_connection_status(payload.get("status_text", "连接失败"), False)
-                            self.window.status_bar.update_tip(payload.get("error", "服务器连接失败"))
-                            self.window.status_bar.update_background_task(payload.get("task", "服务器连接失败"))
-                    case "tip":
-                        if self.window.status_bar is not None:
-                            tip_message = payload.get("message", message.data)
-                            self.window.status_bar.update_tip(tip_message)
-                    case "background_task":
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_background_task(payload.get("message", "后台处理中"))
-                    case "device_status_summary":
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_device_summary(
-                                int(payload.get("online", 0)),
-                                int(payload.get("total", 0)),
-                                payload.get("detail", "")
-                            )
-                    case "latest_alarm":
-                        if self.window.status_bar is not None:
-                            self.window.status_bar.update_latest_alarm(payload.get("message", "最新预警"), payload)
-                        self.window.alarm_toast_signal.emit(payload.get("message", "收到新的报警预警"), payload)
-                    case _:
-                        pass
-            else:
-                self.queue.put(message)
+        if message is not None and message.is_Empty():
+            return
+        if message is not None and isinstance(message, ObjectQueueItem):
+            # GUI 进程只保留一个跨进程队列消费者，由主线程按 message.to 统一分发。
+            # 禁止多个模块线程反复取出再放回同一消息，否则离线补发时会形成消息风暴。
+            self.window.queue_message_signal.emit(message)
     def close_stop_experiment_dialog(self):
         if self.window is not None and self.window.stop_dialog is not None:
             self.window.stop_dialog.update_progress_value(self.window.stop_dialog.progress_max)
@@ -118,6 +72,11 @@ class MainWindow_Index(ThemedWindow):
     # 根据程序状态来改变是否可以点击的组件
     change_enable_component_app_state_signal = QtCore.pyqtSignal()
     alarm_toast_signal = QtCore.pyqtSignal(str, dict)
+    latest_alarm_signal = QtCore.pyqtSignal(dict)
+    queue_message_signal = QtCore.pyqtSignal(object)
+    connection_error_signal = QtCore.pyqtSignal(dict)
+    startup_connect_lock_signal = QtCore.pyqtSignal(str)
+    startup_connect_unlock_signal = QtCore.pyqtSignal(str)
 
     def close_window_handle(self):
         """
@@ -246,8 +205,9 @@ class MainWindow_Index(ThemedWindow):
                     self.tutorial.add_step(widget,
                                            f"不知道怎么操作？请跟着步骤指引\n1.单击{action.text()}菜单\n2.在单击打开或导入")
             break
-        self.tutorial.add_step(self.status_bar.tip_btn,
-                               f"Tips：\n如果还不会操作，可再次单击该按钮查看教程。")
+        if getattr(self.status_bar, 'tip_btn', None) is not None and self.status_bar.tip_btn.isVisible():
+            self.tutorial.add_step(self.status_bar.tip_btn,
+                                   f"Tips：\n如果还不会操作，可再次单击该按钮查看教程。")
     def __init__(self):
         super().__init__()
 
@@ -255,10 +215,18 @@ class MainWindow_Index(ThemedWindow):
         server_config = global_setting.get_setting("connect_server", {}).get("server", {})
         self.url = server_config.get("url", "")
         self._startup_auto_connect_triggered = False
+        self._startup_auto_connect_in_progress = False
+        self._startup_auto_connect_loading_active = False
+        self._startup_auto_connect_timeout_timer = QTimer(self)
+        self._startup_auto_connect_timeout_timer.setSingleShot(True)
+        self._startup_auto_connect_timeout_timer.timeout.connect(self.on_startup_auto_connect_timeout)
+        self._last_connection_error_detail = ""
+        self._last_connection_error_dialog_at = 0
         self.tool_bar_actions = []
         self.menu_bar_actions = []
         # 模块
         self.modules =[]
+        self.module_load_errors = {}
         # 正在显示的Widget
         self.active_module_widgets:[BaseModule]=[]
         # 打开的窗口
@@ -318,7 +286,6 @@ class MainWindow_Index(ThemedWindow):
         global read_queue_data_thread
         read_queue_data_thread.queue = global_setting.get_setting("queue",None)
         read_queue_data_thread.window=self
-        read_queue_data_thread.start()
         self.content_layout = self.findChild(QVBoxLayout,"content_layout")
         self.tab_widget:QTabWidget = self.findChild(QTabWidget,"tab_widget")
         # 启用标签关闭按钮
@@ -354,10 +321,204 @@ class MainWindow_Index(ThemedWindow):
         # 连接信号
         self.change_enable_component_app_state_signal.connect(self.change_enable_component_app_state)
         self.alarm_toast_signal.connect(self.show_alarm_toast, Qt.ConnectionType.QueuedConnection)
+        self.latest_alarm_signal.connect(self.handle_latest_alarm_message, Qt.ConnectionType.QueuedConnection)
+        self.queue_message_signal.connect(self.handle_queue_message, Qt.ConnectionType.QueuedConnection)
+        self.connection_error_signal.connect(self.show_connection_error_dialog, Qt.ConnectionType.QueuedConnection)
+        self.startup_connect_lock_signal.connect(self.begin_startup_auto_connect_lock, Qt.ConnectionType.QueuedConnection)
+        self.startup_connect_unlock_signal.connect(self.finish_startup_auto_connect_lock, Qt.ConnectionType.QueuedConnection)
+        # 等窗口、模块、状态栏和全部信号初始化完成后再消费跨进程消息。
+        # 服务器离线期间积压的预警，只会在 Qt 主线程准备好后补发到界面。
+        global read_queue_data_thread
+        if not read_queue_data_thread.isRunning():
+            read_queue_data_thread.start()
         pass
 
+    def handle_queue_message(self, message):
+        """在 GUI 主线程处理连接服务发来的消息，所有 QWidget 更新都集中在这里。"""
+        if not isinstance(message, ObjectQueueItem):
+            return
+        if message.to == "excel_data_viewer":
+            self.dispatch_viewer_cache_message("ExcelDataViewerModule", message)
+            return
+        if message.to == "image_data_viewer":
+            self.dispatch_viewer_cache_message("ImageDataViewerModule", message)
+            return
+        if message.to != "MainWindow_index":
+            logger.debug(f"忽略未注册的 GUI 队列目标: {message.to}")
+            return
+
+        payload = message.data if isinstance(message.data, dict) else {
+            "server_url": message.data,
+            "message": message.data,
+        }
+        if self.status_bar is not None and message.title not in {"background_task", "device_status_summary", "latest_alarm"}:
+            if message.title == "connection_error":
+                display_message = payload.get("status_text") or "连接失败"
+            else:
+                display_message = payload.get("message") or payload.get("status_text") or payload.get("error")
+            if display_message:
+                self.status_bar.append_server_message(
+                    str(display_message),
+                    category=message.title,
+                    payload=payload,
+                )
+
+        match message.title:
+            case "connected":
+                self.finish_startup_auto_connect_lock("服务器连接成功")
+                global_setting.set_setting("app_state", AppState.CONNECTED)
+                self.change_enable_component_app_state()
+                if self.status_bar is not None:
+                    self.status_bar.update_server_address(payload.get("server_url", ""))
+                    self.status_bar.update_connection_status(payload.get("status_text", "已连接"), True)
+                    self.status_bar.update_background_task("服务器连接成功，正在监听消息")
+                self.url = payload.get("server_url", self.url)
+            case "connecting":
+                if payload.get("auto_connect"):
+                    self.begin_startup_auto_connect_lock(payload.get("task", "正在自动连接服务器"))
+                if self.status_bar is not None:
+                    self.status_bar.update_server_address(payload.get("server_url", self.url))
+                    self.status_bar.update_connection_status(payload.get("status_text", "连接中"), None)
+                    self.status_bar.update_background_task(payload.get("task", "正在连接服务器"))
+            case "disconnected":
+                self.finish_startup_auto_connect_lock("服务器连接已断开")
+                global_setting.set_setting("app_state", AppState.INITIALIZED)
+                self.change_enable_component_app_state()
+                if self.status_bar is not None:
+                    self.status_bar.update_server_address(payload.get("server_url", self.url))
+                    self.status_bar.update_connection_status(payload.get("status_text", "连接已断开"), False)
+                    self.status_bar.update_background_task(payload.get("task", "后台轮询已停止"))
+            case "connection_error":
+                self.finish_startup_auto_connect_lock("服务器连接失败")
+                global_setting.set_setting("app_state", AppState.INITIALIZED)
+                self.change_enable_component_app_state()
+                if self.status_bar is not None:
+                    self.status_bar.update_server_address(payload.get("server_url", self.url))
+                    self.status_bar.update_connection_status(payload.get("status_text", "连接失败"), False)
+                    # 状态栏只显示短文本，完整异常通过弹窗详细信息展示，避免挤爆状态栏。
+                    self.status_bar.update_tip("连接失败")
+                    self.status_bar.update_background_task(payload.get("task", "服务器连接失败，后台轮询已停止"))
+                self.show_connection_error_dialog(payload)
+            case "tip":
+                if self.status_bar is not None:
+                    self.status_bar.update_tip(payload.get("message", message.data))
+            case "background_task":
+                if self.status_bar is not None:
+                    self.status_bar.update_background_task(payload.get("message", "后台处理中"))
+            case "device_status_summary":
+                if self.status_bar is not None:
+                    self.status_bar.update_device_summary(
+                        int(payload.get("online", 0)),
+                        int(payload.get("total", 0)),
+                        payload.get("detail", ""),
+                    )
+            case "latest_alarm":
+                self.handle_latest_alarm_message(payload)
+            case _:
+                pass
+
+    def dispatch_viewer_cache_message(self, module_name: str, message):
+        """把下载完成消息分发给数据查看页面，页面未显示时只记录待刷新状态。"""
+        if message.title != "cache_data_ready" or not isinstance(message.data, dict):
+            return
+        file_path = message.data.get("file_path")
+        device_id = message.data.get("device_id")
+        if not file_path or device_id is None:
+            return
+        for module in self.modules:
+            if getattr(module, "name", None) != module_name:
+                continue
+            frame_obj = getattr(getattr(module, "interface_widget", None), "frame_obj", None)
+            if frame_obj is not None and hasattr(frame_obj, "cache_update_signal"):
+                frame_obj.cache_update_signal.emit(str(file_path), str(device_id))
+                logger.info(f"已分发数据同步消息: {module_name}, device={device_id}")
+            return
+        logger.warning(f"数据同步消息对应模块未加载: {module_name}")
+
+    def show_connection_error_dialog(self, payload: dict):
+        """弹窗显示服务器连接失败的详细异常，状态栏只保留短提示。"""
+        payload = payload or {}
+        detail = payload.get("error") or payload.get("message") or "服务器连接失败"
+        server_url = payload.get("server_url") or self.url or "未配置"
+        detail_text = f"服务器地址: {server_url}\n\n详细信息:\n{detail}"
+        now = time.time()
+        # 自动重连失败可能连续上报，同一错误短时间内只弹一次。
+        if detail_text == self._last_connection_error_detail and now - self._last_connection_error_dialog_at < 10:
+            return
+        self._last_connection_error_detail = detail_text
+        self._last_connection_error_dialog_at = now
+
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle("服务器连接失败")
+        msg_box.setText("连接服务器失败")
+        msg_box.setInformativeText("状态栏已简化显示为连接失败，详细错误请查看下方内容。")
+        msg_box.setDetailedText(detail_text)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.show()
+
+    def _startup_auto_connect_timeout_ms(self):
+        """读取连接配置中的超时时间，作为启动自动重连锁定的最大等待时间。"""
+        server_config = global_setting.get_setting("connect_server", {}).get("server", {})
+        try:
+            timeout_seconds = int(server_config.get("timeout", 30))
+        except (TypeError, ValueError):
+            timeout_seconds = 30
+        return max(5000, (timeout_seconds + 8) * 1000)
+
+    def begin_startup_auto_connect_lock(self, message="正在自动连接服务器"):
+        """启动自动重连期间锁定菜单、工具栏、标签页和状态栏按钮，等待成功或超时后解锁。"""
+        if self._startup_auto_connect_in_progress:
+            return
+        self._startup_auto_connect_in_progress = True
+        if self.status_bar is not None:
+            self.status_bar.update_connection_status("连接中", None)
+            self.status_bar.update_tip("正在自动连接服务器，连接成功或超时后可继续操作")
+            self.status_bar.update_background_task(message)
+        if not self._startup_auto_connect_loading_active:
+            # 这里通过 startup_connect_lock_signal 回到主 GUI 线程执行，避免后台线程直接创建 QWidget。
+            self.show_loading("正在自动连接服务器，请稍候...")
+            self._startup_auto_connect_loading_active = True
+        if self.menuBar() is not None:
+            self.menuBar().setEnabled(False)
+        if self.toolbar is not None:
+            self.toolbar.setEnabled(False)
+        if self.tab_widget is not None:
+            self.tab_widget.setEnabled(False)
+        if self.status_bar is not None:
+            self.status_bar.setEnabled(False)
+        self._startup_auto_connect_timeout_timer.start(self._startup_auto_connect_timeout_ms())
+
+    def finish_startup_auto_connect_lock(self, message="自动连接结束"):
+        """连接成功、连接失败或本地等待超时后恢复主界面交互。"""
+        if not self._startup_auto_connect_in_progress:
+            return
+        self._startup_auto_connect_in_progress = False
+        if self._startup_auto_connect_timeout_timer.isActive():
+            self._startup_auto_connect_timeout_timer.stop()
+        if self._startup_auto_connect_loading_active:
+            self.hide_loading()
+            self._startup_auto_connect_loading_active = False
+        if self.menuBar() is not None:
+            self.menuBar().setEnabled(True)
+        if self.toolbar is not None:
+            self.toolbar.setEnabled(True)
+        if self.tab_widget is not None:
+            self.tab_widget.setEnabled(True)
+        if self.status_bar is not None:
+            self.status_bar.setEnabled(True)
+            self.status_bar.update_background_task(message)
+        self.change_enable_component_app_state()
+
+    def on_startup_auto_connect_timeout(self):
+        """启动自动重连超过配置超时时间后解锁，避免界面长期不可操作。"""
+        self.finish_startup_auto_connect_lock("自动连接服务器超时，可手动重新连接")
+        if self.status_bar is not None:
+            self.status_bar.update_connection_status("连接超时", False)
+            self.status_bar.update_tip("自动连接服务器超时")
+
     def auto_connect_server_on_startup(self):
-        """Try connecting to the server automatically after the main window starts."""
+        """主窗口显示后自动重连服务器，并在重连期间锁定可点击控件。"""
         if self._startup_auto_connect_triggered:
             return
         self._startup_auto_connect_triggered = True
@@ -374,19 +535,19 @@ class MainWindow_Index(ThemedWindow):
                 self.status_bar.update_background_task("服务器已连接，正在监听消息")
             return
 
+        if self._startup_auto_connect_in_progress:
+            return
+
+        self.begin_startup_auto_connect_lock("主界面启动完成，正在自动连接服务器")
         if self.status_bar is not None:
             self.status_bar.update_server_address(self.url)
-            self.status_bar.update_connection_status("连接中", None)
-            self.status_bar.update_tip(f"启动后自动连接服务器: {self.url}")
-            self.status_bar.update_background_task("主界面启动完成，正在自动连接服务器")
+        self.reconnect_server(auto_connect=True)
 
-        self.reconnect_server()
-
-
-    def reconnect_server(self):
+    def reconnect_server(self, auto_connect=False):
         """向 connect_server 服务发送重连指令。"""
         send_message_queue = global_setting.get_setting("send_message_queue", None)
         if send_message_queue is None:
+            self.finish_startup_auto_connect_lock("连接服务队列不可用")
             if self.status_bar is not None:
                 self.status_bar.update_tip("连接服务队列不可用，无法重连服务器")
             return
@@ -401,7 +562,7 @@ class MainWindow_Index(ThemedWindow):
                 origin="MainWindow_index",
                 to="main_connect_server",
                 title="reconnect",
-                data={"server_url": self.url},
+                data={"server_url": self.url, "auto_connect": auto_connect},
                 time=time_util.get_format_from_time(time.time())
             )
         )
@@ -415,6 +576,15 @@ class MainWindow_Index(ThemedWindow):
         if self.status_bar is not None:
             self.status_bar.update_tip(f'未找到模块: {module_name}')
         return False
+
+    def handle_latest_alarm_message(self, payload: dict):
+        """在主线程中更新最新预警状态，并按需显示 toast。"""
+        payload = payload or {}
+        message = payload.get("message", "收到新的报警预警")
+        if self.status_bar is not None:
+            self.status_bar.update_latest_alarm(message, payload)
+        if not payload.get("suppress_toast"):
+            self.show_alarm_toast(message, payload)
 
     def show_alarm_toast(self, message: str, payload: dict):
         """在主线程中显示常驻预警 toast。"""
@@ -461,45 +631,8 @@ class MainWindow_Index(ThemedWindow):
         # 创建 QToolBar
         self.toolbar = QToolBar("Toolbar")
         self.addToolBar(self.toolbar)
-        # 创建动作（Action）
-        name ="窗口变换"
-        obj_name ="window_exchange"
-        action_one = QAction(name, self)
-        action_one.setObjectName(obj_name)
-        action_one.setToolTip(name)
-        action_one.triggered.connect(self.exchange_widget_and_window)
-        self.tool_bar_actions.append({"name":name,"obj_name":obj_name,"action":action_one,"app_state":AppState.INITIALIZED,'tip':"单击此按钮会将打开的窗口变成内嵌抽屉页。"})
-        name = "更改主题颜色"
-        obj_name = "toggle_mode"
-        action_two= QAction(name, self)
-        action_two.setObjectName(obj_name)
-        action_two.setToolTip(name)
-        action_two.triggered.connect(self.toggle_theme)
-        self.tool_bar_actions.append({"name":name,"obj_name":obj_name,"action":action_two,"app_state":AppState.INITIALIZED,'tip':"单击此按钮会将程序的主题颜色变换黑色和白色"})
-
-
-        name = "重置教程页"
-        obj_name = "reset_guidance"
-        action_final = QAction(name, self)
-        action_final.setObjectName(obj_name)
-        action_final.setToolTip(name)
-        action_final.triggered.connect(self.reset_guidance)
-        action_final.setDisabled(True)
-        self.tool_bar_actions.append(
-            {"name": name, "obj_name": obj_name, "action": action_final, "app_state": AppState.INITIALIZED,
-             'tip': "单击此按钮会将重置教程。"})
-
-
-
-
-        # 将动作添加到工具栏
-        self.toolbar.addAction(action_one)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(action_two)
-        self.toolbar.addSeparator()
-
-        self.toolbar.addAction(action_final)
-        self.toolbar.addSeparator()
+        # 按当前界面要求隐藏内置工具栏按钮，仅保留右侧标识图。
+        # 这三个旧入口不再加入 toolbar，也不加入 tool_bar_actions，避免教程引导和状态切换再次显示它们。
         # 创建一个空的QWidget作为占位符，让它扩展填充剩余空间
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -521,11 +654,11 @@ class MainWindow_Index(ThemedWindow):
         return [
             {
                 "text": "设备",
-                "tip": "设备注册审批、在线状态和设备配置入口",
+                "tip": "设备注册审批、在线状态和服务器消息入口",
                 "items": [
                     {"text": "设备注册审批", "module": "RegistrationApprovalModule"},
                     {"text": "设备在线状态", "module": "DeviceStatusModule"},
-                    {"text": "设备配置", "module": "Main_experiment_setting"},
+                    {"text": "服务器消息中心", "module": "ServerMessageCenterModule"},
                 ],
             },
             {
@@ -554,10 +687,9 @@ class MainWindow_Index(ThemedWindow):
             },
             {
                 "text": "工具",
-                "tip": "工具功能与服务器消息查看入口",
+                "tip": "检索测试和辅助工具入口",
                 "items": [
-                    {"text": "服务器消息中心", "module": "ServerMessageCenterModule"},
-                    {"text": "待开发", "module": None},
+                    {"text": "检索准确率可视化", "module": "SearchAccuracyVisualizationModule"},
                 ],
             },
             {
@@ -568,6 +700,12 @@ class MainWindow_Index(ThemedWindow):
                 ],
             },
         ]
+
+    def show_module_load_error(self, module_name: str, menu_text: str):
+        """模块未成功加载时给出明确原因，避免打包后点击菜单没有反馈。"""
+        detail = self.module_load_errors.get(module_name, '模块未加载，可能是打包缺少依赖或模块文件。')
+        logger.error(f'模块打开失败: {module_name}, detail={detail}')
+        QMessageBox.critical(self, '模块打开失败', f'{menu_text} 打开失败。\n\n模块: {module_name}\n原因: {detail}')
 
     def create_menu_bar(self):
         """按固定菜单结构挂接模块，避免继续依赖旧配置 id 分组。"""
@@ -590,8 +728,17 @@ class MainWindow_Index(ThemedWindow):
                         {"name": item['text'], "obj_name": module.name, "action": action, "app_state": module.app_state}
                     )
                 else:
-                    action.setObjectName(f"placeholder_{menu_dict['text']}_{item['text']}")
-                    action.setEnabled(False)
+                    # 打包后如果模块依赖缺失，仍保留菜单点击反馈，方便现场定位具体失败原因。
+                    action.setObjectName(module_name or f"placeholder_{menu_dict['text']}_{item['text']}")
+                    if module_name:
+                        self.bind_action_with_loading(
+                            action,
+                            lambda checked=False, m=module_name, t=item['text']: self.show_module_load_error(m, t),
+                            loading_text=f"正在打开{item['text']}...",
+                            timeout_ms=600
+                        )
+                    else:
+                        action.setEnabled(False)
                     self.menu_bar_actions.append(
                         {"name": item['text'], "obj_name": action.objectName(), "action": action, "app_state": AppState.INITIALIZED}
                     )
@@ -601,28 +748,91 @@ class MainWindow_Index(ThemedWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate(self.objectName(),global_setting.get_setting("configer")["window"]["title"]))
     pass
+    @staticmethod
+    def _runtime_roots():
+        """返回源码运行和 PyInstaller one-dir 下可查找业务模块的根目录。"""
+        roots = [Path.cwd()]
+        if getattr(sys, 'frozen', False):
+            # exe 同级目录用于外置 config/resource；_MEIPASS 通常指向 one-dir 的 _internal。
+            roots.append(Path(sys.executable).resolve().parent)
+            roots.append(Path(getattr(sys, '_MEIPASS', Path(sys.executable).resolve().parent)))
+        roots.append(Path(__file__).resolve().parents[1])
+        unique_roots = []
+        for root in roots:
+            try:
+                resolved = root.resolve()
+            except Exception:
+                resolved = root
+            if resolved not in unique_roots:
+                unique_roots.append(resolved)
+        return unique_roots
+
+    @classmethod
+    def _find_module_dir(cls) -> Path:
+        """定位 Module 目录；打包后优先兼容 _internal/Module。"""
+        for root in cls._runtime_roots():
+            module_dir = root / 'Module'
+            if module_dir.exists() and module_dir.is_dir():
+                return module_dir
+        return Path('Module')
+
     def load_modules(self):
-        #动态加载模块
+        # 动态加载模块；打包后 Module 位于 _internal/Module，不能再写死当前工作目录。
         modules = []
-        module_dir = 'Module'  # 插件目录
-        # 递归遍历指定目录
-        for dirpath, dirnames, filenames in os.walk(module_dir):
-            for filename in filenames:
-                if filename.endswith('.py'):
-                    module_name = filename[:-3]# 去掉 .py 后缀
-                    if module_name.startswith("main"):
-                        file_path = os.path.join(dirpath, filename)
-                        # 动态加载模块
-                        spec = importlib.util.spec_from_file_location(module_name, file_path)
-                        module = importlib.util.module_from_spec(spec)
-                        spec.loader.exec_module(module)#装载module
-                        # 查找到实现 BasePlugin 的类
-                        for name, obj in module.__dict__.items():
-                            if name =="BaseModule":
-                                # 抽象类跳过
-                                continue
-                            if isinstance(obj, type) and issubclass(obj, BaseModule):
-                                modules.append(obj())
+        module_dir = self._find_module_dir()
+        if not module_dir.exists():
+            logger.error(f'模块目录不存在: {module_dir}')
+            if self.status_bar is not None:
+                self.status_bar.update_tip(f'模块目录不存在: {module_dir}')
+            return modules
+        for root in self._runtime_roots():
+            root_str = str(root)
+            if root.exists() and root_str not in sys.path:
+                sys.path.insert(0, root_str)
+        module_dir_str = str(module_dir)
+        if module_dir_str not in sys.path:
+            sys.path.insert(0, module_dir_str)
+        logger.info(f'开始加载模块目录: {module_dir}')
+        module_name_by_dir = {
+            'excel_data_viewer': 'ExcelDataViewerModule',
+            'image_data_viewer': 'ImageDataViewerModule',
+            'data_search': 'DataSearchModule',
+            'fault_alarm': 'FaultAlarmModule',
+            'alarm_rule_config': 'AlarmRuleConfigModule',
+            'device_status': 'DeviceStatusModule',
+            'device_registration_approval': 'RegistrationApprovalModule',
+            'server_message_center': 'ServerMessageCenterModule',
+            'search_accuracy_visualization': 'SearchAccuracyVisualizationModule',
+            'experiment_setting': 'Main_experiment_setting',
+        }
+        self.module_load_errors.clear()
+        for file_path in module_dir.rglob('main*.py'):
+            if '__pycache__' in file_path.parts:
+                continue
+            try:
+                relative = file_path.relative_to(module_dir.parent).with_suffix('')
+                import_name = '.'.join(relative.parts)
+                # 使用包名形式导入，保证 Module.xxx 内部导入在 exe 中也能解析。
+                spec = importlib.util.spec_from_file_location(import_name, str(file_path))
+                if spec is None or spec.loader is None:
+                    logger.warning(f'跳过无法创建导入规格的模块: {file_path}')
+                    continue
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[import_name] = module
+                spec.loader.exec_module(module)
+                for name, obj in module.__dict__.items():
+                    if name == 'BaseModule':
+                        continue
+                    if isinstance(obj, type) and issubclass(obj, BaseModule) and obj is not BaseModule:
+                        instance = obj()
+                        modules.append(instance)
+                        logger.info(f'模块加载成功: {getattr(instance, "name", obj.__name__)} <- {file_path}')
+            except Exception as exc:
+                module_key = module_name_by_dir.get(file_path.parent.name) or module_name_by_dir.get(file_path.parent.parent.name)
+                if module_key:
+                    self.module_load_errors[module_key] = str(exc)
+                logger.exception(f'模块加载失败: {file_path}, error={exc}')
+        logger.info(f'模块加载完成: {len(modules)} 个')
         return modules
         pass
     def exchange_widget_and_window(self):
@@ -784,5 +994,17 @@ class MainWindow_Index(ThemedWindow):
             )
 
             self.status_bar.update_tip("✅ 所有页面的首次访问状态已重置")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
