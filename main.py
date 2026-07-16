@@ -203,7 +203,15 @@ def test_integrated_monitor():
     monitor.start_monitoring(interval=5)
 
 
+def authenticate_admin_before_startup():
+    """主进程创建任何业务子进程前完成服务器管理员密码校验。"""
+    from public.component.admin_password_dialog import request_admin_authentication
+    return request_admin_authentication()
+
 
 if __name__ == "__main__" and os.path.basename(__file__) == "main.py":
+    freeze_support()
+    if not authenticate_admin_before_startup():
+        sys.exit(0)
     test_integrated_monitor()
 
