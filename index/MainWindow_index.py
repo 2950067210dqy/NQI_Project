@@ -633,11 +633,16 @@ class MainWindow_Index(ThemedWindow):
         self.addToolBar(self.toolbar)
         # 按当前界面要求隐藏内置工具栏按钮，仅保留右侧标识图。
         # 这三个旧入口不再加入 toolbar，也不加入 tool_bar_actions，避免教程引导和状态切换再次显示它们。
-        # 创建一个空的QWidget作为占位符，让它扩展填充剩余空间
-        spacer = QWidget()
-        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-
-        self.toolbar.addWidget(spacer)
+        # 标题占用工具栏的可伸缩区域，窗口缩放时不会挤动右侧两个标识图。
+        platform_title = QLabel("NQI几何量电量大数据管理平台")
+        platform_title.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
+        platform_title.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        platform_title.setStyleSheet(
+            "font-size: 22px; font-weight: 600; color: #1F2937; padding: 0 24px;"
+        )
+        self.toolbar.addWidget(platform_title)
         icon_image = QLabel()
         icon_image.setAlignment(Qt.AlignmentFlag.AlignLeft)
         icon_image.setPixmap(QPixmap(global_setting.get_setting("configer")['window']['nqi_path']).scaledToHeight(50))
@@ -690,6 +695,7 @@ class MainWindow_Index(ThemedWindow):
                 "tip": "检索测试和辅助工具入口",
                 "items": [
                     {"text": "检索准确率可视化", "module": "SearchAccuracyVisualizationModule"},
+                    {"text": "报警延迟可视化", "module": "AlarmLatencyVisualizationModule"},
                 ],
             },
             {
@@ -803,6 +809,7 @@ class MainWindow_Index(ThemedWindow):
             'device_registration_approval': 'RegistrationApprovalModule',
             'server_message_center': 'ServerMessageCenterModule',
             'search_accuracy_visualization': 'SearchAccuracyVisualizationModule',
+            'alarm_latency_visualization': 'AlarmLatencyVisualizationModule',
             'experiment_setting': 'Main_experiment_setting',
         }
         self.module_load_errors.clear()

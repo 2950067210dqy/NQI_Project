@@ -166,6 +166,23 @@ class UpperAPIClient:
             logger.error(f"Failed to download file: {e}")
             raise
 
+    # ==================== 报警延迟测试接口 ====================
+
+    def upload_alarm_latency_file(self, file_path: Path) -> Dict:
+        """上传不落正式文件记录的报警延迟测试文件。"""
+        file_path = Path(file_path)
+        url = f"{self.base_url}/api/alarm-latency/test"
+        # 测试 POST 禁止自动重试，避免网络异常时重复触发预警。
+        upload_session = create_retry_session(max_attempts=1)
+        with file_path.open("rb") as stream:
+            response = upload_session.post(
+                url,
+                files={"file": (file_path.name, stream)},
+                timeout=max(self.timeout, 5),
+            )
+        response.raise_for_status()
+        return response.json()
+
     # ==================== 统计接口 ====================
 
     def get_device_statistics(self, device_id: str) -> Dict:

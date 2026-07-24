@@ -12,7 +12,16 @@ class AlarmToast(QFrame):
     clicked = pyqtSignal(dict)
 
     def __init__(self, message: str, payload: dict = None, parent: QWidget = None):
-        super().__init__(parent)
+        # Toast 必须是独立的置顶工具窗；作为主窗口子控件时会被模块顶层窗口遮挡。
+        super().__init__(None)
+        self.owner_window = parent
+        self.setWindowFlags(
+            Qt.WindowType.Tool
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.WindowDoesNotAcceptFocus
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
         self.payload = payload or {}
         self.raw_message = format_alarm_message(message or "收到新的报警预警")
         self.setObjectName("alarmToast")
@@ -172,11 +181,14 @@ class AlarmToastManager:
             )
             desired_global_x = max(visible_rect.left() + margin, desired_global_x)
             desired_global_y = max(visible_rect.top() + margin, parent_rect.top() + y)
-            local_pos = self.parent.mapFromGlobal(QPoint(desired_global_x, desired_global_y))
-            toast.move(local_pos.x(), local_pos.y())
+            # 独立工具窗使用屏幕全局坐标，避免受到任一模块窗口坐标系影响。
+            toast.move(desired_global_x, desired_global_y)
             toast.raise_()
             y += toast.height() + spacing
 
     def _open_alarm_page(self, payload: dict):
+        # 性能测试预警没有正式文件或历史记录，点击时不打开业务报警页面。
+        if (payload or {}).get("is_latency_test"):
+            return
         if hasattr(self.parent, 'open_fault_alarm_page'):
             self.parent.open_fault_alarm_page()

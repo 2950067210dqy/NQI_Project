@@ -55,6 +55,7 @@ hiddenimports += collect_submodules("Module")
 # 动态菜单入口由源码文件扫描加载，显式列出可避免增量构建或包扫描差异导致 exe 中菜单静默缺失。
 hiddenimports += [
     "Module.alarm_rule_config.main",
+    "Module.alarm_latency_visualization.main",
     "Module.data_search.main",
     "Module.device_registration_approval.main",
     "Module.device_status.main",
